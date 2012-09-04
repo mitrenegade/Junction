@@ -50,6 +50,26 @@ static CGRect originalScrollViewFrame;
                                                object:self.view.window];
     keyboardIsShown = NO;
     originalScrollViewFrame = scrollView.frame;
+    
+    // load userinfo from defaults
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * savedName = [defaults objectForKey:@"name"];
+    NSString * savedEmail = [defaults objectForKey:@"email"];
+    NSData * savedPhotoData = [defaults dataForKey:@"photoData"];
+    
+    if (savedName) {
+        [myUserInfo setUsername:savedName];
+//        [usernameField setText:savedName];
+    }
+    if (savedEmail) {
+        [myUserInfo setEmail:savedEmail];
+//        [emailField setText:savedEmail];
+    }
+    if (savedPhotoData) {
+        [myUserInfo setPhoto:[UIImage imageWithData:savedPhotoData]];
+//        [buttonPhoto setImage:[UIImage imageWithData:savedPhotoData] forState:UIControlStateNormal];
+    }
 }
 
 - (void)viewDidUnload
@@ -105,6 +125,14 @@ static CGRect originalScrollViewFrame;
         return;
     if ([emailField text] == nil)
         return;
+
+    // save userinfo to defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[usernameField text] forKey:@"name"];
+    [defaults setObject:[emailField text] forKey:@"email"];
+    NSData * photoData = UIImagePNGRepresentation([[buttonPhoto imageView] image]);
+    [defaults setObject:photoData forKey:@"photoData"];
+    [defaults synchronize];
     
     [delegate didSelectUsername:[usernameField text] andEmail:[emailField text] andPhoto:[[buttonPhoto imageView] image]];
     //[self.navigationController popViewControllerAnimated:YES];
