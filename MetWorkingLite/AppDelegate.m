@@ -8,20 +8,60 @@
 
 #import "AppDelegate.h"
 
-#import "ViewController.h"
-
 @implementation AppDelegate
 
 @synthesize window = _window;
-@synthesize viewController = _viewController;
+//@synthesize viewController = _viewController;
+@synthesize myUserInfo;
+@synthesize nav;
+@synthesize lhHelper;
+@synthesize proxController, profileController, mapViewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    self.window.rootViewController = self.viewController;
+    
+    //ViewController * viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
+    //[viewController setDelegate:self];
+    
+    //self.viewController = viewController;
+    
+    myUserInfo = [[UserInfo alloc] init];
+    
+    UITabBarController * tabBarController = [[UITabBarController alloc] init];
+    [tabBarController setDelegate:self];
+    
+    //locationViewController = [[LocationViewController alloc] init];
+    //[locationViewController setDelegate:self];
+    //[locationViewController startListening];    
+    
+    proxController = [[ProximityViewController alloc] init];
+    [proxController setDelegate:self];
+    
+    mapViewController = [[MapViewController alloc] init];
+    [mapViewController setDelegate:self];
+    //[self.navigationController pushViewController:mapViewController animated:YES];
+    
+    profileController = [[ProfileViewController alloc] init];
+    [profileController setDelegate:self];
+    
+	NSArray * viewControllers = [NSArray arrayWithObjects: proxController, mapViewController, profileController, nil];
+    [tabBarController setViewControllers:viewControllers];
+    
+    //[self.view addSubview:tabBarController.view];
+    nav = [[UINavigationController alloc] initWithRootViewController:tabBarController];
+    nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
+    
+    LoginViewController * loginController = [[LoginViewController alloc] init];
+    [loginController setDelegate:self];
+    //[nav pushViewController:loginController animated:YES];
+    [loginController initializeWithUserInfo:myUserInfo];
+    
+    [nav presentModalViewController:loginController animated:YES];
+    
     return YES;
 }
 
@@ -52,4 +92,37 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark LoginViewDelegate
+
+-(void)didSelectUsername:(NSString *)username andEmail:(NSString *)email andPhoto:(UIImage *)photo {
+    [myUserInfo setUsername:username];
+    [myUserInfo setEmail:email];
+    [myUserInfo setPhoto:photo];
+    
+    [nav dismissModalViewControllerAnimated:YES];
+    
+    // create fake users
+    [proxController addUser:@"Steve Jobs" withTitle:@"Ghostly boss" withPhoto:nil atDistance:10];
+}
+
+-(void)didClickLinkedIn {
+    lhHelper = [[LinkedInHelper alloc] init];
+    [lhHelper setDelegate:self];
+    UIViewController * lhView = [lhHelper loginView];
+    [nav presentModalViewController:lhView animated:YES];
+}
+
+#pragma mark LinkedInHelperDelegate 
+
+-(void)linkedInDidLoginWithUsername:(NSString *)username {
+    [myUserInfo setUsername:username];
+    [myUserInfo setEmail:nil];
+    [myUserInfo setPhoto:nil];
+}
+
+#pragma mark ProximityDelegate and ProfileDelegate
+
+-(UserInfo*)getMyUserInfo {
+    return myUserInfo;
+}
 @end
