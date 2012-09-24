@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
+#import "InputViewController.h"
 
 @protocol ProfileDelegate <NSObject>
 
@@ -15,12 +16,14 @@
 
 @end
 
-@interface ProfileViewController : UIViewController
+@interface ProfileViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, InputViewDelegate>
 
 @property (nonatomic) IBOutlet UIImageView * photoView;
 @property (nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic) IBOutlet UILabel * descLabel;
-@property (nonatomic) IBOutlet UIScrollView * scrollView;
 @property (nonatomic) UserInfo * myUserInfo;
 @property (nonatomic) id delegate;
+@property (nonatomic) NSMutableArray * filters;
+
+@property (nonatomic) IBOutlet UITableView * tableView;
 @end

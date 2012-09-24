@@ -11,6 +11,9 @@
 #import "ProfileViewController.h"
 #import "MapViewController.h"
 #import "ProximityViewController.h"
+#import "ParseHelper.h"
+
+static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 
 @class ViewController;
 
@@ -21,9 +24,12 @@
 //@property (strong, nonatomic) ViewController *viewController;
 @property (nonatomic) UserInfo * myUserInfo;
 @property (nonatomic) UINavigationController * nav;
+@property (nonatomic) UINavigationController * navLogin;
 @property (nonatomic) LinkedInHelper * lhHelper;
+@property (nonatomic) UIViewController * lhView; // hack
 
 @property (nonatomic) ProximityViewController * proxController;
 @property (nonatomic) ProfileViewController * profileController;
 @property (nonatomic) MapViewController * mapViewController;
+@property (nonatomic) LoginViewController * loginController;
 @end

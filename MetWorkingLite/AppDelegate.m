@@ -7,15 +7,17 @@
 //
 
 #import "AppDelegate.h"
+#import <Crashlytics/Crashlytics.h>
+#import <Parse/Parse.h>
 
 @implementation AppDelegate
 
 @synthesize window = _window;
 //@synthesize viewController = _viewController;
 @synthesize myUserInfo;
-@synthesize nav;
-@synthesize lhHelper;
-@synthesize proxController, profileController, mapViewController;
+@synthesize nav, navLogin;
+@synthesize lhHelper, lhView;
+@synthesize proxController, profileController, mapViewController, loginController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -26,15 +28,11 @@
     //[viewController setDelegate:self];
     
     //self.viewController = viewController;
-    
-    myUserInfo = [[UserInfo alloc] init];
+    [Parse setApplicationId:@"DZQGQhktsXFRFj4yXEeePFcdLc5VjuLkvTq9dY4c" clientKey:@"aV2QzGLjAfRSceAcQuoSf3NWRW5ge0VNmMvU1Ws4"];    
+    [Crashlytics startWithAPIKey:@"747b4305662b69b595ac36f88f9c2abe54885ba3"];
     
     UITabBarController * tabBarController = [[UITabBarController alloc] init];
     [tabBarController setDelegate:self];
-    
-    //locationViewController = [[LocationViewController alloc] init];
-    //[locationViewController setDelegate:self];
-    //[locationViewController startListening];    
     
     proxController = [[ProximityViewController alloc] init];
     [proxController setDelegate:self];
@@ -55,13 +53,27 @@
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     
-    LoginViewController * loginController = [[LoginViewController alloc] init];
-    [loginController setDelegate:self];
-    //[nav pushViewController:loginController animated:YES];
-    [loginController initializeWithUserInfo:myUserInfo];
-    
-    [nav presentModalViewController:loginController animated:YES];
-    
+    // check for cached existing user - first check Parse
+    // If we have a cached user, we'll get it back here
+    PFUser *currentUser = [PFUser currentUser];
+    if (currentUser) 
+    {
+        // A user was cached, so check userdefaults for user information
+        myUserInfo = [self loadUserInfo];
+        if (!myUserInfo) {
+            [self doLogin];
+        }
+        else {
+            // update friends list, etc
+            // update profiles
+            [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+        }
+    } 
+    else
+    {
+        [self doLogin];
+    }
+
     return YES;
 }
 
@@ -92,37 +104,182 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+-(void)doLogin {
+    myUserInfo = [[UserInfo alloc] init];
+    
+    /*** login view navigation - present another nav controller for the login process as a modal controller ***/
+    loginController = [[LoginViewController alloc] init];
+    [loginController setDelegate:self];
+    [loginController initializeWithUserInfo:myUserInfo];
+    
+    //[nav pushViewController:loginController animated:NO];
+    [nav presentModalViewController:loginController animated:NO];
+}
+
+-(void)saveUserInfo {
+    // archive most recent tags for faster loading
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData * cacheData = [NSKeyedArchiver archivedDataWithRootObject:myUserInfo];
+    [defaults setObject:cacheData forKey:@"myUserInfoData"];
+    [defaults synchronize];
+}
+
+-(UserInfo*)loadUserInfo {
+    
+    // load cached tags
+    // archive most recent tags for faster loading
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData * cacheData = [defaults objectForKey:@"myUserInfoData"];
+    if (!cacheData)
+        return nil;
+    UserInfo * cachedUserInfo = [NSKeyedUnarchiver unarchiveObjectWithData:cacheData];
+    return cachedUserInfo;
+}
+
 #pragma mark LoginViewDelegate
 
 -(void)didSelectUsername:(NSString *)username andEmail:(NSString *)email andPhoto:(UIImage *)photo {
+    // login without linkedIn information
     [myUserInfo setUsername:username];
     [myUserInfo setEmail:email];
     [myUserInfo setPhoto:photo];
     
+    [self validateUserWithBlock:^(BOOL bDidLoginUser) {
+        if (bDidLoginUser) {
+            [self saveUserInfo];
+            
+            //[nav popToRootViewControllerAnimated:YES];
+            [nav dismissModalViewControllerAnimated:YES];
+            
+            // update profiles
+            [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+        }
+        else {
+            NSLog(@"Invalid user!");
+        }
+    }];
+}
+
+-(void)didLoginWithLinkedInString:(NSString *)linkedInID andProfileInformation:(NSDictionary *)profile{
+    [myUserInfo setLinkedInString:linkedInID];
+
+    // close login controller and do the rest of linkedIn requests here
+    //[nav popToRootViewControllerAnimated:YES];
     [nav dismissModalViewControllerAnimated:YES];
     
-    // create fake users
-    [proxController addUser:@"Steve Jobs" withTitle:@"Ghostly boss" withPhoto:nil atDistance:10];
+    [self linkedInParseProfileInformation:profile];
+
+    [self validateUserWithBlock:^(BOOL bDidLoginUser) {
+        if (bDidLoginUser) {
+            lhHelper = [[LinkedInHelper alloc] init];
+            [lhHelper setDelegate:self];
+            lhView = [lhHelper loginView];
+            
+            // request friends
+            [lhHelper requestFriends];
+        }
+        else {
+            NSLog(@"Invalid user!");
+        }
+    }];
 }
 
--(void)didClickLinkedIn {
-    lhHelper = [[LinkedInHelper alloc] init];
-    [lhHelper setDelegate:self];
-    UIViewController * lhView = [lhHelper loginView];
-    [nav presentModalViewController:lhView animated:YES];
+-(void)linkedInParseProfileInformation:(NSDictionary*)profile {
+    // returns the following information: first-name,last-name,industry,location:(name),specialties,summary,picture-url,email-address,educations,three-current-positions
+    NSString * name = [[NSString alloc] initWithFormat:@"%@ %@",
+                       [profile objectForKey:@"firstName"], [profile objectForKey:@"lastName"]];
+    NSString * headline = [profile objectForKey:@"headline"];
+    NSString * industry = [profile objectForKey:@"industry"];
+    NSString * summary = [profile objectForKey:@"summary"];
+    NSString * pictureUrl = [profile objectForKey:@"pictureUrl"];
+    NSString * email = [profile objectForKey:@"emailAddress"];
+    NSString * location = [[profile objectForKey:@"location"] objectForKey:@"name"]; // format: "location": {"name": loc}
+    id _specialties = [profile objectForKey:@"specialties"];
+    //id _educations = [profile objectForKey:@"educations"];
+    id _currentPositions = [profile objectForKey:@"threeCurrentPositions"];
+    NSArray * specialties = nil;
+    //NSArray * educations = nil;
+    NSArray * currentPositions = nil;
+    if (_specialties && [_specialties isKindOfClass:[NSDictionary class]])
+        specialties = [_specialties objectForKey:@"values"];
+    //if (_educations && [_educations isKindOfClass:[NSDictionary class]])
+    //    educations = [_educations objectForKey:@"values"];
+    if (_currentPositions && [_currentPositions isKindOfClass:[NSDictionary class]])
+        currentPositions = [_currentPositions objectForKey:@"values"];
+    
+    if (name) 
+        [myUserInfo setUsername:name];
+    if (headline)
+        [myUserInfo setHeadline:headline];
+    if (industry)
+        [myUserInfo setIndustry:industry];
+    if (summary)
+        [myUserInfo setSummary:summary];
+    if (email)
+        [myUserInfo setEmail:email];
+    if (pictureUrl)
+        [myUserInfo setPhoto:[[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]]];
+    if (location)
+        [myUserInfo setLocation:location];
+    if (specialties)
+        [myUserInfo setSpecialties:specialties];
+    if (currentPositions)
+        [myUserInfo setCurrentPositions:currentPositions];
+    [self saveUserInfo];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
 }
 
-#pragma mark LinkedInHelperDelegate 
-
--(void)linkedInDidLoginWithUsername:(NSString *)username {
-    [myUserInfo setUsername:username];
-    [myUserInfo setEmail:nil];
-    [myUserInfo setPhoto:nil];
+-(void)linkedInParseFriends:(id)friendsResults {
+    NSLog(@"Friends: %@", friendsResults);
+    NSArray * friends = [friendsResults objectForKey:@"values"];
+    int dist = 0;
+    for (NSDictionary * d in friends) {
+        //NSLog(@"Processing friend %d of total %d", dist, [friends count]);
+        NSString * fname = [d objectForKey:@"firstName"];
+        NSString * lname = [d objectForKey:@"lastName"];
+        NSString * name = [NSString stringWithFormat:@"%@ %@", fname, lname];
+        NSString * headline = [d objectForKey:@"headline"];
+        NSString * pictureUrl = [d objectForKey:@"pictureUrl"];
+        NSString * userID = [d objectForKey:@"id"];
+        UIImage * photo = nil;
+        if (pictureUrl) {
+            photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]];
+        }
+        [proxController addUser:userID withName:name withHeadline:headline withPhoto:photo atDistance:dist++];
+    }
 }
 
 #pragma mark ProximityDelegate and ProfileDelegate
 
 -(UserInfo*)getMyUserInfo {
     return myUserInfo;
+}
+
+#pragma creation/validation of user
+-(void)validateUserWithBlock:(void (^)(BOOL bUserIsValid))isValidUser {
+    NSLog(@"Validating user %@ with linkedInString %@", myUserInfo.username, myUserInfo.linkedInString);
+    
+    // todo: use Parse to validate user. If parse user exists and some info match, return YES.
+    // if parse user exists and info does not match, return NO.
+    // if parse user does not exist, add to parse and return YES.
+//    if ([myUserInfo.username length]>0 || [myUserInfo.linkedInString length] > 0) {
+    [ParseHelper login:myUserInfo withBlock:^(BOOL bUserExists) {
+        if (bUserExists) {
+            NSLog(@"User %@ exists", myUserInfo.username);
+            isValidUser(YES);
+        }
+        else {
+            [ParseHelper signup:myUserInfo withBlock:^(BOOL bDidSignupUser) {
+                if (bDidSignupUser) {
+                    NSLog(@"User %@ was added", myUserInfo.username);
+                    isValidUser(YES);
+                }
+                else 
+                    NSLog(@"Could not validate user %@!", myUserInfo.username);
+                    isValidUser(NO);
+            }];
+        }        
+    }];
 }
 @end

@@ -9,22 +9,26 @@
 #import "LinkedInHelper.h"
 #import "OAuthLoginView.h"
 
+static OAuthLoginView * sharedOAuthLoginView;
+
 @implementation LinkedInHelper
 
-@synthesize oAuthLoginView;
+//@synthesize oAuthLoginView;
 @synthesize delegate;
+@synthesize userID;
 
 -(OAuthLoginView*) loginView 
 {    
-    oAuthLoginView = [[OAuthLoginView alloc] initWithNibName:nil bundle:nil];
+    if (!sharedOAuthLoginView)
+        sharedOAuthLoginView = [[OAuthLoginView alloc] initWithNibName:nil bundle:nil];
     
     // register to be told when the login is finished
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(loginViewDidFinish:) 
                                                  name:@"loginViewDidFinish" 
-                                               object:oAuthLoginView];
+                                               object:nil];
     
-    return oAuthLoginView;
+    return sharedOAuthLoginView;
 }
 
 
@@ -39,13 +43,18 @@
 	
 }
 
+-(void)closeLoginView {
+    if (sharedOAuthLoginView)
+        [sharedOAuthLoginView.view removeFromSuperview];
+}
+
 - (void)profileApiCall
 {
     NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~"];
     OAMutableURLRequest *request = 
     [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:oAuthLoginView.consumer
-                                       token:oAuthLoginView.accessToken
+                                    consumer:sharedOAuthLoginView.consumer
+                                       token:sharedOAuthLoginView.accessToken
                                     callback:nil
                            signatureProvider:nil];
     
@@ -70,33 +79,25 @@
     {
         return;
     }
-    NSString * name = [[NSString alloc] initWithFormat:@"%@ %@",
-                       [profile objectForKey:@"firstName"], [profile objectForKey:@"lastName"]];
-    NSString * headline = [profile objectForKey:@"headline"];
-    NSLog(@"Name: %@ headline: %@", name, headline);
-    
-    // The next thing we want to do is call the network updates
-    //[self networkApiCall];
-    
-    //delegate didLoginWithUser
-    [delegate linkedInDidLoginWithUsername:name];
-    [delegate linkedInDidGetHeadline:headline];
-    
-    [self getEmail];
-    [self getPhoto];
+    if (!userID) {
+        [self getId];
+    }
+    else {
+        [delegate linkedInParseProfileInformation:profile];
+    }
 }
 
-- (void)profileApiCallResult:(OAServiceTicket *)ticket didFail:(NSData *)error 
+- (void)linkedInRequest:(OAServiceTicket *)ticket didFail:(NSData *)error 
 {
     NSLog(@"%@",[error description]);
 }
 
--(void)getEmail {
-    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/email-address"];
+-(void)getId {
+    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/id"];
     OAMutableURLRequest *request = 
     [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:oAuthLoginView.consumer
-                                       token:oAuthLoginView.accessToken
+                                    consumer:sharedOAuthLoginView.consumer
+                                       token:sharedOAuthLoginView.accessToken
                                     callback:nil
                            signatureProvider:nil];
     
@@ -105,33 +106,28 @@
     OADataFetcher *fetcher = [[OADataFetcher alloc] init];
     [fetcher fetchDataWithRequest:request
                          delegate:self
-                didFinishSelector:@selector(emailRequest:didFinish:)
-                  didFailSelector:@selector(emailRequest:didFail:)];  
+                didFinishSelector:@selector(idRequest:didFinish:)
+                  didFailSelector:@selector(linkedInRequest:didFail:)];  
 }
 
--(void) emailRequest:(OAServiceTicket *)ticket didFinish:(NSData *)data {
+-(void) idRequest:(OAServiceTicket *)ticket didFinish:(NSData *)data {
     NSString *responseBody = [[NSString alloc] initWithData:data
                                                    encoding:NSUTF8StringEncoding];
     
-    NSLog(@"email response: %@", responseBody);
-    
-    NSString * email = [responseBody stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-    [delegate linkedInDidGetEmail:email];
+    NSLog(@"idRequest response: %@", responseBody);
+    [self setUserID:[responseBody stringByReplacingOccurrencesOfString:@"\"" withString:@""]];
+    [delegate linkedInDidLoginWithID:userID];
     return;
 }
 
-- (void)emailRequest:(OAServiceTicket *)ticket didFail:(NSData *)error 
-{
-    NSLog(@"email failed: %@",[error description]);
-}
-
-
--(void)getPhoto {
-    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/picture-url"];
+-(void)requestAllProfileInfoForID:(NSString*)_userID {
+    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,location:(name),industry,summary,picture-url,email-address,specialties,three-current-positions)", _userID];
+    NSLog(@"All profile request: %@", requestString);
+    NSURL *url = [NSURL URLWithString:requestString];
     OAMutableURLRequest *request = 
     [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:oAuthLoginView.consumer
-                                       token:oAuthLoginView.accessToken
+                                    consumer:sharedOAuthLoginView.consumer
+                                       token:sharedOAuthLoginView.accessToken
                                     callback:nil
                            signatureProvider:nil];
     
@@ -140,28 +136,38 @@
     OADataFetcher *fetcher = [[OADataFetcher alloc] init];
     [fetcher fetchDataWithRequest:request
                          delegate:self
-                didFinishSelector:@selector(photoRequest:didFinish:)
-                  didFailSelector:@selector(photoRequest:didFail:)];  
+                didFinishSelector:@selector(profileApiCallResult:didFinish:)
+                  didFailSelector:@selector(linkedInRequest:didFail:)];  
 }
 
--(void) photoRequest:(OAServiceTicket *)ticket didFinish:(NSData *)data {
+-(void)requestFriends {
+//    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/connections"];
+    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/connections:(first-name,last-name,headline,id,picture-url)"];
+    OAMutableURLRequest *request = 
+    [[OAMutableURLRequest alloc] initWithURL:url
+                                    consumer:sharedOAuthLoginView.consumer
+                                       token:sharedOAuthLoginView.accessToken
+                                    callback:nil
+                           signatureProvider:nil];
+    
+    [request setValue:@"json" forHTTPHeaderField:@"x-li-format"];
+    
+    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
+    [fetcher fetchDataWithRequest:request
+                         delegate:self
+                didFinishSelector:@selector(requestFriendsResult:didFinish:)
+                  didFailSelector:@selector(linkedInRequest:didFail:)];    
+}
+
+- (void)requestFriendsResult:(OAServiceTicket *)ticket didFinish:(NSData *)data 
+{
     NSString *responseBody = [[NSString alloc] initWithData:data
                                                    encoding:NSUTF8StringEncoding];
     
-    NSLog(@"photoRequest response: %@", responseBody);
-    NSString * url = [responseBody stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-    UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
-    [delegate linkedInDidGetPhoto:image];
-    return;
+    NSLog(@"requestFriends response: %@", responseBody);
+    NSDictionary *friends = [responseBody objectFromJSONString];
+    [delegate linkedInParseFriends:friends];
 }
-
-- (void)photoRequest:(OAServiceTicket *)ticket didFail:(NSData *)error 
-{
-    NSLog(@"photoRequest failed: %@",[error description]);
-}
-
-
-
 
 
 
@@ -172,8 +178,8 @@
     NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/shares"];
     OAMutableURLRequest *request = 
     [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:oAuthLoginView.consumer
-                                       token:oAuthLoginView.accessToken
+                                    consumer:sharedOAuthLoginView.consumer
+                                       token:sharedOAuthLoginView.accessToken
                                     callback:nil
                            signatureProvider:nil];
     

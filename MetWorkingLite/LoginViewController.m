@@ -10,6 +10,8 @@
 #import "OAuthLoginView.h"
 #import "UIImage+Resize.h"
 
+#import "AppDelegate.h" // for notification constants
+
 static CGRect originalScrollViewFrame;
 
 @implementation LoginViewController
@@ -26,10 +28,12 @@ static CGRect originalScrollViewFrame;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [self.navigationItem setTitle:@"Settings"];
+        [self.navigationItem setTitle:@"Log In"];
         
+#if 0
         UIBarButtonItem * rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Go" style:UIBarButtonItemStylePlain target:self action:@selector(didClickGoButton:)];
         [self.navigationItem setRightBarButtonItem:rightButton];
+#endif
     }
     return self;
 }
@@ -48,28 +52,16 @@ static CGRect originalScrollViewFrame;
                                              selector:@selector(keyboardWillHide:) 
                                                  name:UIKeyboardWillHideNotification 
                                                object:self.view.window];
+
+    // notification for changes to myUserInfo - due to linkedIn login
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(updateMyUserInfo) 
+                                                 name:kMyUserInfoDidChangeNotification 
+                                               object:nil];
     keyboardIsShown = NO;
     originalScrollViewFrame = scrollView.frame;
-    
-    // load userinfo from defaults
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString * savedName = [defaults objectForKey:@"name"];
-    NSString * savedEmail = [defaults objectForKey:@"email"];
-    NSData * savedPhotoData = [defaults dataForKey:@"photoData"];
-    
-    if (savedName) {
-        [myUserInfo setUsername:savedName];
-//        [usernameField setText:savedName];
-    }
-    if (savedEmail) {
-        [myUserInfo setEmail:savedEmail];
-//        [emailField setText:savedEmail];
-    }
-    if (savedPhotoData) {
-        [myUserInfo setPhoto:[UIImage imageWithData:savedPhotoData]];
-//        [buttonPhoto setImage:[UIImage imageWithData:savedPhotoData] forState:UIControlStateNormal];
-    }
+
+    [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewDidUnload
@@ -77,20 +69,59 @@ static CGRect originalScrollViewFrame;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    
+    // remove observers
+    [[NSNotificationCenter defaultCenter] removeObserver:self    
+                                                    name:kMyUserInfoDidChangeNotification  
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self    
+                                                    name:UIKeyboardWillShowNotification  
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self    
+                                                    name:UIKeyboardWillHideNotification  
+                                                  object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     [buttonPhoto.layer setBorderWidth:2];
     [buttonPhoto.layer setBorderColor:[[UIColor blackColor] CGColor]];
     [buttonPhoto.layer setCornerRadius:5];
     [buttonPhoto.imageView.layer setCornerRadius:5];
 
+    [self updateMyUserInfo];
+}
+
+-(void) dealloc {
+    // valid for arc?
+    // remove observers
+    [[NSNotificationCenter defaultCenter] removeObserver:self    
+                                                    name:kMyUserInfoDidChangeNotification  
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self    
+                                                    name:UIKeyboardWillShowNotification  
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self    
+                                                    name:UIKeyboardWillHideNotification  
+                                                  object:nil];
+
+}
+
+-(void)updateMyUserInfo {
+    myUserInfo = [delegate getMyUserInfo];
     [usernameField setText:[myUserInfo username]];
     [emailField setText:[myUserInfo email]];
+    // adjust font
+    CGSize textSize = [emailField.text sizeWithFont:emailField.font];
+    while (textSize.width > emailField.frame.size.width && emailField.font.pointSize > 10) {
+        emailField.font = [UIFont systemFontOfSize:emailField.font.pointSize - 1];
+    }
     if ([myUserInfo photo])
         [buttonPhoto setImage:[myUserInfo photo] forState:UIControlStateNormal];
+    [labelLinkedIn setText:[myUserInfo headline]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -126,17 +157,7 @@ static CGRect originalScrollViewFrame;
     if ([emailField text] == nil)
         return;
 
-    // save userinfo to defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[usernameField text] forKey:@"name"];
-    [defaults setObject:[emailField text] forKey:@"email"];
-    NSData * photoData = UIImagePNGRepresentation([[buttonPhoto imageView] image]);
-    [defaults setObject:photoData forKey:@"photoData"];
-    [defaults synchronize];
-    
     [delegate didSelectUsername:[usernameField text] andEmail:[emailField text] andPhoto:[[buttonPhoto imageView] image]];
-    //[self.navigationController popViewControllerAnimated:YES];
-    //    [self.navigationController pushViewController:lhHelper animated:YES];
 }
 
 #pragma mark UIImagePickerControllerDelegate
@@ -251,48 +272,33 @@ static CGRect originalScrollViewFrame;
 #if 1
     lhHelper = [[LinkedInHelper alloc] init];
     [lhHelper setDelegate:self];
-    UIViewController * loginController = [lhHelper loginView];
-    [self.navigationController pushViewController:loginController animated:YES];
+    OAuthLoginView * lhView = [lhHelper loginView];
+    //[self presentModalViewController:lhView animated:YES];
+    //[self.navigationController pushViewController:lhView animated:NO];
+    //[self.navigationController setNavigationBarHidden:NO animated:NO];
+    [self.view addSubview:lhView.view];
 #else
     [delegate didClickLinkedIn];
 #endif
 }
 
-#pragma mark linkedInHelperDelegate
--(void)linkedInDidLoginWithUsername:(NSString *)username {
-    [usernameField setText:username];
+#pragma mark LinkedInHelperDelegate 
 
-    // adjust font
-    CGSize textSize = [usernameField.text sizeWithFont:usernameField.font];
-    while (textSize.width > usernameField.frame.size.width && usernameField.font.pointSize > 10) {
-        usernameField.font = [UIFont systemFontOfSize:usernameField.font.pointSize - 1];
-    }
-
-    // also remove view
-    [self.navigationController popViewControllerAnimated:YES];
+-(void)linkedInDidLoginWithID:(NSString *)userID {
+    linkedInString = [userID copy];
     
-    [buttonLinkedIn setHidden:YES];
+    // pop linkedIn (oauthViewController)
+    //[self dismissModalViewControllerAnimated:NO];
+    [lhHelper closeLoginView];
+    
+    // request profile info
+    [lhHelper requestAllProfileInfoForID:userID];
 }
 
--(void)linkedInDidGetHeadline:(NSString *)headline {
-    [labelLinkedIn setText:headline];
+#pragma mark linkedInHelperDelegate
+-(void)linkedInParseProfileInformation:(NSDictionary*)profile {
+    // returns the following information: first-name,last-name,industry,location:(name),specialties,summary,picture-url,email-address,educations,three-current-positions
+    [delegate didLoginWithLinkedInString:linkedInString andProfileInformation:profile];
 }
 
--(void)linkedInDidGetEmail:(NSString *)email {
-    [emailField setText:email];
-
-    // adjust font
-    CGSize textSize = [emailField.text sizeWithFont:emailField.font];
-//    NSLog(@"TextSize: %f emailField.size: %f", textSize.width, emailField.frame.size.width);
-    while (textSize.width > emailField.frame.size.width && emailField.font.pointSize > 10) {
-//        textSize = [emailField.text sizeWithFont:emailField.font];
-//        NSLog(@"Font: %f text width: %f textfield width %f", emailField.font.pointSize, textSize.width, emailField.frame.size.width);
-        emailField.font = [UIFont systemFontOfSize:emailField.font.pointSize - 1];
-    }
-}
-
--(void)linkedInDidGetPhoto:(UIImage *)photo {
-    UIImage * scaled = [photo resizedImage:buttonPhoto.frame.size interpolationQuality:kCGInterpolationDefault];
-    [buttonPhoto setImage:scaled forState:UIControlStateNormal];
-}
 @end

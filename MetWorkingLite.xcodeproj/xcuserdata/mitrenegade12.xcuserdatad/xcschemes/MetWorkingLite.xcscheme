@@ -15,7 +15,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
                BuildableName = "MetWorkingLite.app"
-               BlueprintName = "MetWorkingLite"
+               BlueprintName = "Junction"
                ReferencedContainer = "container:MetWorkingLite.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,7 +33,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
             BuildableName = "MetWorkingLite.app"
-            BlueprintName = "MetWorkingLite"
+            BlueprintName = "Junction"
             ReferencedContainer = "container:MetWorkingLite.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,7 +52,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
             BuildableName = "MetWorkingLite.app"
-            BlueprintName = "MetWorkingLite"
+            BlueprintName = "Junction"
             ReferencedContainer = "container:MetWorkingLite.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -70,7 +70,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
             BuildableName = "MetWorkingLite.app"
-            BlueprintName = "MetWorkingLite"
+            BlueprintName = "Junction"
             ReferencedContainer = "container:MetWorkingLite.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

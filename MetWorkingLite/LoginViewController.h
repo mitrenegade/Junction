@@ -12,15 +12,19 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UserInfo.h"
 #import "LinkedInHelper.h"
+#import "UserInfo.h"
 
 @protocol LoginViewDelegate
 
 -(void)didSelectUsername:(NSString*)username andEmail:(NSString*)email andPhoto:(UIImage*)photo;
+-(void)didLoginWithLinkedInString:(NSString*)linkedInID andProfileInformation:(NSDictionary*)profile;
 -(void)didClickLinkedIn;
+-(UserInfo*)getMyUserInfo;
 @end
 
 @interface LoginViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate, LinkedInHelperDelegate>
 {
+    NSString * linkedInString;
     UITextField * currentField;
     BOOL keyboardIsShown;
 }
