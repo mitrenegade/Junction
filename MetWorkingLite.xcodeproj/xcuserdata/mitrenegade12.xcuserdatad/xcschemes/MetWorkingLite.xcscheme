@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
-               BuildableName = "MetWorkingLite.app"
+               BuildableName = "Junction.app"
                BlueprintName = "Junction"
                ReferencedContainer = "container:MetWorkingLite.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
-            BuildableName = "MetWorkingLite.app"
+            BuildableName = "Junction.app"
             BlueprintName = "Junction"
             ReferencedContainer = "container:MetWorkingLite.xcodeproj">
          </BuildableReference>
@@ -51,12 +51,17 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
-            BuildableName = "MetWorkingLite.app"
+            BuildableName = "Junction.app"
             BlueprintName = "Junction"
             ReferencedContainer = "container:MetWorkingLite.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
+         <AdditionalOption
+            key = "NSZombieEnabled"
+            value = "YES"
+            isEnabled = "YES">
+         </AdditionalOption>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
@@ -69,7 +74,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9EECDF5915EACB3A00AD89D8"
-            BuildableName = "MetWorkingLite.app"
+            BuildableName = "Junction.app"
             BlueprintName = "Junction"
             ReferencedContainer = "container:MetWorkingLite.xcodeproj">
          </BuildableReference>

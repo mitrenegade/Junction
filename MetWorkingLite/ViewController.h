@@ -6,26 +6,33 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 #import <UIKit/UIKit.h>
-#import "LocationViewController.h"
-#import "MapViewController.h"
-#import "ProximityViewController.h"
+#import "LinkedInHelper.h"
+#import "UserInfo.h"
+#import "AppDelegate.h"
+#import "ParseHelper.h"
 
 @protocol ViewControllerDelegate <NSObject>
 
--(void)showUserSettings;
+-(void)saveUserInfo;
+-(BOOL)loadUserInfo;
+-(void)didLogin:(BOOL)isNewUser;
+-(void)didGetLinkedInFriends:(NSArray*)friendResults;
+-(UserInfo*)getMyUserInfo;
 
 @end
 
-@interface ViewController : UIViewController <MapViewDelegate, LocationViewDelegate, UINavigationControllerDelegate, UITabBarControllerDelegate>
+@interface ViewController : UIViewController <UIAlertViewDelegate> //<MapViewDelegate, LocationViewDelegate, UINavigationControllerDelegate, UITabBarControllerDelegate>
 {
-    IBOutlet UILabel *locationLabel;
-    UITabBarController * tabBarController;
+//    IBOutlet UILabel *locationLabel;
+//    UITabBarController * tabBarController;
+    IBOutlet UIButton * buttonLinkedIn;
 }
 
-@property (nonatomic) LocationViewController * locationViewController;
-@property (nonatomic) MapViewController * mapViewController;
 @property (nonatomic, unsafe_unretained) id delegate;
-@property (nonatomic, retain) UITabBarController * tabBarController;
-- (void)signInToCustomService;
+@property (nonatomic, retain) LinkedInHelper * lhHelper;
+@property (nonatomic, assign) UserInfo * myUserInfo;
 
+//- (void)signInToCustomService;
+-(IBAction)didClickLinkedIn:(id)sender;
+-(void)tryCachedLogin;
 @end

@@ -30,6 +30,7 @@ enum DISTANCE_GROUPS {
 
 @interface ProximityViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
 @property (nonatomic) IBOutlet UIImageView * photoView;
 @property (nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic) IBOutlet UILabel * descLabel;

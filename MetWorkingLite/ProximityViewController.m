@@ -25,6 +25,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 @implementation ProximityViewController
 
+@synthesize activityIndicator;
 @synthesize tableView;
 @synthesize photoView, nameLabel, descLabel;
 //@synthesize names, titles, photos, distances;
@@ -63,6 +64,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                                              selector:@selector(updateMyUserInfo) 
                                                  name:kMyUserInfoDidChangeNotification 
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:activityIndicator 
+                                             selector:@selector(startAnimating) 
+                                                 name:kParseFriendsStartedUpdatingNotification 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:activityIndicator 
+                                             selector:@selector(stopAnimating) 
+                                                 name:kParseFriendsFinishedUpdatingNotification 
+                                               object:nil];
 }
 
 - (void)viewDidUnload
@@ -79,6 +88,12 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     // remove observers
     [[NSNotificationCenter defaultCenter] removeObserver:self    
                                                     name:kMyUserInfoDidChangeNotification  
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator    
+                                                    name:kParseFriendsStartedUpdatingNotification  
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator    
+                                                    name:kParseFriendsFinishedUpdatingNotification  
                                                   object:nil];
 }
 

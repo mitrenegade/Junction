@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ParseUserInfo.h"
 
-@interface UserInfo : NSObject
+@interface UserInfo : ParseUserInfo
 
 @property (nonatomic) NSString * username;
+@property (nonatomic) NSString * password;
 @property (nonatomic) NSString * email;
 @property (nonatomic) NSString * linkedInString;
 @property (nonatomic) NSString * headline;
@@ -24,4 +26,5 @@
 //@property (nonatomic) NSArray * educations;
 @property (nonatomic) NSArray * currentPositions;
 @property (nonatomic, assign) int numberOfFields;
+@property (nonatomic) NSString * parseID; // repeated from PFUser
 @end

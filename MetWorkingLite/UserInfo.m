@@ -9,11 +9,10 @@
 #import "UserInfo.h"
 
 @implementation UserInfo
-@synthesize username;
+@synthesize username, password, email;
 @synthesize linkedInString;
 @synthesize friends;
 @synthesize photo;
-@synthesize email;
 @synthesize headline;
 @synthesize position;
 @synthesize location;
@@ -23,11 +22,12 @@
 //@synthesize educations;
 @synthesize specialties;
 @synthesize numberOfFields;
+@synthesize parseID;
 
 -(id)init {
     self = [super init];
-    friends = [[NSMutableSet alloc] init];
-    numberOfFields = 6; // displayable text fields
+    self.friends = [[NSMutableSet alloc] init];
+    self.numberOfFields = 6; // displayable text fields
     return self;
 }
 
@@ -42,12 +42,13 @@
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder {
-    
-    [aCoder encodeObject:username forKey:@"username"];
+    [super encodeWithCoder:aCoder];
+    [aCoder encodeObject: username forKey:@"username"];
+    [aCoder encodeObject: password forKey:@"password"];
+    [aCoder encodeObject: email forKey:@"email"];
     [aCoder encodeObject: linkedInString forKey:@"linkedInString"];
     [aCoder encodeObject: friends forKey:@"friends"];
     [aCoder encodeObject: UIImagePNGRepresentation(photo) forKey:@"photoData"];
-    [aCoder encodeObject: email forKey:@"email"];
     [aCoder encodeObject: headline forKey:@"headline"];
     [aCoder encodeObject: position forKey:@"position"];
     [aCoder encodeObject: location forKey:@"location"];
@@ -60,12 +61,13 @@
 
 -(id)initWithCoder:(NSCoder *)aDecoder {    
     
-    if ((self = [super init])) {
+    if ((self = [super initWithCoder:aDecoder])) {
         [self setUsername:[aDecoder decodeObjectForKey:@"username"]];
+        [self setPassword:[aDecoder decodeObjectForKey:@"password"]];
+        [self setEmail:[aDecoder decodeObjectForKey:@"email"]];
         [self setLinkedInString:[aDecoder decodeObjectForKey:@"linkedInString"]];
         [self setFriends:[aDecoder decodeObjectForKey:@"friends"]];
         [self setPhoto:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoData"]]];
-        [self setEmail:[aDecoder decodeObjectForKey:@"email"]];
         [self setHeadline:[aDecoder decodeObjectForKey:@"headline"]];
         [self setPosition:[aDecoder decodeObjectForKey:@"position"]];
         [self setLocation:[aDecoder decodeObjectForKey:@"location"]];
@@ -77,5 +79,46 @@
     return self;
 }
 
+- (PFObject *)toPFObject {
+    PFObject *junctionPFObject = [[PFObject alloc] initWithClassName:@"UserInfo"];
+    if (username)
+        [junctionPFObject setObject:username forKey:@"username"];
+    if (password)
+        [junctionPFObject setObject:password forKey:@"password"];
+    if (email)
+        [junctionPFObject setObject:email forKey:@"email"];
+    if (linkedInString)
+        [junctionPFObject setObject:linkedInString forKey:@"linkedInString"];
+    if (headline)
+        [junctionPFObject setObject:headline forKey:@"headline"];
+    if (position)
+        [junctionPFObject setObject:position forKey:@"position"];
+    if (industry)
+        [junctionPFObject setObject:industry forKey:@"industry"];
+    if (summary)
+        [junctionPFObject setObject:summary forKey:@"summary"];
+    if (location)
+        [junctionPFObject setObject:location forKey:@"location"];
+    if (parseID)
+        [junctionPFObject setObject:parseID forKey:@"parseID"];
+    
+    return junctionPFObject;
+}
+
+- (id)fromPFObject:(PFObject *)obj {
+    
+    username = [obj objectForKey:@"username"];
+    password = [obj objectForKey:@"password"];
+    email = [obj objectForKey:@"email"];
+    linkedInString = [obj objectForKey:@"linkedInString"];
+    headline = [obj objectForKey:@"headline"];
+    position = [obj objectForKey:@"position"];
+    industry = [obj objectForKey:@"industry"];
+    summary = [obj objectForKey:@"summary"];
+    location = [obj objectForKey:@"location"];
+    parseID = [obj objectForKey:@"parseID"];
+    
+    return [super fromPFObject:obj];
+}
 
 @end

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9E022D301608E76900771BBB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E022D2F1608E76900771BBB /* Crashlytics.framework */; };
+		9E94D135161AA98500C94108 /* UserPulse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E94D134161AA98500C94108 /* UserPulse.m */; };
 		9EAB158015F45BF5000D0FB9 /* ProximityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB157E15F45BF5000D0FB9 /* ProximityViewController.m */; };
 		9EAB158115F45BF5000D0FB9 /* ProximityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EAB157F15F45BF5000D0FB9 /* ProximityViewController.xib */; };
 		9EAB158415F4660A000D0FB9 /* tab_friends.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EAB158215F4660A000D0FB9 /* tab_friends.png */; };
@@ -26,6 +27,9 @@
 		9EC2774C161043280069F6E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774B161043280069F6E5 /* StoreKit.framework */; };
 		9EC2774E161043320069F6E5 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774D161043320069F6E5 /* libsqlite3.dylib */; };
 		9EC27750161043370069F6E5 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */; };
+		9ECAB3FA162F1DB50041E8F7 /* ParseLocationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ECAB3F9162F1DB50041E8F7 /* ParseLocationAnnotation.m */; };
+		9ED3077B161CDDA700168F88 /* ParseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED30778161CDDA700168F88 /* ParseHelper.m */; };
+		9ED3077F161CDDED00168F88 /* ParseUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3077E161CDDED00168F88 /* ParseUserInfo.m */; };
 		9EECDF5F15EACB3A00AD89D8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */; };
 		9EECDF6115EACB3A00AD89D8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6015EACB3A00AD89D8 /* Foundation.framework */; };
 		9EECDF6315EACB3A00AD89D8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6215EACB3A00AD89D8 /* CoreGraphics.framework */; };
@@ -37,8 +41,6 @@
 		9EECDF8215EB2CF900AD89D8 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECDF8015EB2CF900AD89D8 /* UserInfo.m */; };
 		9EECDF8A15EB2D4200AD89D8 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECDF8415EB2D4200AD89D8 /* MapViewController.m */; };
 		9EECDF8B15EB2D4200AD89D8 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EECDF8515EB2D4200AD89D8 /* MapViewController.xib */; };
-		9EECDF8C15EB2D4200AD89D8 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECDF8715EB2D4200AD89D8 /* LocationViewController.m */; };
-		9EECDF8D15EB2D4200AD89D8 /* LocationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EECDF8915EB2D4200AD89D8 /* LocationViewController.xib */; };
 		9EECDF9215EB2D7300AD89D8 /* 19-gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EECDF9015EB2D7300AD89D8 /* 19-gear.png */; };
 		9EECDF9315EB2D7300AD89D8 /* 19-gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EECDF9115EB2D7300AD89D8 /* 19-gear@2x.png */; };
 		9EECDF9B15EB2D9200AD89D8 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECDF9615EB2D9200AD89D8 /* UIImage+Resize.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -72,13 +74,13 @@
 		9EECE06B15EB345D00AD89D8 /* graphic_addpic.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EECE06915EB345D00AD89D8 /* graphic_addpic.png */; };
 		9EECE06C15EB345D00AD89D8 /* graphic_nopic.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EECE06A15EB345D00AD89D8 /* graphic_nopic.png */; };
 		9EECE07415EB394100AD89D8 /* OAAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE07315EB394100AD89D8 /* OAAttachment.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		9EECE08215EB524900AD89D8 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE08015EB524900AD89D8 /* LoginViewController.m */; };
-		9EECE08315EB524900AD89D8 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EECE08115EB524900AD89D8 /* LoginViewController.xib */; };
-		9EF757E916101DE40065F44E /* ParseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF757E816101DE40065F44E /* ParseHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9E022D2F1608E76900771BBB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		9E203E59161DFB1B00416C46 /* PFObjectFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFObjectFactory.h; sourceTree = "<group>"; };
+		9E94D133161AA98500C94108 /* UserPulse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPulse.h; sourceTree = "<group>"; };
+		9E94D134161AA98500C94108 /* UserPulse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPulse.m; sourceTree = "<group>"; };
 		9EAB157D15F45BF5000D0FB9 /* ProximityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProximityViewController.h; sourceTree = "<group>"; };
 		9EAB157E15F45BF5000D0FB9 /* ProximityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProximityViewController.m; sourceTree = "<group>"; };
 		9EAB157F15F45BF5000D0FB9 /* ProximityViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProximityViewController.xib; sourceTree = "<group>"; };
@@ -100,6 +102,12 @@
 		9EC2774B161043280069F6E5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		9EC2774D161043320069F6E5 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.1.3.dylib; path = usr/lib/libz.1.1.3.dylib; sourceTree = SDKROOT; };
+		9ECAB3F8162F1DB50041E8F7 /* ParseLocationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseLocationAnnotation.h; sourceTree = "<group>"; };
+		9ECAB3F9162F1DB50041E8F7 /* ParseLocationAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseLocationAnnotation.m; sourceTree = "<group>"; };
+		9ED30777161CDDA700168F88 /* ParseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseHelper.h; sourceTree = "<group>"; };
+		9ED30778161CDDA700168F88 /* ParseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseHelper.m; sourceTree = "<group>"; };
+		9ED3077D161CDDED00168F88 /* ParseUserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseUserInfo.h; sourceTree = "<group>"; };
+		9ED3077E161CDDED00168F88 /* ParseUserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseUserInfo.m; sourceTree = "<group>"; };
 		9EECDF5A15EACB3A00AD89D8 /* Junction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Junction.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9EECDF6015EACB3A00AD89D8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -118,9 +126,6 @@
 		9EECDF8415EB2D4200AD89D8 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		9EECDF8515EB2D4200AD89D8 /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 		9EECDF8615EB2D4200AD89D8 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
-		9EECDF8715EB2D4200AD89D8 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
-		9EECDF8815EB2D4200AD89D8 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
-		9EECDF8915EB2D4200AD89D8 /* LocationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationViewController.xib; sourceTree = "<group>"; };
 		9EECDF9015EB2D7300AD89D8 /* 19-gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "19-gear.png"; sourceTree = "<group>"; };
 		9EECDF9115EB2D7300AD89D8 /* 19-gear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "19-gear@2x.png"; sourceTree = "<group>"; };
 		9EECDF9515EB2D9200AD89D8 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
@@ -129,10 +134,6 @@
 		9EECDF9815EB2D9200AD89D8 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
 		9EECDF9915EB2D9200AD89D8 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
 		9EECDF9A15EB2D9200AD89D8 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
-		9EECDF9F15EB2DB200AD89D8 /* Kumulos.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kumulos.h; sourceTree = "<group>"; };
-		9EECDFA015EB2DB200AD89D8 /* Kumulos.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Kumulos.m; sourceTree = "<group>"; };
-		9EECDFA115EB2DB200AD89D8 /* libKumulos_iOS_5.0_ARC.1.0.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libKumulos_iOS_5.0_ARC.1.0.2.a; sourceTree = "<group>"; };
-		9EECDFA215EB2DB200AD89D8 /* libKumulos.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libKumulos.h; sourceTree = "<group>"; };
 		9EECDFA415EB2DD800AD89D8 /* LinkedInHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInHelper.m; sourceTree = "<group>"; };
 		9EECDFA515EB2DD800AD89D8 /* LinkedInHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInHelper.h; sourceTree = "<group>"; };
 		9EECE02315EB305700AD89D8 /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
@@ -185,11 +186,6 @@
 		9EECE07115EB394000AD89D8 /* OAAtachmentF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAAtachmentF.h; path = "LinkedIn-OAuth/OAuthStarterKit/OAAtachmentF.h"; sourceTree = "<group>"; };
 		9EECE07215EB394000AD89D8 /* OAAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAAttachment.h; path = "LinkedIn-OAuth/OAuthStarterKit/OAAttachment.h"; sourceTree = "<group>"; };
 		9EECE07315EB394100AD89D8 /* OAAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAAttachment.m; path = "LinkedIn-OAuth/OAuthStarterKit/OAAttachment.m"; sourceTree = "<group>"; };
-		9EECE07F15EB524800AD89D8 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
-		9EECE08015EB524900AD89D8 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		9EECE08115EB524900AD89D8 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
-		9EF757E716101DE40065F44E /* ParseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseHelper.h; sourceTree = "<group>"; };
-		9EF757E816101DE40065F44E /* ParseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,15 +238,6 @@
 			name = Profile;
 			sourceTree = "<group>";
 		};
-		9EC2773C161030970069F6E5 /* Parse */ = {
-			isa = PBXGroup;
-			children = (
-				9EF757E716101DE40065F44E /* ParseHelper.h */,
-				9EF757E816101DE40065F44E /* ParseHelper.m */,
-			);
-			name = Parse;
-			sourceTree = "<group>";
-		};
 		9EC2773E161030B30069F6E5 /* OAuth */ = {
 			isa = PBXGroup;
 			children = (
@@ -288,6 +275,21 @@
 				9EECE07315EB394100AD89D8 /* OAAttachment.m */,
 			);
 			name = OAuth;
+			sourceTree = "<group>";
+		};
+		9ED30776161CDDA700168F88 /* ParseHelperLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				9E203E59161DFB1B00416C46 /* PFObjectFactory.h */,
+				9ED3077D161CDDED00168F88 /* ParseUserInfo.h */,
+				9ED3077E161CDDED00168F88 /* ParseUserInfo.m */,
+				9ED30777161CDDA700168F88 /* ParseHelper.h */,
+				9ED30778161CDDA700168F88 /* ParseHelper.m */,
+				9ECAB3F8162F1DB50041E8F7 /* ParseLocationAnnotation.h */,
+				9ECAB3F9162F1DB50041E8F7 /* ParseLocationAnnotation.m */,
+			);
+			name = ParseHelperLibrary;
+			path = ../../ParseHelperLibrary;
 			sourceTree = "<group>";
 		};
 		9EECDF4F15EACB3900AD89D8 = {
@@ -333,9 +335,8 @@
 		9EECDF6415EACB3A00AD89D8 /* MetWorkingLite */ = {
 			isa = PBXGroup;
 			children = (
-				9EC2773C161030970069F6E5 /* Parse */,
+				9ED30776161CDDA700168F88 /* ParseHelperLibrary */,
 				9EECDFA315EB2DC700AD89D8 /* LinkedIn */,
-				9EECDF9E15EB2D9600AD89D8 /* Kumulos */,
 				9EECDF8315EB2D0500AD89D8 /* Users */,
 				9EC0BA5915F59AF800B8553F /* Profile */,
 				9EECDF8E15EB2D5600AD89D8 /* Location */,
@@ -368,9 +369,8 @@
 			children = (
 				9EECDF7F15EB2CF900AD89D8 /* UserInfo.h */,
 				9EECDF8015EB2CF900AD89D8 /* UserInfo.m */,
-				9EECE07F15EB524800AD89D8 /* LoginViewController.h */,
-				9EECE08015EB524900AD89D8 /* LoginViewController.m */,
-				9EECE08115EB524900AD89D8 /* LoginViewController.xib */,
+				9E94D133161AA98500C94108 /* UserPulse.h */,
+				9E94D134161AA98500C94108 /* UserPulse.m */,
 			);
 			name = Users;
 			sourceTree = "<group>";
@@ -381,9 +381,6 @@
 				9EECDF8615EB2D4200AD89D8 /* MapViewController.h */,
 				9EECDF8415EB2D4200AD89D8 /* MapViewController.m */,
 				9EECDF8515EB2D4200AD89D8 /* MapViewController.xib */,
-				9EECDF8815EB2D4200AD89D8 /* LocationViewController.h */,
-				9EECDF8715EB2D4200AD89D8 /* LocationViewController.m */,
-				9EECDF8915EB2D4200AD89D8 /* LocationViewController.xib */,
 			);
 			name = Location;
 			sourceTree = "<group>";
@@ -414,17 +411,6 @@
 				9EECDF9A15EB2D9200AD89D8 /* UIImage+RoundedCorner.m */,
 			);
 			name = Utils;
-			sourceTree = "<group>";
-		};
-		9EECDF9E15EB2D9600AD89D8 /* Kumulos */ = {
-			isa = PBXGroup;
-			children = (
-				9EECDF9F15EB2DB200AD89D8 /* Kumulos.h */,
-				9EECDFA015EB2DB200AD89D8 /* Kumulos.m */,
-				9EECDFA115EB2DB200AD89D8 /* libKumulos_iOS_5.0_ARC.1.0.2.a */,
-				9EECDFA215EB2DB200AD89D8 /* libKumulos.h */,
-			);
-			name = Kumulos;
 			sourceTree = "<group>";
 		};
 		9EECDFA315EB2DC700AD89D8 /* LinkedIn */ = {
@@ -521,13 +507,11 @@
 				9EECDF6915EACB3A00AD89D8 /* InfoPlist.strings in Resources */,
 				9EECDF7515EACB3A00AD89D8 /* ViewController.xib in Resources */,
 				9EECDF8B15EB2D4200AD89D8 /* MapViewController.xib in Resources */,
-				9EECDF8D15EB2D4200AD89D8 /* LocationViewController.xib in Resources */,
 				9EECDF9215EB2D7300AD89D8 /* 19-gear.png in Resources */,
 				9EECDF9315EB2D7300AD89D8 /* 19-gear@2x.png in Resources */,
 				9EECE05D15EB307400AD89D8 /* OAuthLoginView.xib in Resources */,
 				9EECE06B15EB345D00AD89D8 /* graphic_addpic.png in Resources */,
 				9EECE06C15EB345D00AD89D8 /* graphic_nopic.png in Resources */,
-				9EECE08315EB524900AD89D8 /* LoginViewController.xib in Resources */,
 				9EAD3F6615EC959700FA5817 /* log-in-linkedin-large.png in Resources */,
 				9EAB158115F45BF5000D0FB9 /* ProximityViewController.xib in Resources */,
 				9EAB158415F4660A000D0FB9 /* tab_friends.png in Resources */,
@@ -566,7 +550,6 @@
 				9EECDF7215EACB3A00AD89D8 /* ViewController.m in Sources */,
 				9EECDF8215EB2CF900AD89D8 /* UserInfo.m in Sources */,
 				9EECDF8A15EB2D4200AD89D8 /* MapViewController.m in Sources */,
-				9EECDF8C15EB2D4200AD89D8 /* LocationViewController.m in Sources */,
 				9EECDF9B15EB2D9200AD89D8 /* UIImage+Resize.m in Sources */,
 				9EECDF9C15EB2D9200AD89D8 /* UIImage+Alpha.m in Sources */,
 				9EECDF9D15EB2D9200AD89D8 /* UIImage+RoundedCorner.m in Sources */,
@@ -591,11 +574,13 @@
 				9EECE05C15EB307400AD89D8 /* OAuthLoginView.m in Sources */,
 				9EECE06015EB30E900AD89D8 /* JSONKit.m in Sources */,
 				9EECE07415EB394100AD89D8 /* OAAttachment.m in Sources */,
-				9EECE08215EB524900AD89D8 /* LoginViewController.m in Sources */,
 				9EAB158015F45BF5000D0FB9 /* ProximityViewController.m in Sources */,
 				9EAB158B15F46A06000D0FB9 /* ProfileViewController.m in Sources */,
 				9EC0BA5E15F59B2300B8553F /* InputViewController.m in Sources */,
-				9EF757E916101DE40065F44E /* ParseHelper.m in Sources */,
+				9E94D135161AA98500C94108 /* UserPulse.m in Sources */,
+				9ED3077B161CDDA700168F88 /* ParseHelper.m in Sources */,
+				9ED3077F161CDDED00168F88 /* ParseUserInfo.m in Sources */,
+				9ECAB3FA162F1DB50041E8F7 /* ParseLocationAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,7 +663,7 @@
 				GCC_PREFIX_HEADER = "MetWorkingLite/MetWorkingLite-Prefix.pch";
 				INFOPLIST_FILE = "MetWorkingLite/MetWorkingLite-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "613ED068-A8AF-4020-8EE6-C6E993735AE7";
+				PROVISIONING_PROFILE = "65BFFB6F-CA3F-4B1A-9EC3-B0E1C7B95FF7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -696,7 +681,7 @@
 				GCC_PREFIX_HEADER = "MetWorkingLite/MetWorkingLite-Prefix.pch";
 				INFOPLIST_FILE = "MetWorkingLite/MetWorkingLite-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "801E0351-6E2C-492B-A792-3DA68EE48F18";
+				PROVISIONING_PROFILE = "CA04152E-6C79-4A2C-9C6D-968A34DD3B9A";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};

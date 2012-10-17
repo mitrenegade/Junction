@@ -8,6 +8,7 @@
 
 #import "MapViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UserPulse.h"
 
 @interface MapViewController ()
 
@@ -16,6 +17,8 @@
 @implementation MapViewController
 @synthesize _mapView;
 @synthesize delegate;
+@synthesize lastPulseTimestamp;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,8 +31,10 @@
         [self.navigationItem setLeftBarButtonItem:leftButton];
          */
         
+        /*
         UIBarButtonItem * rightButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"19-gear"] style:UIBarButtonItemStylePlain target:self action:@selector(didClickSettings:)];
         [self.navigationItem setRightBarButtonItem:rightButton];
+         */
 
         [self.tabBarItem setImage:[UIImage imageNamed:@"tab_world"]];
         //        [self.tabBarItem setTitle:@"Nearby"];
@@ -54,6 +59,8 @@
     [_mapView.layer setCornerRadius:10.0f];
     [_mapView.layer setMasksToBounds:YES];
     
+    lastPulseTimestamp = nil;
+
     CLLocationCoordinate2D zoomLocation;
     //NSLog(@"%f", _mapView.userLocation.location.coordinate.latitude);
     zoomLocation.latitude = 42.37;
@@ -72,6 +79,7 @@
     [_mapView setRegion:adjustedRegion animated:YES];
     
     [self.view addSubview:_mapView];
+    
 }
 
 - (void)viewDidUnload
@@ -99,9 +107,18 @@
 
 #pragma mark MKMapViewDelegate
 -(void) mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+    NSLog(@"Did update user location");
     if ( self._mapView.userLocation && self._mapView.userLocation.coordinate  .latitude > -90.0 && self._mapView.userLocation.coordinate.latitude < 90.0 &&self._mapView.userLocation.coordinate.longitude >-180.0 && self._mapView.userLocation.coordinate.longitude < 180.0 && (self._mapView.userLocation.coordinate.latitude != 0 && self._mapView.userLocation.coordinate.longitude != 0)) {  
         [self centerOnUser];
         _mapView.showsUserLocation = YES;
+    }
+    
+    if (!lastPulseTimestamp || [[NSDate date] timeIntervalSinceDate:lastPulseTimestamp] > USER_LOCATION_UPDATE_TIME) {
+        CLLocation * myLocation = userLocation.location;
+        UserInfo * myUserInfo = [delegate getMyUserInfo];
+        NSLog(@"Updating user location via UserPulse: myUserInfo %@", myUserInfo);
+        [UserPulse DoUserPulseWithLocation:myLocation forUser:myUserInfo];
+        [self setLastPulseTimestamp:[NSDate date]];
     }
 }
 
@@ -126,7 +143,7 @@
 }
 
 -(void)didClickSettings:(id)sender {
-    [delegate showUserSettings];
+//    [delegate showUserSettings];
 }
 
 @end
