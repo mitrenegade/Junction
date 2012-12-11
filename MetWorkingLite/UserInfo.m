@@ -13,6 +13,7 @@
 @synthesize linkedInString;
 @synthesize friends;
 @synthesize photo;
+@synthesize photoURL;
 @synthesize headline;
 @synthesize position;
 @synthesize location;
@@ -22,13 +23,30 @@
 //@synthesize educations;
 @synthesize specialties;
 @synthesize numberOfFields;
-@synthesize parseID;
+@synthesize pfUser;
+@synthesize pfUserID;
+@synthesize pfObject;
+@synthesize className;
+
+#define CLASSNAME @"UserInfo"
 
 -(id)init {
     self = [super init];
     self.friends = [[NSMutableSet alloc] init];
     self.numberOfFields = 6; // displayable text fields
+    [self setClassName:CLASSNAME];
     return self;
+}
+
+-(PFObject*)pfObject {
+    // allocates or returns current object
+    if (pfObject)
+        return pfObject;
+    else {
+        PFObject *newPFObject = [[PFObject alloc] initWithClassName:CLASSNAME];
+        [self setPfObject:newPFObject];
+    }
+    return pfObject;
 }
 
 -(void)loginWithUsername:(NSString*)_username {
@@ -49,6 +67,7 @@
     [aCoder encodeObject: linkedInString forKey:@"linkedInString"];
     [aCoder encodeObject: friends forKey:@"friends"];
     [aCoder encodeObject: UIImagePNGRepresentation(photo) forKey:@"photoData"];
+    [aCoder encodeObject: photoURL forKey:@"photoURL"];
     [aCoder encodeObject: headline forKey:@"headline"];
     [aCoder encodeObject: position forKey:@"position"];
     [aCoder encodeObject: location forKey:@"location"];
@@ -56,6 +75,8 @@
     [aCoder encodeObject: summary forKey:@"summary"];
     [aCoder encodeObject: currentPositions forKey:@"currentPositions"];
     [aCoder encodeObject: specialties forKey:@"specialties"];
+    //[aCoder encodeObject: pfUser forKey:@"pfUser"];
+    [aCoder encodeObject:pfUserID forKey:@"pfUserID"];
     //    [aCoder encodeObject: educations forKey:@"educations"];
 }
 
@@ -68,6 +89,7 @@
         [self setLinkedInString:[aDecoder decodeObjectForKey:@"linkedInString"]];
         [self setFriends:[aDecoder decodeObjectForKey:@"friends"]];
         [self setPhoto:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoData"]]];
+        [self setPhotoURL:[aDecoder decodeObjectForKey:@"photoURL"]];
         [self setHeadline:[aDecoder decodeObjectForKey:@"headline"]];
         [self setPosition:[aDecoder decodeObjectForKey:@"position"]];
         [self setLocation:[aDecoder decodeObjectForKey:@"location"]];
@@ -75,50 +97,130 @@
         [self setSummary:[aDecoder decodeObjectForKey:@"summary"]];
         [self setCurrentPositions:[aDecoder decodeObjectForKey:@"currentPositions"]];
         [self setSpecialties:[aDecoder decodeObjectForKey:@"specialties"]];
+        //[self setPfUser:[aDecoder decodeObjectForKey:@"pfUser"]];
+        [self setPfUserID:[aDecoder decodeObjectForKey:@"pfUserID"]];
     }
     return self;
 }
 
 - (PFObject *)toPFObject {
-    PFObject *junctionPFObject = [[PFObject alloc] initWithClassName:@"UserInfo"];
+    //PFObject *junctionPFObject = [[PFObject alloc] initWithClassName:@"UserInfo"];
     if (username)
-        [junctionPFObject setObject:username forKey:@"username"];
+        [self.pfObject setObject:username forKey:@"username"];
     if (password)
-        [junctionPFObject setObject:password forKey:@"password"];
+        [self.pfObject setObject:password forKey:@"password"];
     if (email)
-        [junctionPFObject setObject:email forKey:@"email"];
+        [self.pfObject setObject:email forKey:@"email"];
     if (linkedInString)
-        [junctionPFObject setObject:linkedInString forKey:@"linkedInString"];
+        [self.pfObject setObject:linkedInString forKey:@"linkedInString"];
     if (headline)
-        [junctionPFObject setObject:headline forKey:@"headline"];
+        [self.pfObject setObject:headline forKey:@"headline"];
+    if (photo)
+        [self.pfObject setObject:UIImagePNGRepresentation(photo) forKey:@"photoData"];
+    if (photoURL)
+        [self.pfObject setObject:photoURL forKey:@"photoURL"];
     if (position)
-        [junctionPFObject setObject:position forKey:@"position"];
+        [self.pfObject setObject:position forKey:@"position"];
     if (industry)
-        [junctionPFObject setObject:industry forKey:@"industry"];
+        [self.pfObject setObject:industry forKey:@"industry"];
     if (summary)
-        [junctionPFObject setObject:summary forKey:@"summary"];
+        [self.pfObject setObject:summary forKey:@"summary"];
     if (location)
-        [junctionPFObject setObject:location forKey:@"location"];
-    if (parseID)
-        [junctionPFObject setObject:parseID forKey:@"parseID"];
+        [self.pfObject setObject:location forKey:@"location"];
+    if (pfUserID)
+        [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
+    if (pfUser)
+        [self.pfObject setObject:pfUser forKey:@"pfUser"];
     
-    return junctionPFObject;
+    NSLog(@"Created new UserInfo for user %@ pfUserID %@", username, pfUserID);
+    
+    return self.pfObject;
 }
 
 - (id)fromPFObject:(PFObject *)obj {
+    [self setPfObject:obj];
     
     username = [obj objectForKey:@"username"];
     password = [obj objectForKey:@"password"];
     email = [obj objectForKey:@"email"];
     linkedInString = [obj objectForKey:@"linkedInString"];
     headline = [obj objectForKey:@"headline"];
+    UIImage * image = [UIImage imageWithData:[obj objectForKey:@"photoData"]];
+    if (image)
+        photo = image;
+    else
+        photo = [UIImage imageNamed:@"graphic_nopic"];
+    photoURL = [obj objectForKey:@"photoData"];
     position = [obj objectForKey:@"position"];
     industry = [obj objectForKey:@"industry"];
     summary = [obj objectForKey:@"summary"];
     location = [obj objectForKey:@"location"];
-    parseID = [obj objectForKey:@"parseID"];
+    pfUserID = [obj objectForKey:@"pfUserID"];
+    pfUser = [obj objectForKey:@"pfUser"];
     
     return [super fromPFObject:obj];
+}
+
++(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults{
+    PFCachePolicy policy = kPFCachePolicyCacheThenNetwork;
+    PFQuery * query = [PFQuery queryWithClassName:CLASSNAME];
+    [query setCachePolicy:policy];
+    
+    PFUser * pfUser = userInfo.pfUser;
+    if (pfUser) {
+        NSLog(@"FindUserPulse using pfUser");
+        // add user constraint
+        [query whereKey:@"pfUser" equalTo:pfUser];
+    }
+    else if (userInfo.pfUserID) {
+        NSString * pfUserID = userInfo.pfUserID;
+        NSLog(@"FindUserPulse using pfUserID %@", pfUserID);
+        // add user constraint
+        [query whereKey:@"pfUserID" equalTo:pfUserID];
+    }
+    else if (userInfo.linkedInString) {
+        NSString * linkedInString = userInfo.linkedInString;
+        NSLog(@"FindUserPulse using linkedInString %@", linkedInString);
+        // add user constraint
+        [query whereKey:@"linkedInString" equalTo:linkedInString];
+    }
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"FindUserInfoFromParse: Query resulted in error!");
+            queryCompletedWithResults(nil, error);
+        }
+        else {
+            if ([objects count] == 0) {
+                NSLog(@"FindUserInfoFromParse: 0 results");
+                queryCompletedWithResults(nil, nil);
+            }
+            else {
+                PFObject * object = [objects objectAtIndex:0];
+                [userInfo setPfObject:object];
+                queryCompletedWithResults(userInfo, error);
+            }
+        }
+    }];
+
+}
+
++(void)UpdateUserInfoToParse:(UserInfo*)userInfo {
+    [UserInfo FindUserInfoFromParse:userInfo withBlock:^(UserInfo * result, NSError * error) {
+        if (result) {
+            PFObject * pfObject = [result toPFObject];
+            [pfObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    NSLog(@"UpdateUserInfoToParse Saving userInfo %@ succeeded", userInfo);
+                }
+                else {
+                    NSLog(@"UpdateUserInfoToParse error: %@", error);
+                }
+            }];
+        }
+        else {
+            NSLog(@"UpdateUserInfoToParse Error finding userInfo on Parse!");
+        }
+    }];
 }
 
 @end

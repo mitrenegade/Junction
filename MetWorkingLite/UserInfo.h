@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ParseUserInfo.h"
 
-@interface UserInfo : ParseUserInfo
+@interface UserInfo : ParseUserInfo <PFObjectFactory>
 
 @property (nonatomic) NSString * username;
 @property (nonatomic) NSString * password;
@@ -19,6 +19,7 @@
 @property (nonatomic) NSString * position;
 @property (nonatomic) NSMutableSet * friends;
 @property (nonatomic) UIImage * photo;
+@property (nonatomic) NSString * photoURL;
 @property (nonatomic) NSString * industry;
 @property (nonatomic) NSString * summary;
 @property (nonatomic) NSString * location;
@@ -26,5 +27,11 @@
 //@property (nonatomic) NSArray * educations;
 @property (nonatomic) NSArray * currentPositions;
 @property (nonatomic, assign) int numberOfFields;
-@property (nonatomic) NSString * parseID; // repeated from PFUser
+@property (nonatomic) PFUser * pfUser;
+@property (nonatomic) NSString * pfUserID; // repeated from PFUser
+@property (nonatomic, strong) PFObject * pfObject;
+
++(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo * result, NSError * error))queryCompletedWithResults;
++(void)UpdateUserInfoToParse:(UserInfo*)userInfo;
+
 @end

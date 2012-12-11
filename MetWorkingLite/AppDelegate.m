@@ -24,7 +24,8 @@
 @synthesize locationManager;
 @synthesize lastLocation;
 @synthesize linkedInFriends;
-@synthesize allJunctionUsers;
+@synthesize allJunctionUserInfos;
+@synthesize allPulses;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -60,60 +61,21 @@
     [ParseHelper queryForAllParseObjectsWithClass:@"UserInfo" withBlock:^(NSArray * results, NSError * error) {
         if (results) {
             NSLog(@"Got %d users on Parse", [results count]);
-            if (!allJunctionUsers)
-                allJunctionUsers = [[NSMutableArray alloc] init];
+            if (!allJunctionUserInfos)
+                allJunctionUserInfos = [[NSMutableArray alloc] init];
             
-            [allJunctionUsers removeAllObjects];
-            [allJunctionUsers addObjectsFromArray:results];
+            [allJunctionUserInfos removeAllObjects];
+            for (PFObject * user in results) {
+                UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
+                NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
+                if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+                    [allJunctionUserInfos addObject:friendUserInfo];
+                }
+            }
         }
     }];
-
-    // check for cached existing user - first check Parse
-    // If we have a cached user, we'll get it back here
-    /*
-    PFUser *currentUser = [PFUser currentUser];
-    if (currentUser) 
-    {
-        NSLog(@"Locally cached PFUser has id: %@", [currentUser objectId]);
-        // A user was cached, so check userdefaults for user information
-        myUserInfo = [self loadUserInfo];
-        if (myUserInfo)
-            [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-
-        if (!myUserInfo) {
-            [self doLogin];
-        }
-        else if (![ParseHelper ParseHelper_validateCachedUser:myUserInfo]) {
-            [self doLogin];
-        }
-        else {
-            [ParseHelper ParseHelper_login:myUserInfo withBlock:^(PFUser * user, NSError * error) {
-                if (user) {
-                    [myUserInfo setPfUser:user];
-                    // update profiles
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-                    
-                    // update friends list, etc
-                    // todo: request from linkedIn or backend?
-                    if ([lhHelper isLoggedIn]) {
-                        [lhHelper requestFriends];                
-                    }
-                    else {
-                        [[[UIAlertView alloc] initWithTitle:@"You're not LinkedIn!" message:@"You haven't added your LinkedIn account. Without your LinkedIn, you can't find friends and network! Would you like to add one?" delegate:self cancelButtonTitle:@"Not now" otherButtonTitles:@"Add LinkedIn", nil] show];
-                    }
-                }
-                else {
-                    [self doLogin];
-                }
-            }];
-        }
-    } 
-    else
-    {
-        // no cached PFUser objects - force login
-        [self doLogin];
-    }
-     */
+    
+    allPulses = [[NSMutableDictionary alloc] init];
     
     // check linkedIn first
     if (![lhHelper loadCachedOAuth]) {
@@ -210,21 +172,22 @@
 }
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray *)locations {
-    NSLog(@"DidUpdateLocation");
     
     // If it's a relatively recent event, turn off updates to save power
     CLLocation* location = [locations lastObject];
+    if (lastLocation == nil) {
+        lastLocation = [location copy];
+    }
+
     NSDate* eventDate = location.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    NSLog(@"DidUpdateLocation: %f seconds ago", howRecent);
     if (abs(howRecent) < LOCATION_RECENT_TIME_INTERVAL) {
         // If the event is recent, do something with it.
         NSLog(@"latitude %+.6f, longitude %+.6f\n",
               location.coordinate.latitude,
               location.coordinate.longitude);
         
-        if (lastLocation == nil) {
-            lastLocation = [location copy];
-        }
         if ([lastLocation distanceFromLocation:location] > LOCATION_MIN_DISTANCE_FOR_UPDATE) {
             // update location
             lastLocation = [location copy];
@@ -240,12 +203,18 @@
 }
 
 #pragma mark LoginViewDelegate
+
+-(void)linkedInDidLoginWithID:(NSString *)userID {
+    // don't know why it comes here
+    [_viewController linkedInDidLoginWithID:userID];
+}
 -(void)didLoginWithUsername:(NSString *)username andEmail:(NSString *)email andPhoto:(UIImage *)photo andPfUser:(PFUser *)user {
     NSLog(@"Did login with username %@ and PFUser id %@", username, [user objectId]);
     [myUserInfo setUsername:username];
     [myUserInfo setEmail:email];
     [myUserInfo setPhoto:photo];
     [myUserInfo setPfUser:user];
+    [myUserInfo setPfUserID:user.objectId];
 
     [self saveUserInfo];
     
@@ -303,10 +272,28 @@
         PFObject * jpPFObject = [myUserInfo toPFObject];
         [ParseHelper addParseObjectToParse:jpPFObject withBlock:^(BOOL success, NSError * error) {
             if (success) {
-                NSLog(@"New user added to parse!");
+                NSLog(@"addParseObjectToParse: New user added to parse!");
+            }
+            else {
+                NSLog(@"addParseObjectToParse: Could not add new user to Parse!");
             }
         }];
-        
+    }
+    else {
+        [UserInfo UpdateUserInfoToParse:myUserInfo];
+        // update userinfo for user
+        /*
+        PFObject * jpPFObject = [myUserInfo toPFObject];
+        [ParseHelper updateParseObject:jpPFObject forUser:myUserInfo.pfUser withBlock:^(BOOL success, NSError * error) {
+            if (success) {
+                NSLog(@"Existing user information updated in parse!");
+            }
+            else {
+                NSLog(@"Could not update! error: %@", error.description);
+            }
+        }];
+         
+        */
     }
 }
 
@@ -320,50 +307,48 @@
         [linkedInFriends setObject:f forKey:friendID];
     }
     
-    if (allJunctionUsers) {
+    if (allJunctionUserInfos) {
         [self updateFriendDistances];
     }
 }
 
 -(void)updateFriendDistances {
     NSLog(@"Compare junction users with friends!");
-    if ([allJunctionUsers count] == 0)
+    if ([allJunctionUserInfos count] == 0)
         return;
     if ([linkedInFriends count] == 0)
         return;
     
-    for (PFObject * user in allJunctionUsers) {
-        UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
-        NSLog(@"Comparing junction user %@ with %d LinkedIn friends", friendUserInfo.username, [linkedInFriends count]);
-        if ([linkedInFriends objectForKey:friendUserInfo.linkedInString] != nil) {
-            
+    NSLog(@"junction users: %d", [allJunctionUserInfos count]);
+    for (UserInfo * friendUserInfo in allJunctionUserInfos) {
+        NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
+        if (!myUserInfo) {
+            NSLog(@"MyUserInfo doesn't exist! Bug");
+        }
+        else if (!myUserInfo.pfUserID) {
+            NSLog(@"myUserInfo doesn't have a userID");
+            if ([myUserInfo.linkedInString isEqualToString:friendUserInfo.linkedInString]) {
+                // fill in the rest of the info
+                [myUserInfo setPfUserID:friendUserInfo.pfUserID];
+                [myUserInfo setPfUser:friendUserInfo.pfUser];
+            }
+        }
+        
+        if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
             [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
+                NSLog(@"Results for %@: %d", friendUserInfo.username, [results count]);
                 if (error) {
-                    NSLog(@"Could not find pulse for user %@", friendUserInfo.username);
+                    NSLog(@"Could not find pulse for user %@: error %@", friendUserInfo.username, error.description);
                 }
                 else {
-                    PFObject * object = [results objectAtIndex:0];
-                    UserPulse * pulse = [[UserPulse alloc] initWithPFObject:object];
-                    NSLog(@"User found at coord %f %f", pulse.coordinate.latitude, pulse.coordinate.longitude);
-                    
-                    // todo: use that to calculate distance, requires own coordinate from gps
-                    float distanceInMeters = 999;
-                    if (lastLocation) {
-                        CLLocation * friendLocation = [[CLLocation alloc] initWithLatitude:pulse.coordinate.latitude longitude:pulse.coordinate.longitude];
-                        distanceInMeters = [lastLocation distanceFromLocation:friendLocation];
-                    }
-                    
-                    NSString * friendID = friendUserInfo.linkedInString;
-                    NSMutableDictionary * friend = [linkedInFriends objectForKey:friendID];
-                    NSString * friendName = [NSString stringWithFormat:@"%@ %@", [friend objectForKey:@"firstName"], [friend objectForKey:@"lastName"]];
-                    NSString * friendHeadline = [friend objectForKey:@"headline"];
-                    UIImage * photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[friend objectForKey:@"pictureURL"]]]];
-                    NSLog(@"Friend found! name %@ id %@ headline %@",friendName, friendID, friendHeadline);
-                    [proxController addUser:friendID withName:friendName withHeadline:friendHeadline withPhoto:photo atDistance:distanceInMeters];
+                    UserPulse * pulse = [results objectAtIndex:0];
+                    [allPulses setObject:pulse forKey:friendUserInfo.pfUserID];
+                    [proxController reloadAll];
                 }
             }];
-            
         }
     }
+    
+    [mapViewController reloadAll];
 }
 @end

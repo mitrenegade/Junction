@@ -123,6 +123,7 @@
 
 -(void)linkedInParseProfileInformation:(NSDictionary*)profile {
     // returns the following information: first-name,last-name,industry,location:(name),specialties,summary,picture-url,email-address,educations,three-current-positions
+    //NSString * userID = [profile objectForKey:@"pfUserID"];
     NSString * name = [[NSString alloc] initWithFormat:@"%@ %@",
                        [profile objectForKey:@"firstName"], [profile objectForKey:@"lastName"]];
     NSString * headline = [profile objectForKey:@"headline"];
@@ -154,8 +155,10 @@
         [myUserInfo setSummary:summary];
     if (email)
         [myUserInfo setEmail:email];
-    if (pictureUrl)
+    if (pictureUrl) {
         [myUserInfo setPhoto:[[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]]];
+        [myUserInfo setPhotoURL:pictureUrl];
+    }
     if (location)
         [myUserInfo setLocation:location];
     if (specialties)
@@ -198,7 +201,7 @@
             NSLog(@"User LinkedIn %@ exists with PFUser id %@", myUserInfo.linkedInString, [user objectId]);
             //[delegate didLoginWithUsername:username andEmail:email andPhoto:[[buttonPhoto imageView] image] andPfUser:user];
             [myUserInfo setPfUser:user];
-            [myUserInfo setParseID:user.objectId];
+            [myUserInfo setPfUserID:user.objectId];
             [delegate didLogin:isNewUser];
         }
         else {
@@ -206,7 +209,7 @@
             // todo: check whether login failed due to missing user, or wrong user
             if ([[error.userInfo objectForKey:@"code"] intValue] == 101) {
                 // invalid credentials
-                [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"Failed to log in as %@! Would you like to sign up?", myUserInfo.username] delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Sign Up", nil] show];
+                [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"Current LinkedIn profile for %@ is not registered with Junction! Would you like to sign up?", myUserInfo.username] delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Sign Up", nil] show];
             }
             else {
                 [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"There was an unknown issue with login. Please try again later!"] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];

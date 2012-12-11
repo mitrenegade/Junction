@@ -35,4 +35,5 @@
 //- (void)signInToCustomService;
 -(IBAction)didClickLinkedIn:(id)sender;
 -(void)tryCachedLogin;
+-(void)linkedInDidLoginWithID:(NSString *)userID;
 @end

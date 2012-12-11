@@ -10,9 +10,11 @@
 #import "UserInfo.h"
 
 #define ROW_HEIGHT 60
+#define HEADER_HEIGHT 40
 #define TOP_LABEL_TAG 1001
 #define BOTTOM_LABEL_TAG 1002
 #define PHOTO_TAG 1003
+#define NUM_COLUMNS 2
 
 enum DISTANCE_GROUPS {
     CLOSE = 0,
@@ -20,6 +22,7 @@ enum DISTANCE_GROUPS {
     BALLROOM = 2,
     BALLPARK = 3,
     DISTANT = 4,
+    INFINITE = 5,
     MAX_DISTANCE_GROUPS
     };
 @protocol ProximityDelegate <NSObject>
@@ -41,11 +44,15 @@ enum DISTANCE_GROUPS {
 @property (nonatomic) NSMutableArray * photos;
 @property (nonatomic) NSMutableArray * distances;
 */
+
+@property (nonatomic) NSMutableDictionary * portraitViews;
 @property (nonatomic) NSMutableDictionary * userInfos;
 @property (nonatomic) NSMutableArray * distanceGroups;
-
+@property (nonatomic) NSMutableDictionary * headerViews;
 @property (nonatomic) UserInfo * myUserInfo;
 @property (nonatomic) id delegate;
 
 -(void)addUser:(NSString*)userID withName:(NSString*)name withHeadline:(NSString*)headline withPhoto:(UIImage*)photo atDistance:(double)distance;
+-(void)reloadAll;
+
 @end

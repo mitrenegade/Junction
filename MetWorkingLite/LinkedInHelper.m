@@ -107,11 +107,15 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void)profileApiCallResult:(OAServiceTicket*)ticket didFail:(NSError*)error {
     NSLog(@"LinkedIn Profile call failed: error %@", error.userInfo);
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:[NSString stringWithFormat:@"LinkedIn profile request failed with error: %@. Please close the app and try again!", [error.userInfo objectForKey:@"NSLocalizedDescription"]] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alertView show];
 }
 
 - (void)linkedInRequest:(OAServiceTicket *)ticket didFail:(NSError *)error
 {
-    NSLog(@"LinkedIn request error: %@",[error description]);
+    NSLog(@"LinkedIn request error: %@",[error userInfo]);
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:[NSString stringWithFormat:@"LinkedIn request failed with error: %@", [error.userInfo objectForKey:@"NSLocalizedDescription"]] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alertView show];
 }
 
 -(void)getId {

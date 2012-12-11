@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		9E022D301608E76900771BBB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E022D2F1608E76900771BBB /* Crashlytics.framework */; };
+		9E503DD21640A45900DB5EFB /* MapGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E503DD11640A45900DB5EFB /* MapGestureRecognizer.m */; };
+		9E503DDD1640AABB00DB5EFB /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E503DDC1640AABB00DB5EFB /* Annotation.m */; };
+		9E503DE01640AACD00DB5EFB /* pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E503DDE1640AACD00DB5EFB /* pin.png */; };
+		9E503DE11640AACD00DB5EFB /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E503DDF1640AACD00DB5EFB /* pin@2x.png */; };
+		9E503DE41640BFBC00DB5EFB /* PortraitScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E503DE31640BFBC00DB5EFB /* PortraitScrollViewController.m */; };
 		9E94D135161AA98500C94108 /* UserPulse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E94D134161AA98500C94108 /* UserPulse.m */; };
 		9EAB158015F45BF5000D0FB9 /* ProximityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EAB157E15F45BF5000D0FB9 /* ProximityViewController.m */; };
 		9EAB158115F45BF5000D0FB9 /* ProximityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EAB157F15F45BF5000D0FB9 /* ProximityViewController.xib */; };
@@ -79,6 +84,14 @@
 /* Begin PBXFileReference section */
 		9E022D2F1608E76900771BBB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		9E203E59161DFB1B00416C46 /* PFObjectFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFObjectFactory.h; sourceTree = "<group>"; };
+		9E503DD01640A45900DB5EFB /* MapGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapGestureRecognizer.h; sourceTree = "<group>"; };
+		9E503DD11640A45900DB5EFB /* MapGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapGestureRecognizer.m; sourceTree = "<group>"; };
+		9E503DDB1640AABB00DB5EFB /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
+		9E503DDC1640AABB00DB5EFB /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
+		9E503DDE1640AACD00DB5EFB /* pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pin.png; sourceTree = "<group>"; };
+		9E503DDF1640AACD00DB5EFB /* pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin@2x.png"; sourceTree = "<group>"; };
+		9E503DE21640BFBB00DB5EFB /* PortraitScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitScrollViewController.h; sourceTree = "<group>"; };
+		9E503DE31640BFBC00DB5EFB /* PortraitScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitScrollViewController.m; sourceTree = "<group>"; };
 		9E94D133161AA98500C94108 /* UserPulse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPulse.h; sourceTree = "<group>"; };
 		9E94D134161AA98500C94108 /* UserPulse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPulse.m; sourceTree = "<group>"; };
 		9EAB157D15F45BF5000D0FB9 /* ProximityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProximityViewController.h; sourceTree = "<group>"; };
@@ -221,6 +234,8 @@
 				9EAB157D15F45BF5000D0FB9 /* ProximityViewController.h */,
 				9EAB157E15F45BF5000D0FB9 /* ProximityViewController.m */,
 				9EAB157F15F45BF5000D0FB9 /* ProximityViewController.xib */,
+				9E503DE21640BFBB00DB5EFB /* PortraitScrollViewController.h */,
+				9E503DE31640BFBC00DB5EFB /* PortraitScrollViewController.m */,
 			);
 			name = ProximityView;
 			sourceTree = "<group>";
@@ -381,6 +396,10 @@
 				9EECDF8615EB2D4200AD89D8 /* MapViewController.h */,
 				9EECDF8415EB2D4200AD89D8 /* MapViewController.m */,
 				9EECDF8515EB2D4200AD89D8 /* MapViewController.xib */,
+				9E503DD01640A45900DB5EFB /* MapGestureRecognizer.h */,
+				9E503DD11640A45900DB5EFB /* MapGestureRecognizer.m */,
+				9E503DDB1640AABB00DB5EFB /* Annotation.h */,
+				9E503DDC1640AABB00DB5EFB /* Annotation.m */,
 			);
 			name = Location;
 			sourceTree = "<group>";
@@ -388,6 +407,8 @@
 		9EECDF8F15EB2D5E00AD89D8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9E503DDE1640AACD00DB5EFB /* pin.png */,
+				9E503DDF1640AACD00DB5EFB /* pin@2x.png */,
 				9EAB158615F46975000D0FB9 /* tab_me.png */,
 				9EAB158215F4660A000D0FB9 /* tab_friends.png */,
 				9EAB158315F4660A000D0FB9 /* tab_world.png */,
@@ -519,6 +540,8 @@
 				9EAB158715F46975000D0FB9 /* tab_me.png in Resources */,
 				9EAB158C15F46A06000D0FB9 /* ProfileViewController.xib in Resources */,
 				9EC0BA5F15F59B2300B8553F /* InputViewController.xib in Resources */,
+				9E503DE01640AACD00DB5EFB /* pin.png in Resources */,
+				9E503DE11640AACD00DB5EFB /* pin@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,6 +604,9 @@
 				9ED3077B161CDDA700168F88 /* ParseHelper.m in Sources */,
 				9ED3077F161CDDED00168F88 /* ParseUserInfo.m in Sources */,
 				9ECAB3FA162F1DB50041E8F7 /* ParseLocationAnnotation.m in Sources */,
+				9E503DD21640A45900DB5EFB /* MapGestureRecognizer.m in Sources */,
+				9E503DDD1640AABB00DB5EFB /* Annotation.m in Sources */,
+				9E503DE41640BFBC00DB5EFB /* PortraitScrollViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,7 +689,8 @@
 				GCC_PREFIX_HEADER = "MetWorkingLite/MetWorkingLite-Prefix.pch";
 				INFOPLIST_FILE = "MetWorkingLite/MetWorkingLite-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "65BFFB6F-CA3F-4B1A-9EC3-B0E1C7B95FF7";
+				PROVISIONING_PROFILE = "49FB971F-5F76-4B17-BDBA-2E948DBCB59C";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -681,8 +708,9 @@
 				GCC_PREFIX_HEADER = "MetWorkingLite/MetWorkingLite-Prefix.pch";
 				INFOPLIST_FILE = "MetWorkingLite/MetWorkingLite-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CA04152E-6C79-4A2C-9C6D-968A34DD3B9A";
+				PROVISIONING_PROFILE = "FEE65762-A226-4B2A-8802-B9131ED2CA19";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

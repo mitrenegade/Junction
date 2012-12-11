@@ -20,7 +20,13 @@
 @end
 
 @interface MapViewController : UIViewController <MKMapViewDelegate>
-@property (nonatomic) IBOutlet MKMapView *_mapView;
+{
+    BOOL didDragMap;
+    BOOL didUpdateUserLocation;
+}
+@property (nonatomic) IBOutlet MKMapView *myMapView;
 @property (nonatomic, unsafe_unretained) id delegate;
 @property (nonatomic) NSDate * lastPulseTimestamp;
+
+-(void)reloadAll;
 @end
