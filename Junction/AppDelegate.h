@@ -1,6 +1,6 @@
 //
 //  AppDelegate.h
-//  MetWorkingLite
+//  Junction
 //
 //  Created by Bobby Ren on 8/26/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
@@ -25,9 +25,9 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 
 @property (strong, nonatomic) ViewController *viewController;
 @property (nonatomic) UINavigationController * nav;
-@property (weak, nonatomic) UINavigationController * navLogin;
+@property (assign, nonatomic) UINavigationController * navLogin;
 @property (nonatomic) LinkedInHelper * lhHelper;
-@property (weak, nonatomic) UIViewController * lhView; // hack
+@property (assign, nonatomic) UIViewController * lhView; // hack
 
 @property (nonatomic) UserInfo * myUserInfo;
 

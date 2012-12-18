@@ -1,6 +1,6 @@
 //
 //  ViewController.m
-//  MetWorkingLite
+//  Junction
 //
 //  Created by Bobby Ren on 8/26/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.

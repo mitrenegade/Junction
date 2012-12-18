@@ -1,6 +1,6 @@
 //
 //  ViewController.h
-//  MetWorkingLite
+//  Junction
 //
 //  Created by Bobby Ren on 8/26/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
@@ -30,8 +30,8 @@
 @property (nonatomic, unsafe_unretained) id delegate;
 @property (nonatomic, strong) LinkedInHelper * lhHelper;
 @property (nonatomic, strong) UserInfo * myUserInfo;
-@property (nonatomic) IBOutlet UIButton * buttonLinkedIn;
-@property (nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
+@property (weak, nonatomic) IBOutlet UIButton * buttonLinkedIn;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
 
 //- (void)signInToCustomService;
 -(IBAction)didClickLinkedIn:(id)sender;

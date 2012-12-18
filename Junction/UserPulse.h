@@ -1,6 +1,6 @@
 //
 //  UserPulse.h
-//  MetWorkingLite
+//  Junction
 //
 //  Created by Bobby Ren on 10/1/12.
 //

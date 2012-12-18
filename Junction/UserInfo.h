@@ -13,21 +13,21 @@
 
 @interface UserInfo : ParseUserInfo
 
-@property (nonatomic) NSString * username;
-@property (nonatomic) NSString * password;
-@property (nonatomic) NSString * email;
-@property (nonatomic) NSString * linkedInString;
-@property (nonatomic) NSString * headline;
-@property (nonatomic) NSString * position;
-@property (nonatomic) NSMutableSet * friends;
-@property (nonatomic) UIImage * photo;
-@property (nonatomic) NSString * industry;
-@property (nonatomic) NSString * summary;
-@property (nonatomic) NSString * location;
-@property (nonatomic) NSArray * specialties;
+@property (strong, nonatomic) NSString * username;
+@property (strong, nonatomic) NSString * password;
+@property (strong, nonatomic) NSString * email;
+@property (strong, nonatomic) NSString * linkedInString;
+@property (strong, nonatomic) NSString * headline;
+@property (strong, nonatomic) NSString * position;
+@property (strong, nonatomic) NSMutableSet * friends;
+@property (strong, nonatomic) UIImage * photo;
+@property (strong, nonatomic) NSString * industry;
+@property (strong, nonatomic) NSString * summary;
+@property (strong, nonatomic) NSString * location;
+@property (strong, nonatomic) NSArray * specialties;
 //@property (nonatomic) NSArray * educations;
-@property (nonatomic) NSArray * currentPositions;
+@property (strong, nonatomic) NSArray * currentPositions;
 @property (nonatomic, assign) int numberOfFields;
-@property (nonatomic) NSString * parseID; // repeated from PFUser
-@property (nonatomic) UserPulse * userPulse;
+@property (strong, nonatomic) NSString * parseID; // repeated from PFUser
+@property (strong, nonatomic) UserPulse * userPulse;
 @end

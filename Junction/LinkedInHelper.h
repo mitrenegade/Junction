@@ -34,3 +34,4 @@
 -(void)profileApiCall;
 -(BOOL) loadCachedOAuth;
 @end
+retain

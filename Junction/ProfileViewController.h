@@ -1,6 +1,6 @@
 //
 //  ProfileViewController.h
-//  MetWorkingLite
+//  Junction
 //
 //  Created by Bobby Ren on 9/2/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
