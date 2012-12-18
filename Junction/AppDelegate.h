@@ -39,6 +39,7 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 @property (nonatomic) CLLocation * lastLocation;
 
 @property (nonatomic) NSMutableDictionary * linkedInFriends;
+@property (nonatomic) NSMutableArray * allJunctionUsers;
 @property (nonatomic) NSMutableArray * allJunctionUserInfos;
 @property (nonatomic) NSMutableDictionary * allPulses;
 

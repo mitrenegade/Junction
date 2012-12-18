@@ -43,6 +43,7 @@
 		9E3059CB16805DED00A35ABE /* ProfileTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E3059A916805DED00A35ABE /* ProfileTabView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059CC16805DED00A35ABE /* ProfileTabView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E3059AA16805DED00A35ABE /* ProfileTabView.xib */; };
 		9E3059CD16805DED00A35ABE /* READ_ME.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9E3059AB16805DED00A35ABE /* READ_ME.txt */; };
+		9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */; };
 		9E99536E16804CE3001E034A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99536C16804CE3001E034A /* ProfileViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		9E99536F16804CE3001E034A /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99536D16804CE3001E034A /* ProfileViewController.xib */; };
 		9E99537416804CF0001E034A /* InputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99537216804CF0001E034A /* InputViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -155,6 +156,8 @@
 		9E3059A916805DED00A35ABE /* ProfileTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileTabView.m; sourceTree = "<group>"; };
 		9E3059AA16805DED00A35ABE /* ProfileTabView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileTabView.xib; sourceTree = "<group>"; };
 		9E3059AB16805DED00A35ABE /* READ_ME.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = READ_ME.txt; sourceTree = "<group>"; };
+		9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitScrollViewController.h; sourceTree = SOURCE_ROOT; };
+		9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitScrollViewController.m; sourceTree = SOURCE_ROOT; };
 		9E99536B16804CE3001E034A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileViewController.h; path = Junction/ProfileViewController.h; sourceTree = SOURCE_ROOT; };
 		9E99536C16804CE3001E034A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfileViewController.m; path = Junction/ProfileViewController.m; sourceTree = SOURCE_ROOT; };
 		9E99536D16804CE3001E034A /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfileViewController.xib; path = Junction/ProfileViewController.xib; sourceTree = SOURCE_ROOT; };
@@ -393,6 +396,8 @@
 		9EC0BA5915F59AF800B8553F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */,
+				9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */,
 				9E99536B16804CE3001E034A /* ProfileViewController.h */,
 				9E99536C16804CE3001E034A /* ProfileViewController.m */,
 				9E99536D16804CE3001E034A /* ProfileViewController.xib */,
@@ -633,6 +638,7 @@
 				9E3059C716805DED00A35ABE /* OAuthLoginView.m in Sources */,
 				9E3059CA16805DED00A35ABE /* OAuthStarterKitAppDelegate.m in Sources */,
 				9E3059CB16805DED00A35ABE /* ProfileTabView.m in Sources */,
+				9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

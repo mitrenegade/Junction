@@ -162,7 +162,7 @@
 }
 
 +(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults{
-    PFCachePolicy policy = kPFCachePolicyCacheThenNetwork;
+    PFCachePolicy policy = kPFCachePolicyNetworkOnly;
     PFQuery * query = [PFQuery queryWithClassName:CLASSNAME];
     [query setCachePolicy:policy];
     

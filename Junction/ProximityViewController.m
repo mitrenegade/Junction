@@ -9,7 +9,6 @@
 #import "ProximityViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h" // for notification constants
-#import "PortraitScrollView.h"
 #import "UserPulse.h"
 #import "PortraitScrollViewController.h"
 
@@ -122,23 +121,24 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-/*
--(void)addUser:(NSString *)userID withName:(NSString *)name withHeadline:(NSString *)headline withPhoto:(UIImage *)photo atDistance:(double)distance {    
+-(void)addUser:(NSString *)userID withName:(NSString *)name withHeadline:(NSString *)headline withPhoto:(UIImage *)photo atDistance:(double)distance {
+    // todo: sort
+    //NSLog(@"Adding %@ at %f", name, distance);
+    
+    /*
+     +    [names addObject:name];
+     +    [titles addObject:title];
+     +    if (photo)
+     +        [photos addObject:photo];
+     +    else
+     +        [photos addObject:[UIImage imageNamed:@"graphic_nopic"]];
+     +    [distances addObject:[NSNumber numberWithDouble:distance]];
+     +     */
     UserInfo * newUser = [[UserInfo alloc] init];
     [newUser setUsername:name];
     [newUser setHeadline:headline];
-    [newUser setPhoto:(photo? photo:[UIImage imageNamed:@"graphic_nopic"])];
-    [userInfos setObject:newUser forKey:userID];
-    for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
-        if (distance < DISTANCE_BOUNDARIES[i]) {
-            [[distanceGroups objectAtIndex:i] addObject:userID];
-            break;
-        }
-    }
-    
     [tableView reloadData];
 }
- */
 
 #pragma mark - Table view data source
 
@@ -148,40 +148,6 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     // may have more than one distance -> sections
     return MAX_DISTANCE_GROUPS;
 }
-
-/*
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case CLOSE:
-            return @"Really close by";
-            break;
-        
-        case ROOM:
-            return [NSString stringWithFormat:@"Within %d meters", DISTANCE_BOUNDARIES[ROOM]];
-            break;
-            
-        case BALLROOM:
-            return [NSString stringWithFormat:@"Within %d meters", DISTANCE_BOUNDARIES[BALLROOM]];
-            break;
-
-        case BALLPARK:
-            return [NSString stringWithFormat:@"Within %d meters", DISTANCE_BOUNDARIES[BALLPARK]];
-            break;
-
-        case DISTANT:
-            return [NSString stringWithFormat:@"Beyond %d meters", DISTANCE_BOUNDARIES[BALLPARK]];
-            break;
-
-        case INFINITE:
-            return [NSString stringWithFormat:@"Infinity and beyond"];
-            break;
-    
-        default:
-            break;
-    }
-    return nil;
-}
-*/
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if ([[distanceGroups objectAtIndex:section] count] == 0)
@@ -232,10 +198,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    float ct = ((float)[[distanceGroups objectAtIndex:section] count]);
-    float rows = ceil( ct / NUM_COLUMNS);
+    //float ct = ((float)[[distanceGroups objectAtIndex:section] count]);
+    //float rows = ceil( ct / NUM_COLUMNS);
     //NSLog(@"Rows %f ct %d", rows, ct);
-    return rows;
+    return [[distanceGroups objectAtIndex:section] count];
+    //return rows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -245,11 +212,12 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 1.0;
+//    return 1.0;
+    return 30;
 }
 
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //return ROW_HEIGHT;
+    return ROW_HEIGHT;
     if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
         return 0;
     return self.view.bounds.size.width / NUM_COLUMNS;
