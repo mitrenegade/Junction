@@ -19,6 +19,8 @@
 		9EAD3F6615EC959700FA5817 /* log-in-linkedin-large.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EAD3F6515EC959700FA5817 /* log-in-linkedin-large.png */; };
 		9EC0BA5E15F59B2300B8553F /* InputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC0BA5C15F59B2300B8553F /* InputViewController.m */; };
 		9EC0BA5F15F59B2300B8553F /* InputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EC0BA5D15F59B2300B8553F /* InputViewController.xib */; };
+		9EC109B3167870C600366FF1 /* pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EC109B1167870C600366FF1 /* pin.png */; };
+		9EC109B4167870C600366FF1 /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EC109B2167870C600366FF1 /* pin@2x.png */; };
 		9EC2774216103EEA0069F6E5 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774116103EEA0069F6E5 /* Parse.framework */; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
@@ -50,9 +52,9 @@
 		9EECE03015EB305700AD89D8 /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02415EB305700AD89D8 /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EECE03115EB305700AD89D8 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02615EB305700AD89D8 /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EECE03215EB305700AD89D8 /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02815EB305700AD89D8 /* NSURL+Base.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		9EECE03315EB305700AD89D8 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02A15EB305700AD89D8 /* Base64Transcoder.c */; };
-		9EECE03415EB305700AD89D8 /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02C15EB305700AD89D8 /* hmac.c */; };
-		9EECE03515EB305700AD89D8 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02E15EB305700AD89D8 /* sha1.c */; };
+		9EECE03315EB305700AD89D8 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02A15EB305700AD89D8 /* Base64Transcoder.c */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9EECE03415EB305700AD89D8 /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02C15EB305700AD89D8 /* hmac.c */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9EECE03515EB305700AD89D8 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE02E15EB305700AD89D8 /* sha1.c */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EECE05115EB307400AD89D8 /* OACall.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE03715EB307400AD89D8 /* OACall.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EECE05215EB307400AD89D8 /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE03915EB307400AD89D8 /* OAConsumer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EECE05315EB307400AD89D8 /* OADataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EECE03B15EB307400AD89D8 /* OADataFetcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -94,6 +96,8 @@
 		9EC0BA5B15F59B2300B8553F /* InputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputViewController.h; sourceTree = "<group>"; };
 		9EC0BA5C15F59B2300B8553F /* InputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputViewController.m; sourceTree = "<group>"; };
 		9EC0BA5D15F59B2300B8553F /* InputViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputViewController.xib; sourceTree = "<group>"; };
+		9EC109B1167870C600366FF1 /* pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pin.png; sourceTree = "<group>"; };
+		9EC109B2167870C600366FF1 /* pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin@2x.png"; sourceTree = "<group>"; };
 		9EC2774116103EEA0069F6E5 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9EC277451610430A0069F6E5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -112,10 +116,10 @@
 		9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9EECDF6015EACB3A00AD89D8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9EECDF6215EACB3A00AD89D8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		9EECDF6615EACB3A00AD89D8 /* MetWorkingLite-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MetWorkingLite-Info.plist"; sourceTree = "<group>"; };
+		9EECDF6615EACB3A00AD89D8 /* Junction-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Junction-Info.plist"; sourceTree = "<group>"; };
 		9EECDF6815EACB3A00AD89D8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9EECDF6A15EACB3A00AD89D8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		9EECDF6C15EACB3A00AD89D8 /* MetWorkingLite-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MetWorkingLite-Prefix.pch"; sourceTree = "<group>"; };
+		9EECDF6C15EACB3A00AD89D8 /* Junction-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Junction-Prefix.pch"; sourceTree = "<group>"; };
 		9EECDF6D15EACB3A00AD89D8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9EECDF6E15EACB3A00AD89D8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9EECDF7015EACB3A00AD89D8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -356,10 +360,10 @@
 		9EECDF6515EACB3A00AD89D8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				9EECDF6615EACB3A00AD89D8 /* MetWorkingLite-Info.plist */,
+				9EECDF6615EACB3A00AD89D8 /* Junction-Info.plist */,
 				9EECDF6715EACB3A00AD89D8 /* InfoPlist.strings */,
 				9EECDF6A15EACB3A00AD89D8 /* main.m */,
-				9EECDF6C15EACB3A00AD89D8 /* MetWorkingLite-Prefix.pch */,
+				9EECDF6C15EACB3A00AD89D8 /* Junction-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -388,6 +392,8 @@
 		9EECDF8F15EB2D5E00AD89D8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9EC109B1167870C600366FF1 /* pin.png */,
+				9EC109B2167870C600366FF1 /* pin@2x.png */,
 				9EAB158615F46975000D0FB9 /* tab_me.png */,
 				9EAB158215F4660A000D0FB9 /* tab_friends.png */,
 				9EAB158315F4660A000D0FB9 /* tab_world.png */,
@@ -482,7 +488,7 @@
 			attributes = {
 				LastUpgradeCheck = 0430;
 			};
-			buildConfigurationList = 9EECDF5415EACB3900AD89D8 /* Build configuration list for PBXProject "MetWorkingLite" */;
+			buildConfigurationList = 9EECDF5415EACB3900AD89D8 /* Build configuration list for PBXProject "Junction" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -519,6 +525,8 @@
 				9EAB158715F46975000D0FB9 /* tab_me.png in Resources */,
 				9EAB158C15F46A06000D0FB9 /* ProfileViewController.xib in Resources */,
 				9EC0BA5F15F59B2300B8553F /* InputViewController.xib in Resources */,
+				9EC109B3167870C600366FF1 /* pin.png in Resources */,
+				9EC109B4167870C600366FF1 /* pin@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,16 +662,17 @@
 		9EECDF7915EACB3A00AD89D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Saad Ansari (P536AZMPAD)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MetWorkingLite/MetWorkingLite-Prefix.pch";
-				INFOPLIST_FILE = "MetWorkingLite/MetWorkingLite-Info.plist";
+				GCC_PREFIX_HEADER = "MetWorkingLite/Junction-Prefix.pch";
+				INFOPLIST_FILE = "MetWorkingLite/Junction-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "65BFFB6F-CA3F-4B1A-9EC3-B0E1C7B95FF7";
+				PROVISIONING_PROFILE = "49FB971F-5F76-4B17-BDBA-2E948DBCB59C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -671,6 +680,7 @@
 		9EECDF7A15EACB3A00AD89D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Saad Ansari";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -678,10 +688,10 @@
 					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MetWorkingLite/MetWorkingLite-Prefix.pch";
-				INFOPLIST_FILE = "MetWorkingLite/MetWorkingLite-Info.plist";
+				GCC_PREFIX_HEADER = "MetWorkingLite/Junction-Prefix.pch";
+				INFOPLIST_FILE = "MetWorkingLite/Junction-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CA04152E-6C79-4A2C-9C6D-968A34DD3B9A";
+				PROVISIONING_PROFILE = "FEE65762-A226-4B2A-8802-B9131ED2CA19";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -690,7 +700,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9EECDF5415EACB3900AD89D8 /* Build configuration list for PBXProject "MetWorkingLite" */ = {
+		9EECDF5415EACB3900AD89D8 /* Build configuration list for PBXProject "Junction" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9EECDF7615EACB3A00AD89D8 /* Debug */,
