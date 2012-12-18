@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSString * position;
 @property (strong, nonatomic) NSMutableSet * friends;
 @property (strong, nonatomic) UIImage * photo;
+@property (strong, nonatomic) NSString * photoURL;
 @property (strong, nonatomic) NSString * industry;
 @property (strong, nonatomic) NSString * summary;
 @property (strong, nonatomic) NSString * location;
@@ -28,6 +29,7 @@
 //@property (nonatomic) NSArray * educations;
 @property (strong, nonatomic) NSArray * currentPositions;
 @property (nonatomic, assign) int numberOfFields;
-@property (strong, nonatomic) NSString * parseID; // repeated from PFUser
 @property (strong, nonatomic) UserPulse * userPulse;
+@property (strong, nonatomic) NSString * pfUserID;
+@property (strong, nonatomic) NSString * className;
 @end
