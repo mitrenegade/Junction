@@ -17,11 +17,11 @@
 
 @implementation ProfileViewController
 
-@synthesize descLabel, nameLabel, photoView;
+@synthesize photoView;
 @synthesize myUserInfo;
-@synthesize tableView;
 @synthesize delegate;
-@synthesize filters;
+@synthesize userDescription;
+@synthesize nameLabel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -40,22 +40,25 @@
     // Do any additional setup after loading the view from its nib.
     
     [self setMyUserInfo:[delegate getMyUserInfo]];
-    filters = [[NSMutableArray alloc] init];
-    
-    [self addFilter:@"TestFilter1"];
-    [self addFilter:@"TestFilter2"];
 
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(updateMyUserInfo) 
                                                  name:kMyUserInfoDidChangeNotification 
                                                object:nil];
+    
+    userDescription = [[UserDescriptionViewController alloc] init];
+    [userDescription.view setFrame:CGRectMake(0, photoView.frame.origin.y + photoView.frame.size.height, 320, 200)];
+    [self.view addSubview:userDescription.view];
 }
 
 -(void)updateMyUserInfo {
     myUserInfo = [delegate getMyUserInfo];
-    [nameLabel setText:myUserInfo.username];
     [photoView setImage:myUserInfo.photo];
-    [descLabel setText:myUserInfo.headline];
+    [nameLabel setText:myUserInfo.username];
+    [self.userDescription setTitle:myUserInfo.headline];
+    [self.userDescription setIndustry:myUserInfo.industry];
+    [self.userDescription setDescription:myUserInfo.summary];
+    [self.userDescription refreshDescription];
 }
 
 - (void)viewDidUnload
@@ -84,6 +87,8 @@
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+/*
 
 -(void)addFilter:(NSString*)description {
     NSMutableDictionary * filter = [[NSMutableDictionary alloc] initWithObjectsAndKeys:description, @"description", nil];
@@ -300,5 +305,5 @@
     [self.navigationController popViewControllerAnimated:YES];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"myUserInfoDidChange" object:self userInfo:nil];
 }
-
+*/
 @end

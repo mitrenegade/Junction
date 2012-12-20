@@ -27,6 +27,8 @@
 @synthesize allJunctionUserInfos;
 @synthesize allPulses;
 @synthesize allJunctionUsers;
+@synthesize notificationsController;
+@synthesize chatsTableController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -301,15 +303,29 @@
     profileController = [[ProfileViewController alloc] init];
     [profileController setDelegate:self];
     
+    chatsTableController = [[ChatsTableViewController alloc] init];
+
+    notificationsController = [[NotificationsViewController alloc] init];
+    
+#if 0
 	NSArray * viewControllers = [NSArray arrayWithObjects: proxController, mapViewController, profileController, nil];
     [tabBarController setViewControllers:viewControllers];
-    
     nav = [[UINavigationController alloc] initWithRootViewController:tabBarController];
     nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
     [tabBarController.navigationItem setTitle:@"Junction"];
-    
     [self.viewController presentModalViewController:nav animated:YES];
+#else
+    SideTabController * sideTabController = [[SideTabController alloc] init];
+    [sideTabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
+    [sideTabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
+    [sideTabController addController:mapViewController withNormalImage:[UIImage imageNamed:@"tab_world"] andHighlightedImage:nil andTitle:@"Map"];
+    [sideTabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
+    [sideTabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
+    
+    [self.viewController presentModalViewController:sideTabController animated:YES];
+    [sideTabController didSelectViewController:0];
+#endif
     
     if (isNewUser) {
         // add userinfo for user

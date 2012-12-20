@@ -12,6 +12,9 @@
 #import "ProximityViewController.h"
 #import "ParseHelper.h"
 #import "LinkedInHelper.h"
+#import "SideTabController.h"
+#import "ChatsTableViewController.h"
+#import "NotificationsViewController.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -34,6 +37,8 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 @property (nonatomic) ProximityViewController * proxController;
 @property (nonatomic) ProfileViewController * profileController;
 @property (nonatomic) MapViewController * mapViewController;
+@property (nonatomic) ChatsTableViewController * chatsTableController;
+@property (nonatomic) NotificationsViewController * notificationsController;
 
 @property (nonatomic) CLLocationManager * locationManager;
 @property (nonatomic) CLLocation * lastLocation;

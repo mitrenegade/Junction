@@ -12,6 +12,14 @@
 		9E1911ED1680504900C50361 /* ParseUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1911E91680504900C50361 /* ParseUserInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E1911EE1680515900C50361 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E99545616804DEA001E034A /* InfoPlist.strings */; };
 		9E1911F31680542600C50361 /* LinkedInHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1911F21680542600C50361 /* LinkedInHelper.m */; };
+		9E1EA6031681B66F005B7165 /* SideTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA6011681B66F005B7165 /* SideTabController.m */; };
+		9E1EA6041681B66F005B7165 /* SideTabController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA6021681B66F005B7165 /* SideTabController.xib */; };
+		9E1EA6101681C3E0005B7165 /* ChatsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA60E1681C3E0005B7165 /* ChatsTableViewController.m */; };
+		9E1EA6111681C3E0005B7165 /* ChatsTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */; };
+		9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */; };
+		9E1EA6171681C4B7005B7165 /* NotificationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */; };
+		9E1EA61F1681C9B5005B7165 /* UserDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA61D1681C9B5005B7165 /* UserDescriptionViewController.m */; };
+		9E1EA6201681C9B5005B7165 /* UserDescriptionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA61E1681C9B5005B7165 /* UserDescriptionViewController.xib */; };
 		9E3059AC16805DED00A35ABE /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059AD16805DED00A35ABE /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596F16805DED00A35ABE /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059AE16805DED00A35ABE /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30597116805DED00A35ABE /* NSURL+Base.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -100,6 +108,18 @@
 		9E1911EF168053BB00C50361 /* Junction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Junction.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E1911F11680542600C50361 /* LinkedInHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkedInHelper.h; path = Junction/LinkedInHelper.h; sourceTree = SOURCE_ROOT; };
 		9E1911F21680542600C50361 /* LinkedInHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedInHelper.m; path = Junction/LinkedInHelper.m; sourceTree = SOURCE_ROOT; };
+		9E1EA6001681B66F005B7165 /* SideTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTabController.h; sourceTree = SOURCE_ROOT; };
+		9E1EA6011681B66F005B7165 /* SideTabController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTabController.m; sourceTree = SOURCE_ROOT; };
+		9E1EA6021681B66F005B7165 /* SideTabController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideTabController.xib; sourceTree = SOURCE_ROOT; };
+		9E1EA60D1681C3E0005B7165 /* ChatsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatsTableViewController.h; sourceTree = SOURCE_ROOT; };
+		9E1EA60E1681C3E0005B7165 /* ChatsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatsTableViewController.m; sourceTree = SOURCE_ROOT; };
+		9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatsTableViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E1EA6131681C4B7005B7165 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = SOURCE_ROOT; };
+		9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = SOURCE_ROOT; };
+		9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationsViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E1EA61C1681C9B5005B7165 /* UserDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDescriptionViewController.h; sourceTree = SOURCE_ROOT; };
+		9E1EA61D1681C9B5005B7165 /* UserDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDescriptionViewController.m; sourceTree = SOURCE_ROOT; };
+		9E1EA61E1681C9B5005B7165 /* UserDescriptionViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserDescriptionViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E30596C16805DED00A35ABE /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
 		9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
 		9E30596E16805DED00A35ABE /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
@@ -259,6 +279,36 @@
 			path = ../ParseHelperLibrary;
 			sourceTree = "<group>";
 		};
+		9E1EA6061681B683005B7165 /* SideTab */ = {
+			isa = PBXGroup;
+			children = (
+				9E1EA6001681B66F005B7165 /* SideTabController.h */,
+				9E1EA6011681B66F005B7165 /* SideTabController.m */,
+				9E1EA6021681B66F005B7165 /* SideTabController.xib */,
+			);
+			name = SideTab;
+			sourceTree = "<group>";
+		};
+		9E1EA6071681C0A9005B7165 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				9E1EA60D1681C3E0005B7165 /* ChatsTableViewController.h */,
+				9E1EA60E1681C3E0005B7165 /* ChatsTableViewController.m */,
+				9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */,
+			);
+			name = Chat;
+			sourceTree = "<group>";
+		};
+		9E1EA6121681C4A5005B7165 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				9E1EA6131681C4B7005B7165 /* NotificationsViewController.h */,
+				9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */,
+				9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
 		9E3058C716805C9600A35ABE /* LinkedIn-OAuth */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,14 +433,14 @@
 			path = Images;
 			sourceTree = SOURCE_ROOT;
 		};
-		9EAB157C15F45BA5000D0FB9 /* ProximityView */ = {
+		9EAB157C15F45BA5000D0FB9 /* Browse */ = {
 			isa = PBXGroup;
 			children = (
 				9E99542B16804D73001E034A /* ProximityViewController.h */,
 				9E99542C16804D73001E034A /* ProximityViewController.m */,
 				9E99542D16804D73001E034A /* ProximityViewController.xib */,
 			);
-			name = ProximityView;
+			name = Browse;
 			sourceTree = "<group>";
 		};
 		9EC0BA5915F59AF800B8553F /* Profile */ = {
@@ -404,6 +454,9 @@
 				9E99537116804CF0001E034A /* InputViewController.h */,
 				9E99537216804CF0001E034A /* InputViewController.m */,
 				9E99537316804CF0001E034A /* InputViewController.xib */,
+				9E1EA61C1681C9B5005B7165 /* UserDescriptionViewController.h */,
+				9E1EA61D1681C9B5005B7165 /* UserDescriptionViewController.m */,
+				9E1EA61E1681C9B5005B7165 /* UserDescriptionViewController.xib */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -434,10 +487,13 @@
 			isa = PBXGroup;
 			children = (
 				9E99537616804D19001E034A /* Frameworks */,
+				9E1EA6061681B683005B7165 /* SideTab */,
 				9EECDF8315EB2D0500AD89D8 /* Users */,
+				9EAB157C15F45BA5000D0FB9 /* Browse */,
 				9EC0BA5915F59AF800B8553F /* Profile */,
+				9E1EA6071681C0A9005B7165 /* Chat */,
+				9E1EA6121681C4A5005B7165 /* Notifications */,
 				9EECDF8E15EB2D5600AD89D8 /* Location */,
-				9EAB157C15F45BA5000D0FB9 /* ProximityView */,
 				9E99543016804D7B001E034A /* ViewController.h */,
 				9E99543116804D7B001E034A /* ViewController.m */,
 				9E99543316804D8A001E034A /* ViewController.xib */,
@@ -574,6 +630,10 @@
 				9E3059C916805DED00A35ABE /* OAuthStarterKit-Info.plist in Resources */,
 				9E3059CC16805DED00A35ABE /* ProfileTabView.xib in Resources */,
 				9E3059CD16805DED00A35ABE /* READ_ME.txt in Resources */,
+				9E1EA6041681B66F005B7165 /* SideTabController.xib in Resources */,
+				9E1EA6111681C3E0005B7165 /* ChatsTableViewController.xib in Resources */,
+				9E1EA6171681C4B7005B7165 /* NotificationsViewController.xib in Resources */,
+				9E1EA6201681C9B5005B7165 /* UserDescriptionViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,6 +699,10 @@
 				9E3059CA16805DED00A35ABE /* OAuthStarterKitAppDelegate.m in Sources */,
 				9E3059CB16805DED00A35ABE /* ProfileTabView.m in Sources */,
 				9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */,
+				9E1EA6031681B66F005B7165 /* SideTabController.m in Sources */,
+				9E1EA6101681C3E0005B7165 /* ChatsTableViewController.m in Sources */,
+				9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */,
+				9E1EA61F1681C9B5005B7165 /* UserDescriptionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
