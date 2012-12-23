@@ -26,7 +26,7 @@
 @synthesize linkedInFriends;
 @synthesize allJunctionUserInfos;
 @synthesize allPulses;
-@synthesize allJunctionUsers;
+//@synthesize allJunctionUsers;
 @synthesize notificationsController;
 @synthesize chatsTableController;
 
@@ -50,11 +50,12 @@
     //    lhHelper = [[LinkedInHelper alloc] init];
     //    [lhHelper setDelegate:self];
     
-    locationManager = [[CLLocationManager alloc] init];
-    [locationManager setDelegate:self];
+    self.locationManager = [[CLLocationManager alloc] init];
+    [self.locationManager setDelegate:self];
     [self locationSetHighAccuracy];
     if ([CLLocationManager locationServicesEnabled]) {
-        [locationManager startMonitoringSignificantLocationChanges]; // monitor changes
+//        [self.locationManager startMonitoringSignificantLocationChanges]; // monitor changes
+        [self.locationManager startUpdatingLocation];
     }
     else {
         [[[UIAlertView alloc] initWithTitle:@"Location Services Off" message:@"Could not discover your location! Please ensure GPS or wireless are on." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
@@ -66,19 +67,27 @@
             NSLog(@"Got %d users on Parse", [results count]);
             if (!allJunctionUserInfos)
                 allJunctionUserInfos = [[NSMutableArray alloc] init];
-            if (!allJunctionUsers)
-                allJunctionUsers = [[NSMutableArray alloc] init];
             
             [allJunctionUserInfos removeAllObjects];
             for (PFObject * user in results) {
                 UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
                 NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
+#if !TESTING
                 if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
                     [allJunctionUserInfos addObject:friendUserInfo];
                 }
+#else
+                [allJunctionUserInfos addObject:friendUserInfo];
+#endif
             }
+            
+#if 0
+            //if (!allJunctionUsers)
+            //    allJunctionUsers = [[NSMutableArray alloc] init];
             [allJunctionUsers removeAllObjects];
             [allJunctionUsers addObjectsFromArray:results];
+#endif
+            [self updateFriendDistances];
         }
     }];
     allPulses = [[NSMutableDictionary alloc] init];
@@ -231,6 +240,7 @@
     // If it's a relatively recent event, turn off updates to save power
     CLLocation* location = [locations lastObject];
     NSDate* eventDate = location.timestamp;
+    NSDate* now = [NSDate date];
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     if (abs(howRecent) < LOCATION_RECENT_TIME_INTERVAL) {
         // If the event is recent, do something with it.
@@ -238,10 +248,10 @@
               location.coordinate.latitude,
               location.coordinate.longitude);
         
-        if (lastLocation == nil) {
-            lastLocation = [location copy];
-        }
-        if ([lastLocation distanceFromLocation:location] > LOCATION_MIN_DISTANCE_FOR_UPDATE) {
+//        if (lastLocation == nil) {
+//            lastLocation = [location copy];
+//        }
+        if (!lastLocation || [lastLocation distanceFromLocation:location] > LOCATION_MIN_DISTANCE_FOR_UPDATE) {
             // update location
             lastLocation = [location copy];
             
@@ -297,8 +307,8 @@
     proxController = [[ProximityViewController alloc] init];
     [proxController setDelegate:self];
     
-    mapViewController = [[MapViewController alloc] init];
-    [mapViewController setDelegate:self];
+    //mapViewController = [[MapViewController alloc] init];
+    //[mapViewController setDelegate:self];
     
     profileController = [[ProfileViewController alloc] init];
     [profileController setDelegate:self];
@@ -319,7 +329,7 @@
     SideTabController * sideTabController = [[SideTabController alloc] init];
     [sideTabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
     [sideTabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
-    [sideTabController addController:mapViewController withNormalImage:[UIImage imageNamed:@"tab_world"] andHighlightedImage:nil andTitle:@"Map"];
+    //[sideTabController addController:mapViewController withNormalImage:[UIImage imageNamed:@"tab_world"] andHighlightedImage:nil andTitle:@"Map"];
     [sideTabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
     [sideTabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
     
@@ -348,58 +358,61 @@
         NSString * friendID = [f objectForKey:@"id"];
         [linkedInFriends setObject:f forKey:friendID];
     }
-    
-    if (allJunctionUsers) {
-        [self updateFriendDistances];
-    }
 }
 
 -(void)updateFriendDistances {
     NSLog(@"Compare junction users with friends!");
-    if ([allJunctionUsers count] == 0)
+    if ([allJunctionUserInfos count] == 0)
         return;
-    if ([linkedInFriends count] == 0)
-        return;
+    //if ([linkedInFriends count] == 0)
+    //    return;
     
     NSArray * allkeys = [[linkedInFriends keyEnumerator] allObjects];
     for (id key in allkeys) {
         NSLog(@"Key: %@ object: %@", key, [linkedInFriends objectForKey:key]);
     }
     
-    for (PFObject * user in allJunctionUsers) {
-        UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
+    for (UserInfo * friendUserInfo in allJunctionUserInfos) {
+//        UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
         NSLog(@"Comparing junction user %@ with %d LinkedIn friends", friendUserInfo.username, [linkedInFriends count]);
-        if (1) { //[linkedInFriends objectForKey:friendUserInfo.linkedInString] != nil) {
-            
-            [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
-                if (error) {
-                    NSLog(@"Could not find pulse for user %@", friendUserInfo.username);
+#if !TESTING
+        if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID])
+            continue;
+#endif
+        [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
+            if (error) {
+                NSLog(@"Could not find pulse for user %@", friendUserInfo.username);
+            }
+            else {
+                //                    PFObject * object = [results objectAtIndex:0];
+                UserPulse * pulse = [results objectAtIndex:0];//[[UserPulse alloc] initWithPFObject:object];
+                NSLog(@"User %@ %@ found at coord %f %f", friendUserInfo.username, friendUserInfo.pfUserID, pulse.coordinate.latitude, pulse.coordinate.longitude);
+                
+                [allPulses setObject:pulse forKey:friendUserInfo.pfUserID];
+                [proxController reloadAll];
+                // todo: use that to calculate distance, requires own coordinate from gps
+                
+                float distanceInMeters = 999;
+                if (lastLocation) {
+                    CLLocation * friendLocation = [[CLLocation alloc] initWithLatitude:pulse.coordinate.latitude longitude:pulse.coordinate.longitude];
+                    distanceInMeters = [lastLocation distanceFromLocation:friendLocation];
                 }
-                else {
-                    PFObject * object = [results objectAtIndex:0];
-                    UserPulse * pulse = [[UserPulse alloc] initWithPFObject:object];
-                    NSLog(@"User %@ %@ found at coord %f %f", friendUserInfo.username, friendUserInfo.pfUserID, pulse.coordinate.latitude, pulse.coordinate.longitude);
-                    
-                    [allPulses setObject:pulse forKey:friendUserInfo.pfUserID];
-                    [proxController reloadAll];                    // todo: use that to calculate distance, requires own coordinate from gps
-
-                    float distanceInMeters = 999;
-                    if (lastLocation) {
-                        CLLocation * friendLocation = [[CLLocation alloc] initWithLatitude:pulse.coordinate.latitude longitude:pulse.coordinate.longitude];
-                        distanceInMeters = [lastLocation distanceFromLocation:friendLocation];
-                    }
-                    
-                    NSString * friendID = friendUserInfo.linkedInString;
-                    NSMutableDictionary * friend = [linkedInFriends objectForKey:friendID];
-                    NSString * friendName = [NSString stringWithFormat:@"%@ %@", [friend objectForKey:@"firstName"], [friend objectForKey:@"lastName"]];
-                    NSString * friendHeadline = [friend objectForKey:@"headline"];
-                    UIImage * photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[friend objectForKey:@"pictureURL"]]]];
-                    NSLog(@"Friend found! name %@ id %@ headline %@",friendName, friendID, friendHeadline);
-                    [proxController addUser:friendID withName:friendName withHeadline:friendHeadline withPhoto:photo atDistance:distanceInMeters];
-                }
-            }];
-            
-        }
+                
+                /*
+                 // populate friends with full information, and strangers with only some information
+                 if ([linkedInFriends objectForKey:friendUserInfo.linkedInString] != nil) {
+                 NSString * friendID = friendUserInfo.linkedInString;
+                 NSMutableDictionary * friend = [linkedInFriends objectForKey:friendID];
+                 NSString * friendName = [NSString stringWithFormat:@"%@ %@", [friend objectForKey:@"firstName"], [friend objectForKey:@"lastName"]];
+                 NSString * friendHeadline = [friend objectForKey:@"headline"];
+                 UIImage * photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[friend objectForKey:@"pictureURL"]]]];
+                 NSLog(@"Friend found! name %@ id %@ headline %@",friendName, friendID, friendHeadline);
+                 [proxController addUser:friendID withName:friendName withHeadline:friendHeadline withPhoto:photo atDistance:distanceInMeters];
+                 }
+                 */
+            }
+        }];
+        
     }
 }
 @end

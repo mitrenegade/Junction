@@ -81,6 +81,7 @@
 		9E99545416804DD2001E034A /* tab_me.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E99544A16804DD2001E034A /* tab_me.png */; };
 		9E99545516804DD2001E034A /* tab_world.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E99544B16804DD2001E034A /* tab_world.png */; };
 		9E99545A16804E11001E034A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99545916804E11001E034A /* main.m */; };
+		9E9D1DA71686EC830008E68B /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E9D1DA61686EC830008E68B /* Constants.m */; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
 		9EC27748161043160069F6E5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27747161043160069F6E5 /* MobileCoreServices.framework */; };
@@ -221,6 +222,8 @@
 		9E99545916804E11001E034A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Junction/main.m; sourceTree = SOURCE_ROOT; };
 		9E99545B16804E18001E034A /* Junction-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Junction-Info.plist"; path = "Junction/Junction-Info.plist"; sourceTree = SOURCE_ROOT; };
 		9E99545C16804E18001E034A /* Junction-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Junction-Prefix.pch"; path = "Junction/Junction-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		9E9D1DA51686EC830008E68B /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = SOURCE_ROOT; };
+		9E9D1DA61686EC830008E68B /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = SOURCE_ROOT; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9EC277451610430A0069F6E5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9EC27747161043160069F6E5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -439,6 +442,8 @@
 				9E99542B16804D73001E034A /* ProximityViewController.h */,
 				9E99542C16804D73001E034A /* ProximityViewController.m */,
 				9E99542D16804D73001E034A /* ProximityViewController.xib */,
+				9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */,
+				9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */,
 			);
 			name = Browse;
 			sourceTree = "<group>";
@@ -446,8 +451,6 @@
 		9EC0BA5915F59AF800B8553F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */,
-				9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */,
 				9E99536B16804CE3001E034A /* ProfileViewController.h */,
 				9E99536C16804CE3001E034A /* ProfileViewController.m */,
 				9E99536D16804CE3001E034A /* ProfileViewController.xib */,
@@ -501,6 +504,8 @@
 				9E1911F21680542600C50361 /* LinkedInHelper.m */,
 				9E99543516804D9B001E034A /* AppDelegate.h */,
 				9E99543616804D9B001E034A /* AppDelegate.m */,
+				9E9D1DA51686EC830008E68B /* Constants.h */,
+				9E9D1DA61686EC830008E68B /* Constants.m */,
 				9EECDF9415EB2D8200AD89D8 /* Utils */,
 				9E99544116804DD2001E034A /* Images */,
 				9EECDF6515EACB3A00AD89D8 /* Supporting Files */,
@@ -703,6 +708,7 @@
 				9E1EA6101681C3E0005B7165 /* ChatsTableViewController.m in Sources */,
 				9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */,
 				9E1EA61F1681C9B5005B7165 /* UserDescriptionViewController.m in Sources */,
+				9E9D1DA71686EC830008E68B /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,6 +15,7 @@
 #import "SideTabController.h"
 #import "ChatsTableViewController.h"
 #import "NotificationsViewController.h"
+#import "Constants.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -44,7 +45,7 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 @property (nonatomic) CLLocation * lastLocation;
 
 @property (nonatomic) NSMutableDictionary * linkedInFriends;
-@property (nonatomic) NSMutableArray * allJunctionUsers;
+//@property (nonatomic) NSMutableArray * allJunctionUsers;
 @property (nonatomic) NSMutableArray * allJunctionUserInfos;
 @property (nonatomic) NSMutableDictionary * allPulses;
 

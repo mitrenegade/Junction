@@ -30,7 +30,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 @synthesize activityIndicator;
 @synthesize tableView;
-@synthesize photoView, nameLabel, descLabel;
+//@synthesize photoView, nameLabel, descLabel;
 //@synthesize names, titles, photos, distances;
 @synthesize myUserInfo;
 @synthesize delegate;
@@ -111,33 +111,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 -(void)updateMyUserInfo {
     myUserInfo = [delegate getMyUserInfo];
-    [nameLabel setText:myUserInfo.username];
-    [photoView setImage:myUserInfo.photo];
-    [descLabel setText:myUserInfo.headline];
+//    [nameLabel setText:myUserInfo.username];
+//    [photoView setImage:myUserInfo.photo];
+//    [descLabel setText:myUserInfo.headline];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
--(void)addUser:(NSString *)userID withName:(NSString *)name withHeadline:(NSString *)headline withPhoto:(UIImage *)photo atDistance:(double)distance {
-    // todo: sort
-    //NSLog(@"Adding %@ at %f", name, distance);
-    
-    /*
-     +    [names addObject:name];
-     +    [titles addObject:title];
-     +    if (photo)
-     +        [photos addObject:photo];
-     +    else
-     +        [photos addObject:[UIImage imageNamed:@"graphic_nopic"]];
-     +    [distances addObject:[NSNumber numberWithDouble:distance]];
-     +     */
-    UserInfo * newUser = [[UserInfo alloc] init];
-    [newUser setUsername:name];
-    [newUser setHeadline:headline];
-    [tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -212,96 +193,17 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-//    return 1.0;
-    return 30;
+    return 1.0;
+//    return 30;
 }
 
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return ROW_HEIGHT;
     if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
         return 0;
-    return self.view.bounds.size.width / NUM_COLUMNS;
+    float height = self.tableView.frame.size.width / NUM_COLUMNS;
+    NSLog(@"Height: %f", height);
+    return height;
 }
-
-// 1 column cell
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell * cell = (UITableViewCell *) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.backgroundView = [[UIImageView alloc] init];
-        cell.selectedBackgroundView = [[UIImageView alloc] init];
-        
-		//cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        [cell.textLabel setHighlightedTextColor:[cell.textLabel textColor]];
-        cell.textLabel.numberOfLines = 1;
-        UILabel * topLabel = [[UILabel alloc] initWithFrame:CGRectMake(ROW_HEIGHT, 5, 300, 25)];
-        UILabel * bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(ROW_HEIGHT, 23, 300, 20)];
-		topLabel.textColor = [UIColor blackColor]; //[UIColor colorWithRed:102/255.0 green:0.0 blue:0.0 alpha:1.0];
-		topLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:[UIFont labelFontSize]-4];
-		bottomLabel.textColor = [UIColor blackColor]; //[UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0];
-		bottomLabel.font = [UIFont fontWithName:@"Helvetica" size:[UIFont labelFontSize] - 7];
-        
-        UIButton * photo = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, ROW_HEIGHT-10, ROW_HEIGHT-10)];
-		[photo.layer setBorderColor: [[UIColor blackColor] CGColor]];
-        [photo.layer setBorderWidth: 2.0];
-        [photo addTarget:self action:@selector(didClickUserPhoto:) forControlEvents:UIControlEventTouchUpInside];
-        photo.tag = PHOTO_TAG; // + [indexPath row];
-        [cell.contentView addSubview:photo];
-        
-        //NSLog(@"%@", [UIFont fontNamesForFamilyName:@"Helvetica"]);
-        [cell.contentView setBackgroundColor:[UIColor clearColor]];
-        [topLabel setBackgroundColor:[UIColor clearColor]];
-        [bottomLabel setBackgroundColor:[UIColor clearColor]];
-        topLabel.tag = TOP_LABEL_TAG;
-        bottomLabel.tag = BOTTOM_LABEL_TAG;
-        [cell.contentView addSubview:topLabel];
-        [cell.contentView addSubview:bottomLabel];
-        [cell addSubview:cell.contentView];
-    }
-    
-    // Configure the cell...
-    int section = [indexPath section];
-    int index = [indexPath row];
-    
-    NSMutableArray * distanceGroup = [distanceGroups objectAtIndex:section];
-    
-    NSString * username;
-    if (index >= [distanceGroup count])
-        [cell.textLabel setText:@"NIL"];
-    else {
-        NSString * userID = [distanceGroup objectAtIndex:index];
-        UserInfo * userInfo = [userInfos objectForKey:userID];
-        
-        UILabel * topLabel = (UILabel *)[cell viewWithTag:TOP_LABEL_TAG];
-        UILabel * bottomLabel = (UILabel *)[cell viewWithTag:BOTTOM_LABEL_TAG];
-        username = userInfo.username; //[names objectAtIndex:index];
-        NSString * desc = userInfo.headline; //[titles objectAtIndex:index];
-        [topLabel setText:username];
-        [bottomLabel setText:desc];
-        [topLabel setFrame:CGRectMake(ROW_HEIGHT, 5, 300, 25)]; // bottom label exists so set topLabel higher
-
-        UIImage * img = userInfo.photo; //[photos objectAtIndex:index];
-        UIButton * photo = (UIButton*)[cell viewWithTag:PHOTO_TAG]; // + index];
-        //[photo setBackgroundImage:img forState:UIControlStateNormal]; //setImage:img forState:UIControlStateNormal];
-        [photo setImage:img forState:UIControlStateNormal];
-        photo.titleLabel.text = username;
-        photo.titleLabel.hidden = YES;
-    }    
-
-    if (0) {
-        UIImageView * addFriendButton = [[UIImageView alloc] initWithFrame:CGRectMake(-5, 0, 91, 30)];
-        [addFriendButton setImage:[UIImage imageNamed:@"btn_follow"]];// forState:
-        cell.accessoryView = addFriendButton;
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    return cell;    
-}
-*/
 
 -(UIView*)viewForItemInSection:(int)section Row:(int)row Column:(int)column {
     NSMutableArray * group = [distanceGroups objectAtIndex:section];
@@ -314,16 +216,18 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     if (![portraitViews objectForKey:userID]) {
         // create new portraitView
         if ([userInfos objectForKey:userID]) {
-            int size = self.view.bounds.size.width / NUM_COLUMNS;
-            int xoffset = column * size;
-            CGRect frame = CGRectMake(xoffset, 0, size, size);
+            int size = self.tableView.frame.size.width / NUM_COLUMNS;
+            CGRect frame = CGRectMake(0, 0, size, size);
             PortraitScrollViewController * portraitView = [[PortraitScrollViewController alloc] init];
-            [portraitView.view setFrame:frame];
+            [portraitView.view setFrame:frame]; // for setting photo size
             [portraitView addUserInfo:[userInfos objectForKey:userID]];
+            //[portraitView.view setBackgroundColor:[UIColor blueColor]];
+            //NSLog(@"portraitView size (blue frame): %f %f %f %f", portraitView.view.frame.origin.x, portraitView.view.frame.origin.y, portraitView.view.frame.size.width, portraitView.view.frame.size.height);
             [portraitViews setObject:portraitView forKey:userID];
         }
     }
     return [[portraitViews objectForKey:userID] view];
+    //return [portraitViews objectForKey:userID];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -337,7 +241,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         cell.selectedBackgroundView = [[UIImageView alloc] init];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        [cell.contentView setBackgroundColor:[UIColor clearColor]];
+        [cell.contentView setBackgroundColor:[UIColor yellowColor]];
     }
     
     // Configure the cell...
@@ -350,7 +254,12 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     
     for (int col=0; col<NUM_COLUMNS; col++) {
         UIView * portraitView = [self viewForItemInSection:section Row:row Column:col];
+        int size = self.tableView.frame.size.width / NUM_COLUMNS;
+        int xoffset = col * size;
+        CGRect frame = CGRectMake(xoffset, 0, size, size);
+        [portraitView setFrame:frame];
         [cell addSubview:portraitView];
+        NSLog(@"Cell row %d col %d frame: %f %f %f %f", row, col, portraitView.frame.origin.x, portraitView.frame.origin.y, portraitView.frame.size.width, portraitView.frame.size.height);
     }
     return cell;
 }
@@ -372,9 +281,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     for (UserInfo * friendUserInfo in allUserInfos) {
         NSString * userID = friendUserInfo.pfUserID;
         UserPulse * pulse = [allPulses objectForKey:userID];
+#if !TESTING
         if ([userID isEqualToString:myUserInfo.pfUserID])
             return;
-
+#endif
         // todo: use that to calculate distance, requires own coordinate from gps
         float distanceInMeters = 999;
         if (appDelegate.lastLocation) {
@@ -403,5 +313,9 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         }
     }
     [self.tableView reloadData];
+}
+
+-(IBAction)didClickSearch:(id)sender {
+    NSLog(@"Proximity view clicked search");
 }
 @end

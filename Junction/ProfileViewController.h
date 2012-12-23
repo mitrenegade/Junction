@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
 #import "InputViewController.h"
-#import "UserDescriptionViewController.h"
+#import "Constants.h"
+//#import "UserDescriptionViewController.h"
 
 @protocol ProfileDelegate <NSObject>
 
@@ -21,9 +22,13 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView * photoView;
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
-@property (strong, nonatomic) UserDescriptionViewController * userDescription;
+//@property (strong, nonatomic) UserDescriptionViewController * userDescription;
 @property (nonatomic, strong) UserInfo * myUserInfo;
 @property (weak, nonatomic) id delegate;
+@property (nonatomic, strong) IBOutlet UILabel * titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel * industryLabel;
+@property (nonatomic, strong) IBOutlet UITextView * descriptionLabel;
 //@property (nonatomic) NSMutableArray * filters;
+@property (nonatomic, weak) IBOutlet UIScrollView * scrollView;
 
 @end

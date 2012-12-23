@@ -14,9 +14,10 @@
     BOOL pageControlBeingUsed;
     int currentPage;
 }
-@property (nonatomic) UIImage * photo;
-@property (nonatomic) NSMutableArray * pages;
+@property (nonatomic, strong) UIImage * photo;
+@property (nonatomic, strong) NSMutableArray * pages;
 @property (nonatomic) UIScrollView * scrollView;
+@property (nonatomic, strong) UIPageControl * pageControl;
 
 -(void)addUserInfo:(UserInfo *)userInfo;
 

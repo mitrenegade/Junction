@@ -16,6 +16,7 @@
 
 @synthesize pages, photo;
 @synthesize scrollView;
+@synthesize pageControl;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,7 +31,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    //pages = [[NSMutableArray alloc] init];
+    pages = [[NSMutableArray alloc] init];
 	pageControlBeingUsed = NO;
 }
 
@@ -43,8 +44,9 @@
 -(void)addPhoto:(UIImage*)userPhoto {
     self.photo = userPhoto;
     int border = 2;
-    int size = self.view.bounds.size.width;
+    int size = self.view.frame.size.width;
     CGRect portraitframe = CGRectMake(border,border,size-border,size-border);
+    NSLog(@"Photo size: %d portraitFrame: %f %f %f %f", size, portraitframe.origin.x, portraitframe.origin.y, portraitframe.size.width, portraitframe.size.height);
 
     UIImageView * photoBG = [[UIImageView alloc] initWithImage:self.photo];
     [photoBG setFrame:portraitframe];
@@ -53,9 +55,9 @@
 
 -(void)addUserInfo:(UserInfo *)userInfo {
     // create multiple pages
-    int width = self.view.bounds.size.width;
-    int height = self.view.bounds.size.height;
-    int pageCt = 0;
+    int width = self.view.frame.size.width;
+    int height = self.view.frame.size.height;
+    //int pageCt = 0;
     
     // background photo
     [self addPhoto:userInfo.photo];
@@ -64,11 +66,11 @@
     int fontSize = 15;
     int offset = 6;
     int border = 2;
-    int size = self.view.bounds.size.width;
+    int size = self.view.frame.size.width;
     CGRect portraitframe = CGRectMake(border,border,size-border,size-border);
     
     // page 1: username, headline
-    pageCt++;
+    //pageCt++;
     UIView * page1 = [[UIView alloc] initWithFrame:portraitframe];
     UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
     [nameLabel setText:userInfo.username];
@@ -78,8 +80,10 @@
     [nameLabel setBackgroundColor:[UIColor clearColor]];
     [nameLabel setTextColor:[UIColor whiteColor]];
     [page1 addSubview:nameLabel];
+    if (userInfo.username)
+        [pages addObject:page1];
     
-    pageCt++;
+    //pageCt++;
     UIView * page2 = [[UIView alloc] initWithFrame:portraitframe];
     UILabel * headlineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
     [headlineLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
@@ -89,9 +93,11 @@
     [headlineLabel setBackgroundColor:[UIColor clearColor]];
     [headlineLabel setTextColor:[UIColor whiteColor]];
     [page2 addSubview:headlineLabel];
-    
+    if (userInfo.headline)
+        [pages addObject:page2];
+
     // page 2: username, headline
-    pageCt++;
+    //pageCt++;
     UIView * page3 = [[UIView alloc] initWithFrame:portraitframe];
     UILabel * emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
     [emailLabel setText:userInfo.email];
@@ -101,8 +107,10 @@
     [emailLabel setBackgroundColor:[UIColor clearColor]];
     [emailLabel setTextColor:[UIColor whiteColor]];
     [page3 addSubview:emailLabel];
-    
-    pageCt++;
+    if (userInfo.email)
+        [pages addObject:page3];
+
+    //pageCt++;
     UIView * page4 = [[UIView alloc] initWithFrame:portraitframe];
     UILabel * industryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
     [industryLabel setText:userInfo.industry];
@@ -112,26 +120,40 @@
     [industryLabel setBackgroundColor:[UIColor clearColor]];
     [industryLabel setTextColor:[UIColor whiteColor]];
     [page4 addSubview:industryLabel];
-    
+    if (userInfo.industry)
+        [pages addObject:page4];
+
     scrollView = [[UIScrollView alloc] initWithFrame:portraitframe];
     [scrollView setDelegate:self];
     [scrollView setShowsHorizontalScrollIndicator:NO];
     [scrollView setShowsVerticalScrollIndicator:NO];
     [scrollView setDirectionalLockEnabled:YES];
     [scrollView setBounces:NO];
-    self.scrollView.contentSize = CGSizeMake(width*pageCt, height);
-    [page1 setCenter:CGPointMake(width/2+width*0, height/2)];
-    [page2 setCenter:CGPointMake(width/2+width*1, height/2)];
-    [page3 setCenter:CGPointMake(width/2+width*2, height/2)];
-    [page4 setCenter:CGPointMake(width/2+width*3, height/2)];
-    [self.scrollView addSubview:page1];
-    [self.scrollView addSubview:page2];
-    [self.scrollView addSubview:page3];
-    [self.scrollView addSubview:page4];
+    self.scrollView.contentSize = CGSizeMake(width*[pages count], height);
+    for (int i=0; i<[pages count]; i++) {
+        [[pages objectAtIndex:i] setCenter:CGPointMake(width/2+width*i, height/2)];
+        [self.scrollView addSubview:[pages objectAtIndex:i]];
+    }
     [self.scrollView setPagingEnabled:YES];
+    //[self.scrollView setBackgroundColor:[UIColor greenColor]];
     [self.view addSubview:scrollView];
+
+    pageControl = [[UIPageControl alloc] init];
+    int pageCt = [pages count];
+    [pageControl setNumberOfPages:pageCt];
+    [pageControl setHidesForSinglePage:NO];
+    [pageControl setFrame:portraitframe];
     
-//    [self setPages:[NSMutableArray arrayWithObjects:page1,page2,page3,page4, nil]];
+    CGSize pcsize = [pageControl sizeForNumberOfPages:pageCt]; //[pages count]];
+    [pageControl setFrame:CGRectMake(0, 0, pcsize.width, pcsize.height)];
+    CGPoint center = CGPointMake(width/2, height-10);//self.view.center;
+    [pageControl setCenter:center];
+    
+    //[pageControl setBackgroundColor:[UIColor redColor]];
+    
+    [self.view addSubview:pageControl];
+    NSLog(@"Scrollview dims (green frame): %f %f", scrollView.frame.size.width, scrollView.frame.size.height);
+    NSLog(@"pageControl frame (red frame): %f %f %f %f view size: %f %f", pageControl.frame.origin.x, pageControl.frame.origin.y, pageControl.frame.size.width, pageControl.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
@@ -139,8 +161,8 @@
 		// Switch the indicator when more than 50% of the previous/next page is visible
 		CGFloat pageWidth = self.scrollView.frame.size.width;
 		int page = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-		//self.pageControl.currentPage = page;
-        currentPage = page;
+		self.pageControl.currentPage = page;
+        //currentPage = page;
 	}
 }
 
@@ -155,8 +177,8 @@
 - (IBAction)changePage {
 	// Update the scroll view to the appropriate page
 	CGRect frame;
-	frame.origin.x = self.scrollView.frame.size.width * currentPage; //self.pageControl.currentPage;
-	frame.origin.y = 0;
+	frame.origin.x = self.pageControl.currentPage;
+    //self.scrollView.frame.size.width * currentPage; //	frame.origin.y = 0;
 	frame.size = self.scrollView.frame.size;
 	[self.scrollView scrollRectToVisible:frame animated:YES];
 	

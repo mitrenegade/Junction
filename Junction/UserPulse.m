@@ -120,8 +120,11 @@ static NSMutableDictionary * allUserPulses;
                 if ([objects count] == 0) {
                     NSLog(@"No objects found for classname %@ and pfUser %@", CLASSNAME, pfUser);
                     UserPulse * pulse = [[UserPulse alloc] init];
+                    // todo: call a pulseFromUserInfo
                     [pulse setPfUser:pfUser];
+                    [pulse setPfUserID:pfUser.objectId];
                     [pulse setCoordinate:location.coordinate];
+                    [pulse setLinkedInID:myUserInfo.linkedInString];
                     PFObject * pulseObject = [pulse toPFObject];
                     [pulse setPfObject:pulseObject];
                     [myUserInfo setUserPulse:pulse];

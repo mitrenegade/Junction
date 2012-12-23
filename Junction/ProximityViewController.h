@@ -11,7 +11,6 @@
 #import "UserPulse.h"
 #import "PortraitScrollViewController.h"
 
-#define ROW_HEIGHT 60
 #define HEADER_HEIGHT 30
 #define TOP_LABEL_TAG 1001
 #define BOTTOM_LABEL_TAG 1002
@@ -36,9 +35,9 @@ enum DISTANCE_GROUPS {
 @interface ProximityViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
-@property (weak, nonatomic) IBOutlet UIImageView * photoView;
-@property (weak, nonatomic) IBOutlet UILabel * nameLabel;
-@property (weak, nonatomic) IBOutlet UILabel * descLabel;
+//@property (weak, nonatomic) IBOutlet UIImageView * photoView;
+//@property (weak, nonatomic) IBOutlet UILabel * nameLabel;
+//@property (weak, nonatomic) IBOutlet UILabel * descLabel;
 @property (weak, nonatomic) IBOutlet UITableView * tableView;
 /*
 @property (nonatomic) NSMutableArray * names;
@@ -55,6 +54,6 @@ enum DISTANCE_GROUPS {
 @property (weak, nonatomic) UserInfo * myUserInfo;
 @property (weak, nonatomic) id delegate;
 
--(void)addUser:(NSString*)userID withName:(NSString*)name withHeadline:(NSString*)headline withPhoto:(UIImage*)photo atDistance:(double)distance;
 -(void)reloadAll;
+-(IBAction)didClickSearch:(id)sender;
 @end
