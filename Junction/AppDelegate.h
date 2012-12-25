@@ -16,6 +16,7 @@
 #import "ChatsTableViewController.h"
 #import "NotificationsViewController.h"
 #import "Constants.h"
+#import "RightTabController.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -23,30 +24,34 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 
 @class ViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, LinkedInHelperDelegate, UITabBarControllerDelegate, ProximityDelegate, ProfileDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, LinkedInHelperDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) ViewController *viewController;
-@property (nonatomic) UINavigationController * nav;
+@property (nonatomic, strong) UINavigationController * nav;
 @property (assign, nonatomic) UINavigationController * navLogin;
-@property (nonatomic) LinkedInHelper * lhHelper;
+@property (nonatomic, weak) LinkedInHelper * lhHelper;
 @property (assign, nonatomic) UIViewController * lhView; // hack
 
 @property (nonatomic) UserInfo * myUserInfo;
 
-@property (nonatomic) ProximityViewController * proxController;
-@property (nonatomic) ProfileViewController * profileController;
-@property (nonatomic) MapViewController * mapViewController;
-@property (nonatomic) ChatsTableViewController * chatsTableController;
-@property (nonatomic) NotificationsViewController * notificationsController;
+@property (nonatomic, strong) ProximityViewController * proxController;
+@property (nonatomic, strong) ProfileViewController * profileController;
+@property (nonatomic, strong) ProximityViewController * connectionsController;
+@property (nonatomic, strong) MapViewController * mapViewController;
+@property (nonatomic, strong) ChatsTableViewController * chatsTableController;
+@property (nonatomic, strong) NotificationsViewController * notificationsController;
 
 @property (nonatomic) CLLocationManager * locationManager;
 @property (nonatomic) CLLocation * lastLocation;
 
 @property (nonatomic) NSMutableDictionary * linkedInFriends;
-//@property (nonatomic) NSMutableArray * allJunctionUsers;
+@property (nonatomic, strong) NSMutableSet * connected;
 @property (nonatomic) NSMutableArray * allJunctionUserInfos;
 @property (nonatomic) NSMutableDictionary * allPulses;
+
+-(BOOL)isConnectedWithUser:(UserInfo*)user;
+-(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo;
 
 @end

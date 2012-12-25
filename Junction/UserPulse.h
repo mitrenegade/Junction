@@ -20,7 +20,7 @@
 // hack: queries don't have pfUser so these are unique identifiers. not efficient
 @property (nonatomic) NSString * pfUserID; // objectID from pfUser, needed for queries
 @property (nonatomic) NSString * linkedInID; // linkedInID, needed for queries
-+(void)DoUserPulseWithLocation:(CLLocation*)location forUser:(UserInfo*)userInfo;
++(void)DoUserPulseWithLocation:(CLLocation*)location forUser:(UserInfo*)myUserInfo withBlock:(void (^)(BOOL success))pulseCompleted;
 +(void)FindUserPulseForUserInfo:(UserInfo*)userInfo withBlock:(void (^)(NSArray *, NSError *))queryCompletedWithResults;
 +(NSString*)className;
 -(ParseLocationAnnotation*)toAnnotation;

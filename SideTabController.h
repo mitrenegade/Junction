@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Constants.h"
 
-#define SIDEBAR_WIDTH 40
 @interface SideTabController : UIViewController
 
 @property (nonatomic, strong) IBOutlet UIView * sidebarView;

@@ -17,6 +17,7 @@
 @synthesize pages, photo;
 @synthesize scrollView;
 @synthesize pageControl;
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,7 +47,6 @@
     int border = 2;
     int size = self.view.frame.size.width;
     CGRect portraitframe = CGRectMake(border,border,size-border,size-border);
-    NSLog(@"Photo size: %d portraitFrame: %f %f %f %f", size, portraitframe.origin.x, portraitframe.origin.y, portraitframe.size.width, portraitframe.size.height);
 
     UIImageView * photoBG = [[UIImageView alloc] initWithImage:self.photo];
     [photoBG setFrame:portraitframe];
@@ -54,6 +54,8 @@
 }
 
 -(void)addUserInfo:(UserInfo *)userInfo {
+    self.userInfo = userInfo;
+    
     // create multiple pages
     int width = self.view.frame.size.width;
     int height = self.view.frame.size.height;
@@ -152,8 +154,22 @@
     //[pageControl setBackgroundColor:[UIColor redColor]];
     
     [self.view addSubview:pageControl];
-    NSLog(@"Scrollview dims (green frame): %f %f", scrollView.frame.size.width, scrollView.frame.size.height);
-    NSLog(@"pageControl frame (red frame): %f %f %f %f view size: %f %f", pageControl.frame.origin.x, pageControl.frame.origin.y, pageControl.frame.size.width, pageControl.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
+
+    /*
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button.titleLabel setText:userInfo.pfUserID];
+    [button.titleLabel setHidden:YES];
+    [button addTarget:self action:@selector(didSelectPortrait:) forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:portraitframe];
+    [self.view addSubview:button];
+    */
+    
+    // add gesture recognizer
+    UITapGestureRecognizer * myTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureHandler:)];
+    [myTapRecognizer setNumberOfTapsRequired:1];
+    [myTapRecognizer setNumberOfTouchesRequired:1];
+    [myTapRecognizer setDelegate:self];
+    [self.view addGestureRecognizer:myTapRecognizer];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
@@ -189,5 +205,13 @@
 	pageControlBeingUsed = YES;
 }
 
+#pragma mark gesture recognizer
+-(void)tapGestureHandler:(UITapGestureRecognizer*) sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        // so tap is not continuously sent
+        NSLog(@"Tap gesture!");
+        [delegate didTapPortraitWithUserInfo:self.userInfo];
+    }
+}
 
 @end

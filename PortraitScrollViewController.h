@@ -9,7 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
 
-@interface PortraitScrollViewController : UIViewController <UIScrollViewDelegate>
+@protocol PortraitScrollDelegate <NSObject>
+
+-(void)didTapPortraitWithUserInfo:(UserInfo*)tappedUserInfo;
+
+@end
+
+@interface PortraitScrollViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 {
     BOOL pageControlBeingUsed;
     int currentPage;
@@ -18,6 +24,8 @@
 @property (nonatomic, strong) NSMutableArray * pages;
 @property (nonatomic) UIScrollView * scrollView;
 @property (nonatomic, strong) UIPageControl * pageControl;
+@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) UserInfo * userInfo;
 
 -(void)addUserInfo:(UserInfo *)userInfo;
 

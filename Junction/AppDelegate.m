@@ -21,14 +21,15 @@
 @synthesize nav, navLogin;
 @synthesize lhHelper, lhView;
 @synthesize proxController, profileController, mapViewController;
+@synthesize connectionsController;
 @synthesize locationManager;
 @synthesize lastLocation;
 @synthesize linkedInFriends;
 @synthesize allJunctionUserInfos;
 @synthesize allPulses;
-//@synthesize allJunctionUsers;
 @synthesize notificationsController;
 @synthesize chatsTableController;
+@synthesize connected;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -73,71 +74,18 @@
                 UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
                 NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
 #if !TESTING
-                if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                    [allJunctionUserInfos addObject:friendUserInfo];
+                if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+                    continue;
                 }
-#else
-                [allJunctionUserInfos addObject:friendUserInfo];
 #endif
+                [allJunctionUserInfos addObject:friendUserInfo];
             }
             
-#if 0
-            //if (!allJunctionUsers)
-            //    allJunctionUsers = [[NSMutableArray alloc] init];
-            [allJunctionUsers removeAllObjects];
-            [allJunctionUsers addObjectsFromArray:results];
-#endif
             [self updateFriendDistances];
         }
     }];
     allPulses = [[NSMutableDictionary alloc] init];
-    
-    // check for cached existing user - first check Parse
-    // If we have a cached user, we'll get it back here
-    /*
-     PFUser *currentUser = [PFUser currentUser];
-     if (currentUser)
-     {
-     NSLog(@"Locally cached PFUser has id: %@", [currentUser objectId]);
-     // A user was cached, so check userdefaults for user information
-     myUserInfo = [self loadUserInfo];
-     if (myUserInfo)
-     [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-     
-     if (!myUserInfo) {
-     [self doLogin];
-     }
-     else if (![ParseHelper ParseHelper_validateCachedUser:myUserInfo]) {
-     [self doLogin];
-     }
-     else {
-     [ParseHelper ParseHelper_login:myUserInfo withBlock:^(PFUser * user, NSError * error) {
-     if (user) {
-     [myUserInfo setPfUser:user];
-     // update profiles
-     [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-     
-     // update friends list, etc
-     // todo: request from linkedIn or backend?
-     if ([lhHelper isLoggedIn]) {
-     [lhHelper requestFriends];
-     }
-     else {
-     [[[UIAlertView alloc] initWithTitle:@"You're not LinkedIn!" message:@"You haven't added your LinkedIn account. Without your LinkedIn, you can't find friends and network! Would you like to add one?" delegate:self cancelButtonTitle:@"Not now" otherButtonTitles:@"Add LinkedIn", nil] show];
-     }
-     }
-     else {
-     [self doLogin];
-     }
-     }];
-     }
-     }
-     else
-     {
-     // no cached PFUser objects - force login
-     [self doLogin];
-     }
-     */
+    connected = [[NSMutableSet alloc] init];
     
     // check linkedIn first
     if (![self.viewController loadCachedOauth]) {
@@ -210,6 +158,10 @@
     if (!cacheData)
         return nil;
     UserInfo * cachedUserInfo = [NSKeyedUnarchiver unarchiveObjectWithData:cacheData];
+    [UserInfo FindUserInfoFromParse:cachedUserInfo withBlock:^(UserInfo * userInfo, NSError * error) {
+        cachedUserInfo.pfObject = userInfo.pfObject;
+        cachedUserInfo.pfUser = userInfo.pfUser;
+    }];
     return cachedUserInfo;
 }
 
@@ -256,13 +208,26 @@
             lastLocation = [location copy];
             
             // create/update a userPulse into the UserPulse table on parse, for the current pfUser
-            [UserPulse DoUserPulseWithLocation:lastLocation forUser:myUserInfo];
+            [UserPulse DoUserPulseWithLocation:lastLocation forUser:myUserInfo withBlock:^(BOOL success) {
+                if (!success) {
+                    [self performSelector:@selector(redoPulseForLastLocation:) withObject:lastLocation afterDelay:30];
+                }
+            }];
             
             // update friends distances - without rerequesting
             NSLog(@"Location changed! Recalculating friend distances");
             [self updateFriendDistances];
         }
     }
+}
+
+-(void)redoPulseForLastLocation:(CLLocation*)lastLocation {
+    [UserPulse DoUserPulseWithLocation:lastLocation forUser:myUserInfo withBlock:^(BOOL success) {
+        if (!success)
+            NSLog(@"Could not pulse your location! We tried twice!");
+        else
+            [self updateFriendDistances];
+    }];
 }
 
 #pragma mark LoginViewDelegate
@@ -305,14 +270,15 @@
     [tabBarController setDelegate:self];
     
     proxController = [[ProximityViewController alloc] init];
-    [proxController setDelegate:self];
     
     //mapViewController = [[MapViewController alloc] init];
     //[mapViewController setDelegate:self];
     
     profileController = [[ProfileViewController alloc] init];
-    [profileController setDelegate:self];
     
+    connectionsController = [[ProximityViewController alloc] init];
+    [connectionsController setShowConnectionsOnly:YES];
+
     chatsTableController = [[ChatsTableViewController alloc] init];
 
     notificationsController = [[NotificationsViewController alloc] init];
@@ -332,8 +298,15 @@
     //[sideTabController addController:mapViewController withNormalImage:[UIImage imageNamed:@"tab_world"] andHighlightedImage:nil andTitle:@"Map"];
     [sideTabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
     [sideTabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
+    [sideTabController addController:connectionsController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Connections"];
     
-    [self.viewController presentModalViewController:sideTabController animated:YES];
+//    [self.viewController presentModalViewController:sideTabController animated:YES];
+    
+    //UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
+    //[self.viewController presentModalViewController:nav animated:YES];
+    
+    [self.nav pushViewController:sideTabController animated:YES];
+    
     [sideTabController didSelectViewController:0];
 #endif
     
@@ -346,6 +319,23 @@
             }
         }];
         
+    }
+    else {
+        [UserInfo FindUserInfoFromParse:myUserInfo withBlock:^(UserInfo * userInfo, NSError * error) {
+            myUserInfo.pfObject = userInfo.pfObject;
+            myUserInfo.pfUser = userInfo.pfUser;
+
+#if TESTING
+            for (UserInfo * friendUserInfo in allJunctionUserInfos) {
+                if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+                    [ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
+                    [ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
+                }
+            }
+#endif
+            [self getMyConnections];
+        }];
+
     }
 }
 
@@ -380,7 +370,7 @@
             continue;
 #endif
         [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
-            if (error) {
+            if (error || [results count] == 0) {
                 NSLog(@"Could not find pulse for user %@", friendUserInfo.username);
             }
             else {
@@ -414,5 +404,35 @@
         }];
         
     }
+}
+
+-(void)getMyConnections {
+    [ParseHelper findConnectionsForUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
+        NSLog(@"%d connections found for user %@", [connectedUsers count], myUserInfo.username);
+        for (PFObject * user in connectedUsers) {
+            NSLog(@"Connected user: class %@ pfObjectID %@", [user class], ((PFObject*)user).objectId);
+            UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
+            [connected addObject:connectedUserInfo];
+        }
+        NSLog(@"Connected users: %@", connected);
+        [connectionsController reloadAll];
+    }];
+}
+
+-(BOOL)isConnectedWithUser:(UserInfo*)user {
+    for (UserInfo * userInfo in connected) {
+        if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
+            NSLog(@"User with linkedInString %@ is connected!", user.linkedInString);
+            return YES;
+        }
+    }
+    return NO;
+}
+
+-(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo {
+    RightTabController * rightTabController = [[RightTabController alloc] init];
+    [self.nav pushViewController:rightTabController animated:YES];
+    
+    [rightTabController didSelectViewController:0];
 }
 @end

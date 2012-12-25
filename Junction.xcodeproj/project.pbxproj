@@ -18,8 +18,6 @@
 		9E1EA6111681C3E0005B7165 /* ChatsTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */; };
 		9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */; };
 		9E1EA6171681C4B7005B7165 /* NotificationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */; };
-		9E1EA61F1681C9B5005B7165 /* UserDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA61D1681C9B5005B7165 /* UserDescriptionViewController.m */; };
-		9E1EA6201681C9B5005B7165 /* UserDescriptionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA61E1681C9B5005B7165 /* UserDescriptionViewController.xib */; };
 		9E3059AC16805DED00A35ABE /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059AD16805DED00A35ABE /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596F16805DED00A35ABE /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059AE16805DED00A35ABE /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30597116805DED00A35ABE /* NSURL+Base.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -51,11 +49,21 @@
 		9E3059CB16805DED00A35ABE /* ProfileTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E3059A916805DED00A35ABE /* ProfileTabView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059CC16805DED00A35ABE /* ProfileTabView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E3059AA16805DED00A35ABE /* ProfileTabView.xib */; };
 		9E3059CD16805DED00A35ABE /* READ_ME.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9E3059AB16805DED00A35ABE /* READ_ME.txt */; };
+		9E4FA3451689278E00B9A336 /* UserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FA3431689278D00B9A336 /* UserProfileViewController.m */; };
+		9E4FA3461689278E00B9A336 /* UserProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA3441689278E00B9A336 /* UserProfileViewController.xib */; };
+		9E4FA34E16894BE300B9A336 /* RightTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FA34C16894BE300B9A336 /* RightTabController.m */; };
+		9E4FA34F16894BE300B9A336 /* RightTabController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA34D16894BE300B9A336 /* RightTabController.xib */; };
+		9E4FA35916894E0100B9A336 /* UserChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FA35716894E0100B9A336 /* UserChatViewController.m */; };
+		9E4FA35A16894E0100B9A336 /* UserChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA35816894E0100B9A336 /* UserChatViewController.xib */; };
+		9E4FA35E16894E1700B9A336 /* UserShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E4FA35C16894E1600B9A336 /* UserShareViewController.m */; };
+		9E4FA35F16894E1700B9A336 /* UserShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA35D16894E1600B9A336 /* UserShareViewController.xib */; };
+		9E4FA3621689534B00B9A336 /* btn_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA3601689534B00B9A336 /* btn_close.png */; };
+		9E4FA3631689534B00B9A336 /* red_x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA3611689534B00B9A336 /* red_x.png */; };
+		9E4FA3651689538300B9A336 /* tab_open_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA3641689538300B9A336 /* tab_open_icon.png */; };
+		9E4FA367168953C600B9A336 /* speechbubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA366168953C600B9A336 /* speechbubble.png */; };
 		9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */; };
 		9E99536E16804CE3001E034A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99536C16804CE3001E034A /* ProfileViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		9E99536F16804CE3001E034A /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99536D16804CE3001E034A /* ProfileViewController.xib */; };
-		9E99537416804CF0001E034A /* InputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99537216804CF0001E034A /* InputViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		9E99537516804CF0001E034A /* InputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99537316804CF0001E034A /* InputViewController.xib */; };
 		9E99541216804D36001E034A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E99541116804D36001E034A /* Parse.framework */; };
 		9E99541416804D3C001E034A /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E99541316804D3C001E034A /* Crashlytics.framework */; };
 		9E99542416804D5D001E034A /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99542116804D5D001E034A /* UserInfo.m */; };
@@ -66,7 +74,7 @@
 		9E99542F16804D73001E034A /* ProximityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99542D16804D73001E034A /* ProximityViewController.xib */; };
 		9E99543216804D7B001E034A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543116804D7B001E034A /* ViewController.m */; };
 		9E99543416804D8A001E034A /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99543316804D8A001E034A /* ViewController.xib */; };
-		9E99543716804D9B001E034A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543616804D9B001E034A /* AppDelegate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9E99543716804D9B001E034A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543616804D9B001E034A /* AppDelegate.m */; };
 		9E99543E16804DA5001E034A /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543916804DA5001E034A /* UIImage+Alpha.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E99543F16804DA5001E034A /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543B16804DA5001E034A /* UIImage+Resize.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E99544016804DA5001E034A /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543D16804DA5001E034A /* UIImage+RoundedCorner.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -118,9 +126,6 @@
 		9E1EA6131681C4B7005B7165 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = SOURCE_ROOT; };
 		9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = SOURCE_ROOT; };
 		9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationsViewController.xib; sourceTree = SOURCE_ROOT; };
-		9E1EA61C1681C9B5005B7165 /* UserDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDescriptionViewController.h; sourceTree = SOURCE_ROOT; };
-		9E1EA61D1681C9B5005B7165 /* UserDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDescriptionViewController.m; sourceTree = SOURCE_ROOT; };
-		9E1EA61E1681C9B5005B7165 /* UserDescriptionViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserDescriptionViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E30596C16805DED00A35ABE /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
 		9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
 		9E30596E16805DED00A35ABE /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
@@ -177,14 +182,27 @@
 		9E3059A916805DED00A35ABE /* ProfileTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileTabView.m; sourceTree = "<group>"; };
 		9E3059AA16805DED00A35ABE /* ProfileTabView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileTabView.xib; sourceTree = "<group>"; };
 		9E3059AB16805DED00A35ABE /* READ_ME.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = READ_ME.txt; sourceTree = "<group>"; };
+		9E4FA3421689278D00B9A336 /* UserProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserProfileViewController.h; sourceTree = SOURCE_ROOT; };
+		9E4FA3431689278D00B9A336 /* UserProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserProfileViewController.m; sourceTree = SOURCE_ROOT; };
+		9E4FA3441689278E00B9A336 /* UserProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserProfileViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E4FA34B16894BE300B9A336 /* RightTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightTabController.h; sourceTree = SOURCE_ROOT; };
+		9E4FA34C16894BE300B9A336 /* RightTabController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightTabController.m; sourceTree = SOURCE_ROOT; };
+		9E4FA34D16894BE300B9A336 /* RightTabController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RightTabController.xib; sourceTree = SOURCE_ROOT; };
+		9E4FA35616894E0000B9A336 /* UserChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserChatViewController.h; sourceTree = SOURCE_ROOT; };
+		9E4FA35716894E0100B9A336 /* UserChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserChatViewController.m; sourceTree = SOURCE_ROOT; };
+		9E4FA35816894E0100B9A336 /* UserChatViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserChatViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E4FA35B16894E1600B9A336 /* UserShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserShareViewController.h; sourceTree = SOURCE_ROOT; };
+		9E4FA35C16894E1600B9A336 /* UserShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserShareViewController.m; sourceTree = SOURCE_ROOT; };
+		9E4FA35D16894E1600B9A336 /* UserShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserShareViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E4FA3601689534B00B9A336 /* btn_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_close.png; sourceTree = "<group>"; };
+		9E4FA3611689534B00B9A336 /* red_x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red_x.png; sourceTree = "<group>"; };
+		9E4FA3641689538300B9A336 /* tab_open_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tab_open_icon.png; sourceTree = "<group>"; };
+		9E4FA366168953C600B9A336 /* speechbubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speechbubble.png; sourceTree = "<group>"; };
 		9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitScrollViewController.h; sourceTree = SOURCE_ROOT; };
 		9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitScrollViewController.m; sourceTree = SOURCE_ROOT; };
 		9E99536B16804CE3001E034A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileViewController.h; path = Junction/ProfileViewController.h; sourceTree = SOURCE_ROOT; };
 		9E99536C16804CE3001E034A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfileViewController.m; path = Junction/ProfileViewController.m; sourceTree = SOURCE_ROOT; };
 		9E99536D16804CE3001E034A /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfileViewController.xib; path = Junction/ProfileViewController.xib; sourceTree = SOURCE_ROOT; };
-		9E99537116804CF0001E034A /* InputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputViewController.h; path = Junction/InputViewController.h; sourceTree = SOURCE_ROOT; };
-		9E99537216804CF0001E034A /* InputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputViewController.m; path = Junction/InputViewController.m; sourceTree = SOURCE_ROOT; };
-		9E99537316804CF0001E034A /* InputViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InputViewController.xib; path = Junction/InputViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E99541116804D36001E034A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = SOURCE_ROOT; };
 		9E99541316804D3C001E034A /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = SOURCE_ROOT; };
 		9E99542016804D5D001E034A /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInfo.h; path = Junction/UserInfo.h; sourceTree = SOURCE_ROOT; };
@@ -288,6 +306,9 @@
 				9E1EA6001681B66F005B7165 /* SideTabController.h */,
 				9E1EA6011681B66F005B7165 /* SideTabController.m */,
 				9E1EA6021681B66F005B7165 /* SideTabController.xib */,
+				9E4FA34B16894BE300B9A336 /* RightTabController.h */,
+				9E4FA34C16894BE300B9A336 /* RightTabController.m */,
+				9E4FA34D16894BE300B9A336 /* RightTabController.xib */,
 			);
 			name = SideTab;
 			sourceTree = "<group>";
@@ -400,6 +421,22 @@
 			path = OAuthStarterKit;
 			sourceTree = "<group>";
 		};
+		9E4FA35016894D9E00B9A336 /* Other users */ = {
+			isa = PBXGroup;
+			children = (
+				9E4FA3421689278D00B9A336 /* UserProfileViewController.h */,
+				9E4FA3431689278D00B9A336 /* UserProfileViewController.m */,
+				9E4FA3441689278E00B9A336 /* UserProfileViewController.xib */,
+				9E4FA35616894E0000B9A336 /* UserChatViewController.h */,
+				9E4FA35716894E0100B9A336 /* UserChatViewController.m */,
+				9E4FA35816894E0100B9A336 /* UserChatViewController.xib */,
+				9E4FA35B16894E1600B9A336 /* UserShareViewController.h */,
+				9E4FA35C16894E1600B9A336 /* UserShareViewController.m */,
+				9E4FA35D16894E1600B9A336 /* UserShareViewController.xib */,
+			);
+			name = "Other users";
+			sourceTree = "<group>";
+		};
 		9E99537616804D19001E034A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -422,6 +459,10 @@
 		9E99544116804DD2001E034A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9E4FA366168953C600B9A336 /* speechbubble.png */,
+				9E4FA3641689538300B9A336 /* tab_open_icon.png */,
+				9E4FA3601689534B00B9A336 /* btn_close.png */,
+				9E4FA3611689534B00B9A336 /* red_x.png */,
 				9E99544216804DD2001E034A /* 19-gear.png */,
 				9E99544316804DD2001E034A /* 19-gear@2x.png */,
 				9E99544416804DD2001E034A /* graphic_addpic.png */,
@@ -454,12 +495,6 @@
 				9E99536B16804CE3001E034A /* ProfileViewController.h */,
 				9E99536C16804CE3001E034A /* ProfileViewController.m */,
 				9E99536D16804CE3001E034A /* ProfileViewController.xib */,
-				9E99537116804CF0001E034A /* InputViewController.h */,
-				9E99537216804CF0001E034A /* InputViewController.m */,
-				9E99537316804CF0001E034A /* InputViewController.xib */,
-				9E1EA61C1681C9B5005B7165 /* UserDescriptionViewController.h */,
-				9E1EA61D1681C9B5005B7165 /* UserDescriptionViewController.m */,
-				9E1EA61E1681C9B5005B7165 /* UserDescriptionViewController.xib */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -497,6 +532,7 @@
 				9E1EA6071681C0A9005B7165 /* Chat */,
 				9E1EA6121681C4A5005B7165 /* Notifications */,
 				9EECDF8E15EB2D5600AD89D8 /* Location */,
+				9E4FA35016894D9E00B9A336 /* Other users */,
 				9E99543016804D7B001E034A /* ViewController.h */,
 				9E99543116804D7B001E034A /* ViewController.m */,
 				9E99543316804D8A001E034A /* ViewController.xib */,
@@ -612,7 +648,6 @@
 			files = (
 				9E1911EE1680515900C50361 /* InfoPlist.strings in Resources */,
 				9E99536F16804CE3001E034A /* ProfileViewController.xib in Resources */,
-				9E99537516804CF0001E034A /* InputViewController.xib in Resources */,
 				9E99542A16804D68001E034A /* MapViewController.xib in Resources */,
 				9E99542F16804D73001E034A /* ProximityViewController.xib in Resources */,
 				9E99543416804D8A001E034A /* ViewController.xib in Resources */,
@@ -638,7 +673,14 @@
 				9E1EA6041681B66F005B7165 /* SideTabController.xib in Resources */,
 				9E1EA6111681C3E0005B7165 /* ChatsTableViewController.xib in Resources */,
 				9E1EA6171681C4B7005B7165 /* NotificationsViewController.xib in Resources */,
-				9E1EA6201681C9B5005B7165 /* UserDescriptionViewController.xib in Resources */,
+				9E4FA3461689278E00B9A336 /* UserProfileViewController.xib in Resources */,
+				9E4FA34F16894BE300B9A336 /* RightTabController.xib in Resources */,
+				9E4FA35A16894E0100B9A336 /* UserChatViewController.xib in Resources */,
+				9E4FA35F16894E1700B9A336 /* UserShareViewController.xib in Resources */,
+				9E4FA3621689534B00B9A336 /* btn_close.png in Resources */,
+				9E4FA3631689534B00B9A336 /* red_x.png in Resources */,
+				9E4FA3651689538300B9A336 /* tab_open_icon.png in Resources */,
+				9E4FA367168953C600B9A336 /* speechbubble.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,7 +708,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E99536E16804CE3001E034A /* ProfileViewController.m in Sources */,
-				9E99537416804CF0001E034A /* InputViewController.m in Sources */,
 				9E99542416804D5D001E034A /* UserInfo.m in Sources */,
 				9E99542516804D5D001E034A /* UserPulse.m in Sources */,
 				9E99542916804D68001E034A /* MapViewController.m in Sources */,
@@ -707,8 +748,11 @@
 				9E1EA6031681B66F005B7165 /* SideTabController.m in Sources */,
 				9E1EA6101681C3E0005B7165 /* ChatsTableViewController.m in Sources */,
 				9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */,
-				9E1EA61F1681C9B5005B7165 /* UserDescriptionViewController.m in Sources */,
 				9E9D1DA71686EC830008E68B /* Constants.m in Sources */,
+				9E4FA3451689278E00B9A336 /* UserProfileViewController.m in Sources */,
+				9E4FA34E16894BE300B9A336 /* RightTabController.m in Sources */,
+				9E4FA35916894E0100B9A336 /* UserChatViewController.m in Sources */,
+				9E4FA35E16894E1700B9A336 /* UserShareViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

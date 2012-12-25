@@ -255,16 +255,16 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/UserInfo.m"
-         timestampString = "377550540.541905"
+         timestampString = "378088728.560557"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "159"
-         endingLineNumber = "159"
+         startingLineNumber = "161"
+         endingLineNumber = "161"
          landmarkName = "-fromPFObject:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/MapViewController.m"
@@ -277,16 +277,42 @@
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Junction/ProximityViewController.m"
-         timestampString = "377997657.604045"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "378078216.95126"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "298"
-         endingLineNumber = "298"
-         landmarkName = "-reloadAll"
+         startingLineNumber = "248"
+         endingLineNumber = "248"
+         landmarkName = "-didLoginWithUsername:andEmail:andPhoto:andPfUser:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../ParseHelperLibrary/ParseHelper.m"
+         timestampString = "378073919.244313"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "94"
+         endingLineNumber = "94"
+         landmarkName = "+addParseObjectToParse:withBlock:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "378078216.95126"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "163"
+         endingLineNumber = "163"
+         landmarkName = "-loadUserInfo"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

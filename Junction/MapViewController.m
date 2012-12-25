@@ -116,7 +116,7 @@ BOOL didCenterOnUser;
         CLLocation * myLocation = userLocation.location;
         UserInfo * myUserInfo = [delegate getMyUserInfo];
         NSLog(@"Updating user location via UserPulse: myUserInfo %@", myUserInfo);
-        [UserPulse DoUserPulseWithLocation:myLocation forUser:myUserInfo];
+        //[UserPulse DoUserPulseWithLocation:myLocation forUser:myUserInfo];
         [self setLastPulseTimestamp:[NSDate date]];
     }
 }

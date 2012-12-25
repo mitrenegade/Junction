@@ -13,6 +13,7 @@
 
 @interface UserInfo : ParseUserInfo
 
+@property (strong, nonatomic) NSString * className;
 @property (strong, nonatomic) NSString * username;
 @property (strong, nonatomic) NSString * password;
 @property (strong, nonatomic) NSString * email;
@@ -28,8 +29,9 @@
 @property (strong, nonatomic) NSArray * specialties;
 //@property (nonatomic) NSArray * educations;
 @property (strong, nonatomic) NSArray * currentPositions;
-@property (nonatomic, assign) int numberOfFields;
 @property (strong, nonatomic) UserPulse * userPulse;
 @property (strong, nonatomic) NSString * pfUserID;
-@property (strong, nonatomic) NSString * className;
+
++(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
+
 @end

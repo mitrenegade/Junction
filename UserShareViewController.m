@@ -1,21 +1,18 @@
 //
-//  UserDescriptionViewController.m
+//  UserShareViewController.m
 //  Junction
 //
-//  Created by Bobby Ren on 12/19/12.
+//  Created by Bobby Ren on 12/24/12.
 //
 //
 
-#import "UserDescriptionViewController.h"
+#import "UserShareViewController.h"
 
-@interface UserDescriptionViewController ()
+@interface UserShareViewController ()
 
 @end
 
-@implementation UserDescriptionViewController
-
-@synthesize titleLabel, industryLabel, descriptionLabel;
-@synthesize title, industry, description;
+@implementation UserShareViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,7 +27,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self refreshDescription];
 }
 
 - (void)didReceiveMemoryWarning
@@ -39,9 +35,4 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)refreshDescription {
-    [self.titleLabel setText:self.title];
-    [self.industryLabel setText:self.industry];
-    [self.descriptionLabel setText:self.description];
-}
 @end

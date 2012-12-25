@@ -33,11 +33,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 //@synthesize photoView, nameLabel, descLabel;
 //@synthesize names, titles, photos, distances;
 @synthesize myUserInfo;
-@synthesize delegate;
 @synthesize userInfos;
 @synthesize distanceGroups;
 @synthesize portraitViews;
 @synthesize headerViews;
+@synthesize showConnectionsOnly;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -107,10 +107,13 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self updateMyUserInfo];
+//    [self.tableView reloadData];
+    [self reloadAll];
 }
 
 -(void)updateMyUserInfo {
-    myUserInfo = [delegate getMyUserInfo];
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    myUserInfo = [appDelegate myUserInfo];
 //    [nameLabel setText:myUserInfo.username];
 //    [photoView setImage:myUserInfo.photo];
 //    [descLabel setText:myUserInfo.headline];
@@ -182,6 +185,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     //float ct = ((float)[[distanceGroups objectAtIndex:section] count]);
     //float rows = ceil( ct / NUM_COLUMNS);
     //NSLog(@"Rows %f ct %d", rows, ct);
+    NSLog(@"Distance group: %d count: %d", [distanceGroups count], [[distanceGroups objectAtIndex:section] count]);
     return [[distanceGroups objectAtIndex:section] count];
     //return rows;
 }
@@ -201,17 +205,16 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
         return 0;
     float height = self.tableView.frame.size.width / NUM_COLUMNS;
-    NSLog(@"Height: %f", height);
     return height;
 }
 
 -(UIView*)viewForItemInSection:(int)section Row:(int)row Column:(int)column {
     NSMutableArray * group = [distanceGroups objectAtIndex:section];
     int index = row * NUM_COLUMNS + column;
-    //NSLog(@"Section %d row %d col %d index %d count %d", section, row, column, index, [group count]);
     if (index >= [group count])
         return nil;
     NSString * userID = [group objectAtIndex:index];
+    NSLog(@"Section %d row %d col %d index %d count %d userID %@", section, row, column, index, [group count], userID);
     
     if (![portraitViews objectForKey:userID]) {
         // create new portraitView
@@ -219,10 +222,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             int size = self.tableView.frame.size.width / NUM_COLUMNS;
             CGRect frame = CGRectMake(0, 0, size, size);
             PortraitScrollViewController * portraitView = [[PortraitScrollViewController alloc] init];
+            [portraitView setDelegate:self];
             [portraitView.view setFrame:frame]; // for setting photo size
             [portraitView addUserInfo:[userInfos objectForKey:userID]];
-            //[portraitView.view setBackgroundColor:[UIColor blueColor]];
-            //NSLog(@"portraitView size (blue frame): %f %f %f %f", portraitView.view.frame.origin.x, portraitView.view.frame.origin.y, portraitView.view.frame.size.width, portraitView.view.frame.size.height);
+            
             [portraitViews setObject:portraitView forKey:userID];
         }
     }
@@ -259,17 +262,19 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         CGRect frame = CGRectMake(xoffset, 0, size, size);
         [portraitView setFrame:frame];
         [cell addSubview:portraitView];
-        NSLog(@"Cell row %d col %d frame: %f %f %f %f", row, col, portraitView.frame.origin.x, portraitView.frame.origin.y, portraitView.frame.size.width, portraitView.frame.size.height);
+        //NSLog(@"Cell row %d col %d frame: %f %f %f %f", row, col, portraitView.frame.origin.x, portraitView.frame.origin.y, portraitView.frame.size.width, portraitView.frame.size.height);
     }
     return cell;
 }
 
--(void)didClickUserPhoto:(id)sender {
-    NSLog(@"Clicked on some photo.");
+-(void)didTapPortraitWithUserInfo:(UserInfo *)tappedUserInfo {
+    NSLog(@"Clicked on portrait with userInfo: %@", tappedUserInfo.pfUserID);
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [appDelegate displayUserWithUserInfo:tappedUserInfo];
 }
 
 -(void)reloadAll {
-    NSLog(@"***Reloading all in proximityView!***");
+    //NSLog(@"***Reloading all in proximityView!***");
     //[userInfos removeAllObjects];
     //for (NSMutableArray * group in distanceGroups) {
     //    [group removeAllObjects];
@@ -285,6 +290,15 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         if ([userID isEqualToString:myUserInfo.pfUserID])
             return;
 #endif
+        
+        if (showConnectionsOnly) {
+            if ([appDelegate isConnectedWithUser:friendUserInfo])
+                NSLog(@"is connected!");
+            else {
+                continue;
+            }
+        }
+        
         // todo: use that to calculate distance, requires own coordinate from gps
         float distanceInMeters = 999;
         if (appDelegate.lastLocation) {
@@ -295,7 +309,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             NSLog(@"No last location!");
         }
         
-        NSLog(@"You are at %f %f: %@ %@ found at coord %f %f distance %f", appDelegate.lastLocation.coordinate.latitude, appDelegate.lastLocation.coordinate.longitude, friendUserInfo.username, userID, pulse.coordinate.latitude, pulse.coordinate.longitude, distanceInMeters);
+        //NSLog(@"You are at %f %f: %@ %@ found at coord %f %f distance %f", appDelegate.lastLocation.coordinate.latitude, appDelegate.lastLocation.coordinate.longitude, friendUserInfo.username, userID, pulse.coordinate.latitude, pulse.coordinate.longitude, distanceInMeters);
         [userInfos setObject:friendUserInfo forKey:userID];
         for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
             NSMutableArray * group = [distanceGroups objectAtIndex:i];
@@ -318,4 +332,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(IBAction)didClickSearch:(id)sender {
     NSLog(@"Proximity view clicked search");
 }
+
+/*
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+    int size = self.tableView.frame.size.width / NUM_COLUMNS;
+}
+ */
 @end

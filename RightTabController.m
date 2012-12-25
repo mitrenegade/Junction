@@ -1,22 +1,24 @@
 //
-//  SideTabController.m
+//  RightTabController.m
 //  Junction
 //
-//  Created by Bobby Ren on 12/19/12.
+//  Created by Bobby Ren on 12/24/12.
 //
 //
 
-#import "SideTabController.h"
+#import "RightTabController.h"
 
-@interface SideTabController ()
+@interface RightTabController ()
 
 @end
 
-@implementation SideTabController
+@implementation RightTabController
 
 @synthesize sidebarView, contentView;
 //@synthesize headerView;
 @synthesize viewControllers, sidebarItems;
+@synthesize shareController, chatController, profileController;
+@synthesize labelBlock, labelConnect, buttonBlock, buttonConnect;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,9 +35,14 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    UIBarButtonItem * backButton = [[UIBarButtonItem alloc] initWithTitle:@"<-" style:UIBarButtonItemStylePlain target:self.navigationController action:@selector(popViewControllerAnimated:)];
+    [self.navigationItem setBackBarButtonItem:backButton];
+    
     CGRect frame = sidebarView.frame;
     frame.size.width = SIDEBAR_WIDTH;
     [sidebarView setFrame:frame];
+    
+    [self addDefaultControllers];
     
     for (UIButton * button in sidebarItems)
         [sidebarView addSubview:button];
@@ -56,7 +63,8 @@
     
     [button setTag:[sidebarItems count]];
     int dim = SIDEBAR_WIDTH;
-    button.frame = CGRectMake(0, (dim+20)*button.tag, dim, dim+20);
+    int FIRST_BUTTON_OFFSET = buttonBlock.frame.size.height;
+    button.frame = CGRectMake(0, (dim+20)*button.tag + FIRST_BUTTON_OFFSET, dim, dim+20);
     
     UILabel * buttonTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, dim, dim, 20)];
     [buttonTitle setText:title];
@@ -65,9 +73,17 @@
     [buttonTitle setTextColor:[UIColor whiteColor]];
     [buttonTitle setTextAlignment:NSTextAlignmentCenter];
     [button addSubview:buttonTitle];
-
+    
     [sidebarItems addObject:button];
     [viewControllers addObject:viewController];
+    
+    // shift block button and label down
+    CGRect buttonFrame = buttonBlock.frame;
+    buttonFrame.origin.y = button.frame.origin.y + button.frame.size.height;
+    [buttonBlock setFrame:buttonFrame];
+    [labelBlock removeFromSuperview];
+    [labelBlock setFrame:CGRectMake(0, dim, dim, 20)];
+    [buttonBlock addSubview:labelBlock];
 }
 
 -(void)selectSidebarItem:(id)sender {
@@ -80,13 +96,23 @@
 
 -(void)didSelectViewController:(int)index {
     UIViewController * controller = [viewControllers objectAtIndex:index];
-//    if ([controller respondsToSelector:@selector(headerView)]) {
-//        UIView * header = controller.headerView;
-//    }
+    //    if ([controller respondsToSelector:@selector(headerView)]) {
+    //        UIView * header = controller.headerView;
+    //    }
     for (UIView * subview in self.contentView.subviews) {
         [subview removeFromSuperview];
     }
     [self.contentView addSubview:[controller view]];
+}
+
+-(void)addDefaultControllers {
+    self.profileController = [[UserProfileViewController alloc] init];
+    self.chatController = [[UserChatViewController alloc] init];
+    self.shareController = [[UserShareViewController alloc] init];
+    
+    [self addController:self.profileController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Profile"];
+    [self addController:self.chatController withNormalImage:[UIImage imageNamed:@"speechbubble"] andHighlightedImage:nil andTitle:@"Chat"];
+    [self addController:self.shareController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Share"];
 }
 
 @end

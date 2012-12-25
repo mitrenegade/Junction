@@ -9,8 +9,6 @@
 #import "ProfileViewController.h"
 #import "AppDelegate.h" // for notification constants
 
-#define CELL_LABEL_TAG 1001
-
 @interface ProfileViewController ()
 
 @end
@@ -19,11 +17,14 @@
 
 @synthesize photoView;
 @synthesize myUserInfo;
-@synthesize delegate;
-//@synthesize userDescription;
+//@synthesize delegate;
 @synthesize scrollView;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionLabel;
+
+@synthesize isViewForConnections;
+@synthesize viewForConnections;
+@synthesize viewForStrangers;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -32,6 +33,11 @@
         // Custom initialization
         
         [self.tabBarItem setImage:[UIImage imageNamed:@"tab_me"]];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateMyUserInfo)
+                                                     name:kMyUserInfoDidChangeNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -40,19 +46,19 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
-    [self setMyUserInfo:[delegate getMyUserInfo]];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(updateMyUserInfo) 
-                                                 name:kMyUserInfoDidChangeNotification 
-                                               object:nil];
-    
+    AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [self setMyUserInfo:[appDelegate myUserInfo]];
 }
 
 -(void)updateMyUserInfo {
-    myUserInfo = [delegate getMyUserInfo];
-    [photoView setImage:myUserInfo.photo];
+    AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [self setMyUserInfo:[appDelegate myUserInfo]];
+    if (isViewForConnections) {
+        [photoView setImage:myUserInfo.photo];
+    }
+    else {
+        [photoView setImage:[UIImage imageNamed:@"graphic_nopic"]];
+    }
     [nameLabel setText:myUserInfo.username];
     [self.titleLabel setText:myUserInfo.headline];
     [self.industryLabel setText:myUserInfo.industry];
@@ -60,6 +66,7 @@
     
     float width = self.view.bounds.size.width;
     float height = self.descriptionLabel.frame.origin.y + self.descriptionLabel.frame.size.height;
+    
     [self.scrollView setContentSize:CGSizeMake(width, height)];
 }
 
@@ -89,4 +96,15 @@
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+-(IBAction)toggleViewForConnections:(id)sender {
+    if ((UIButton*)sender == viewForConnections) {
+        isViewForConnections = YES;
+    }
+    else if ((UIButton*)sender == viewForStrangers) {
+        isViewForConnections = NO;
+    }
+    [self updateMyUserInfo];
+}
+
 @end

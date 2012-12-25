@@ -26,25 +26,15 @@ enum DISTANCE_GROUPS {
     INFINITE = 5,
     MAX_DISTANCE_GROUPS
     };
-@protocol ProximityDelegate <NSObject>
 
--(UserInfo*)getMyUserInfo;
-
-@end
-
-@interface ProximityViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface ProximityViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, PortraitScrollDelegate>
+{
+}
+@property (nonatomic) BOOL showConnectionsOnly;
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
-//@property (weak, nonatomic) IBOutlet UIImageView * photoView;
-//@property (weak, nonatomic) IBOutlet UILabel * nameLabel;
-//@property (weak, nonatomic) IBOutlet UILabel * descLabel;
 @property (weak, nonatomic) IBOutlet UITableView * tableView;
-/*
-@property (nonatomic) NSMutableArray * names;
-@property (nonatomic) NSMutableArray * titles;
-@property (nonatomic) NSMutableArray * photos;
-@property (nonatomic) NSMutableArray * distances;
-*/
+
 @property (nonatomic, strong) NSMutableDictionary * userInfos;
 @property (nonatomic, strong) NSMutableArray * distanceGroups;
 
@@ -52,7 +42,6 @@ enum DISTANCE_GROUPS {
 @property (nonatomic, strong) NSMutableDictionary * headerViews;
 
 @property (weak, nonatomic) UserInfo * myUserInfo;
-@property (weak, nonatomic) id delegate;
 
 -(void)reloadAll;
 -(IBAction)didClickSearch:(id)sender;
