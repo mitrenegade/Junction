@@ -33,6 +33,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [self.navigationController setNavigationBarHidden:YES];
+    /*
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+    self.navigationController.navigationBar.alpha = 0.7f;
+    [self.navigationController.navigationBar setTranslucent:YES];
+     */
     CGRect frame = sidebarView.frame;
     frame.size.width = SIDEBAR_WIDTH;
     [sidebarView setFrame:frame];

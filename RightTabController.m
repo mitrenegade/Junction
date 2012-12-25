@@ -35,9 +35,17 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    UIBarButtonItem * backButton = [[UIBarButtonItem alloc] initWithTitle:@"<-" style:UIBarButtonItemStylePlain target:self.navigationController action:@selector(popViewControllerAnimated:)];
-    [self.navigationItem setBackBarButtonItem:backButton];
-    
+    /*
+    UIBarButtonItem * backButton = [[UIBarButtonItem alloc] initWithTitle:@"<-" style:UIBarButtonItemStylePlain target:self action:@selector(closeRightTab:)];
+    [self.navigationItem setLeftBarButtonItem:backButton];
+     */
+    [self.navigationController setNavigationBarHidden:YES];
+    /*
+    self.navigationController.navigationBar.tintColor = [UIColor grayColor];
+    self.navigationController.navigationBar.alpha = 0.7f;
+    [self.navigationController.navigationBar setTranslucent:YES];
+     */
+
     CGRect frame = sidebarView.frame;
     frame.size.width = SIDEBAR_WIDTH;
     [sidebarView setFrame:frame];
@@ -115,4 +123,8 @@
     [self addController:self.shareController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Share"];
 }
 
+-(IBAction)closeRightTab:(id)sender {
+//    [self.navigationController setNavigationBarHidden:NO animated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
+}
 @end

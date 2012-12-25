@@ -302,10 +302,10 @@
     
 //    [self.viewController presentModalViewController:sideTabController animated:YES];
     
-    //UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
-    //[self.viewController presentModalViewController:nav animated:YES];
+     self.nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
+    [self.viewController presentModalViewController:nav animated:YES];
     
-    [self.nav pushViewController:sideTabController animated:YES];
+    //[self.nav pushViewController:sideTabController animated:YES];
     
     [sideTabController didSelectViewController:0];
 #endif

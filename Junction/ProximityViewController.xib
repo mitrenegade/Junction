@@ -43,7 +43,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{0, 40}, {280, 420}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView" ref="231292628"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="32269195">
 							<int key="NSColorSpace">3</int>
@@ -112,7 +112,6 @@
 								<int key="NSvFlags">288</int>
 								<string key="NSFrame">{{240, 0}, {40, 40}}</string>
 								<reference key="NSSuperview" ref="963968719"/>
-								<reference key="NSNextKeyView" ref="559629654"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<reference key="IBUIBackgroundColor" ref="668328229"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -152,7 +151,7 @@
 				</array>
 				<string key="NSFrame">{{0, 20}, {320, 460}}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSNextKeyView" ref="963968719"/>
+				<reference key="NSNextKeyView" ref="559629654"/>
 				<reference key="IBUIBackgroundColor" ref="668328229"/>
 				<bool key="IBUIAutoresizesSubviews">NO</bool>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
@@ -260,13 +259,13 @@
 						<reference key="parent" ref="191373211"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">18</int>
-						<reference key="object" ref="15330362"/>
+						<int key="objectID">19</int>
+						<reference key="object" ref="424414283"/>
 						<reference key="parent" ref="963968719"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">19</int>
-						<reference key="object" ref="424414283"/>
+						<int key="objectID">18</int>
+						<reference key="object" ref="15330362"/>
 						<reference key="parent" ref="963968719"/>
 					</object>
 				</array>
@@ -287,7 +286,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">21</int>
+			<int key="maxID">24</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
