@@ -134,8 +134,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    //if ([[distanceGroups objectAtIndex:section] count] == 0)
-    //    return [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    if ([[distanceGroups objectAtIndex:section] count] == 0)
+        return [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     
     if ([headerViews objectForKey:[NSNumber numberWithInt:section]] == nil) {
         CGRect frame = CGRectMake(5, 0, self.view.bounds.size.width-10, HEADER_HEIGHT);
@@ -190,8 +190,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-//    if ([[distanceGroups objectAtIndex:section] count] == 0)
-//        return 1.0;
+    if ([[distanceGroups objectAtIndex:section] count] == 0)
+        return 0.0;
     return HEADER_HEIGHT;
 }
 /*
@@ -244,7 +244,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         cell.selectedBackgroundView = [[UIImageView alloc] init];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        [cell.contentView setBackgroundColor:[UIColor yellowColor]];
+        [cell.contentView setBackgroundColor:[UIColor redColor]];
     }
     
     // Configure the cell...
