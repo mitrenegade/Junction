@@ -41,8 +41,6 @@
 }
 
 -(void)updateUserInfo {
-    AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [self setUserInfo:[appDelegate myUserInfo]];
     [photoView setImage:userInfo.photo];
     [nameLabel setText:userInfo.username];
     [self.titleLabel setText:userInfo.headline];

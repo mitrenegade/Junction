@@ -19,6 +19,7 @@
 @synthesize viewControllers, sidebarItems;
 @synthesize shareController, chatController, profileController;
 @synthesize labelBlock, labelConnect, buttonBlock, buttonConnect;
+@synthesize userInfo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -115,8 +116,11 @@
 
 -(void)addDefaultControllers {
     self.profileController = [[UserProfileViewController alloc] init];
+    [self.profileController setUserInfo:self.userInfo];
     self.chatController = [[UserChatViewController alloc] init];
+    [self.chatController setUserInfo:self.userInfo];
     self.shareController = [[UserShareViewController alloc] init];
+    [self.shareController setUserInfo:self.userInfo];
     
     [self addController:self.profileController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Profile"];
     [self addController:self.chatController withNormalImage:[UIImage imageNamed:@"speechbubble"] andHighlightedImage:nil andTitle:@"Chat"];

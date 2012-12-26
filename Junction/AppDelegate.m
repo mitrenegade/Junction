@@ -431,6 +431,7 @@
 
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo {
     RightTabController * rightTabController = [[RightTabController alloc] init];
+    [rightTabController setUserInfo:friendUserInfo];
     [self.nav pushViewController:rightTabController animated:YES];
     
     [rightTabController didSelectViewController:0];

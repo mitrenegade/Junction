@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Constants.h"
+#import "UserInfo.h"
 
 #import "UserProfileViewController.h"
 #import "UserChatViewController.h"
@@ -33,6 +34,7 @@
 @property (nonatomic, weak) IBOutlet UILabel * labelBlock;
 
 @property (nonatomic, weak) IBOutlet UIButton * backButton;
+@property (nonatomic, weak) UserInfo * userInfo;
 
 -(void)addController:(UIViewController*)viewController withNormalImage:(UIImage*)normalImage andHighlightedImage:(UIImage*)highlightedImage andTitle:(NSString*)title;
 -(void)selectSidebarItem:(id)sender;

@@ -18,4 +18,6 @@
 @property (nonatomic, weak) IBOutlet UITextView * descriptionLabel;
 @property (nonatomic, weak) IBOutlet UIScrollView * scrollView;
 @property (nonatomic, weak) IBOutlet UILabel * friendsLabel;
+
+-(void)updateUserInfo:(UserInfo*)friendUserInfo;
 @end

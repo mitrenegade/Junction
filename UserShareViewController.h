@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserInfo.h"
 
 @interface UserShareViewController : UIViewController
+@property (nonatomic, weak) UserInfo * userInfo;
 
 @end
