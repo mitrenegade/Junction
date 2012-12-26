@@ -134,8 +134,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if ([[distanceGroups objectAtIndex:section] count] == 0)
-        return [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    //if ([[distanceGroups objectAtIndex:section] count] == 0)
+    //    return [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     
     if ([headerViews objectForKey:[NSNumber numberWithInt:section]] == nil) {
         CGRect frame = CGRectMake(5, 0, self.view.bounds.size.width-10, HEADER_HEIGHT);
@@ -182,29 +182,29 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //float ct = ((float)[[distanceGroups objectAtIndex:section] count]);
-    //float rows = ceil( ct / NUM_COLUMNS);
-    //NSLog(@"Rows %f ct %d", rows, ct);
-    NSLog(@"Distance group: %d count: %d", [distanceGroups count], [[distanceGroups objectAtIndex:section] count]);
-    return [[distanceGroups objectAtIndex:section] count];
-    //return rows;
+    float ct = ((float)[[distanceGroups objectAtIndex:section] count]);
+    float rows = ceil( ct / NUM_COLUMNS);
+    NSLog(@"Distance group: %d count: %d rows: %f", [distanceGroups count], [[distanceGroups objectAtIndex:section] count], rows);
+    //return [[distanceGroups objectAtIndex:section] count];
+    return rows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([[distanceGroups objectAtIndex:section] count] == 0)
-        return 1.0;
+//    if ([[distanceGroups objectAtIndex:section] count] == 0)
+//        return 1.0;
     return HEADER_HEIGHT;
 }
-
+/*
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 1.0;
 //    return 30;
 }
-
+*/
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
-        return 0;
+    //if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
+    //    return 0;
     float height = self.tableView.frame.size.width / NUM_COLUMNS;
+    NSLog(@"Row height for section %d row %d: %f", indexPath.section, indexPath.row, height);
     return height;
 }
 
@@ -274,7 +274,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(void)reloadAll {
-    //NSLog(@"***Reloading all in proximityView!***");
+    NSLog(@"***Reloading all in proximityView!***");
     //[userInfos removeAllObjects];
     //for (NSMutableArray * group in distanceGroups) {
     //    [group removeAllObjects];
@@ -326,7 +326,21 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             }
         }
     }
+    
     [self.tableView reloadData];
+    /*
+    // remove groups as necessary
+    for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
+        NSMutableArray * group = [distanceGroups objectAtIndex:i];
+        if ([group count] == 0) {
+            [self.tableView beginUpdates];
+            //[myArray removeObjectAtIndex:myIndexPath.section];
+            //[myArrayAnswerCount removeObjectAtIndex:myIndexPath.section]; //this is what i forgot.
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:i] withRowAnimation:YES];
+            [self.tableView endUpdates];
+        }
+    }
+     */
 }
 
 -(IBAction)didClickSearch:(id)sender {
