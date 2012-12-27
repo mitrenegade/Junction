@@ -8,6 +8,7 @@
 
 #import "ProfileViewController.h"
 #import "AppDelegate.h" // for notification constants
+#import "UIImage+GaussianBlur.h"
 
 @interface ProfileViewController ()
 
@@ -57,7 +58,7 @@
         [photoView setImage:myUserInfo.photo];
     }
     else {
-        [photoView setImage:[UIImage imageNamed:@"graphic_nopic"]];
+        [photoView setImage:[myUserInfo.photo imageWithGaussianBlur]];
     }
     [nameLabel setText:myUserInfo.username];
     [self.titleLabel setText:myUserInfo.headline];

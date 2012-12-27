@@ -13,6 +13,7 @@
 #import "UserProfileViewController.h"
 #import "UserChatViewController.h"
 #import "UserShareViewController.h"
+#import "MKAdditions/UIAlertView+MKBlockAdditions.h"
 
 //#define FIRST_BUTTON_OFFSET 60
 
@@ -35,6 +36,9 @@
 
 @property (nonatomic, weak) IBOutlet UIButton * backButton;
 @property (nonatomic, weak) UserInfo * userInfo;
+
+-(IBAction)didClickConnect:(id)sender;
+-(IBAction)didClickBlock:(id)sender;
 
 -(void)addController:(UIViewController*)viewController withNormalImage:(UIImage*)normalImage andHighlightedImage:(UIImage*)highlightedImage andTitle:(NSString*)title;
 -(void)selectSidebarItem:(id)sender;

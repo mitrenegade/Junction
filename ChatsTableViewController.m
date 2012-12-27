@@ -7,6 +7,7 @@
 //
 
 #import "ChatsTableViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface ChatsTableViewController ()
 
@@ -55,8 +56,44 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        [cell setBackgroundColor:[UIColor clearColor]];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+  
+        /*
+        cell.textLabel.numberOfLines = 2;
+        [cell.textLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]];
+        [cell.textLabel setTextColor:[UIColor blackColor]];
+         */
+        /*
+        UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, 230, 12)];
+        UILabel * commentTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 24, 230, 14)];
+        UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 42, 230, 12)];
+        
+        nameLabel.textColor = [UIColor blackColor];
+		nameLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12];
+		commentTextLabel.textColor = [UIColor blackColor];
+		commentTextLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:14];
+        [commentTextLabel setNumberOfLines:3];
+		timeLabel.textColor = [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0];
+		timeLabel.font = [UIFont fontWithName:@"Helvetica" size:12];
+        [nameLabel setBackgroundColor:[UIColor clearColor]];
+        [commentTextLabel setBackgroundColor:[UIColor clearColor]];
+        [timeLabel setBackgroundColor:[UIColor clearColor]];
+        */
+        
+        UIButton * photoView = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
+		[photoView.layer setBorderColor: [[UIColor blackColor] CGColor]];
+        [photoView.layer setBorderWidth: 2.0];
+        [photoView addTarget:self action:@selector(didClickUserPhoto:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UITextField * textField = [[UITextField alloc] initWithFrame:CGRectMake(60, 10, 200, 50)];
+        //textField.tag = TAG_TEXTFIELD;
+        //photoView.tag = TAG_PHOTO;
+        [cell.contentView addSubview:photoView];
+        [cell.contentView addSubview:textField];
+        [cell addSubview:cell.contentView];
     }
-    
+
     // Configure the cell...
     
     return cell;

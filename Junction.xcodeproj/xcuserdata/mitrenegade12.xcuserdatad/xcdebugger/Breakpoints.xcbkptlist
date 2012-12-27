@@ -281,11 +281,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "378078216.95126"
+         timestampString = "378233053.972471"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "248"
-         endingLineNumber = "248"
+         startingLineNumber = "250"
+         endingLineNumber = "250"
          landmarkName = "-didLoginWithUsername:andEmail:andPhoto:andPfUser:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -299,7 +299,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "94"
          endingLineNumber = "94"
-         landmarkName = "+addParseObjectToParse:withBlock:"
+         landmarkName = "+queryNearLocation:withNearbyDistance:forClassName:withResultsBlock:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -307,12 +307,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "378078216.95126"
+         timestampString = "378233053.972471"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "163"
-         endingLineNumber = "163"
+         startingLineNumber = "165"
+         endingLineNumber = "165"
          landmarkName = "-loadUserInfo"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/LinkedInHelper.m"
+         timestampString = "378246579.852907"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "102"
+         endingLineNumber = "102"
+         landmarkName = "-profileApiCallResult:didFinish:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -97,6 +97,10 @@ static OAuthLoginView * sharedOAuthLoginView;
     {
         return;
     }
+    if ( [[profile objectForKey:@"status"] intValue] == 401 ) {
+        NSLog(@"LinkedIn request received 401! Invalid token, must reauthenticate.");
+        return;
+    }
     if (!userID) {
         [delegate linkedInParseSimpleProfile:profile];
         [self getId];
@@ -156,7 +160,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void)requestAllProfileInfoForID:(NSString*)_userID {
 //    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,location:(name),industry,summary,picture-url,email-address,specialties,three-current-positions)", _userID];
-    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,industry,positions,picture-url,public-profile-url,email-address,three-current-positions)", _userID];
+    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
     NSLog(@"All profile request: %@", requestString);
     NSURL *url = [NSURL URLWithString:requestString];
     OAMutableURLRequest *request = 

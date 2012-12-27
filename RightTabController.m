@@ -7,6 +7,7 @@
 //
 
 #import "RightTabController.h"
+#import "AppDelegate.h"
 
 @interface RightTabController ()
 
@@ -55,6 +56,21 @@
     
     for (UIButton * button in sidebarItems)
         [sidebarView addSubview:button];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsUpdated
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsSentUpdated
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsReceivedUpdated
+                                               object:nil];
+    
+    [self updateConnections];
 }
 
 - (void)didReceiveMemoryWarning
@@ -127,8 +143,61 @@
     [self addController:self.shareController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Share"];
 }
 
+-(void) updateConnections {
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate isConnectedWithUser:userInfo]) {
+        [self.labelConnect setText:@"Connected"];
+    }
+    else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
+        [self.labelConnect setText:@"Accept"];
+    }
+    else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
+        [self.labelConnect setText:@"Sent"];
+    }
+    else
+        [self.labelConnect setText:@"Connect"];
+}
+
 -(IBAction)closeRightTab:(id)sender {
 //    [self.navigationController setNavigationBarHidden:NO animated:NO];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(IBAction)didClickConnect:(id)sender {
+    NSLog(@"Connect button requested!");
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate isConnectedWithUser:userInfo]) {
+        NSLog(@"Already connected!");
+    }
+    else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
+        NSLog(@"Accept connection request!");
+    }
+    else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
+        NSLog(@"Connection request already sent!");
+    }
+    else {
+        [[UIAlertView alertViewWithTitle:@"Send connection request?" message:[NSString stringWithFormat:@"Do you want to send a connection request to %@?", userInfo.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObject:@"Connect"] onDismiss:^(int buttonIndex) {
+            NSLog(@"Sending connection request!");
+            [appDelegate sendConnectionRequestToUser:userInfo];
+        } onCancel:^{
+            NSLog(@"No request sent!");
+        }] show];
+    }
+}
+
+-(IBAction)didClickBlock:(id)sender {
+    NSLog(@"Blocked user!");
+}
+
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsReceivedUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsSentUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsUpdated
+                                                  object:nil];
 }
 @end

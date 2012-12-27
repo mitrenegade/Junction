@@ -21,6 +21,9 @@
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
 static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFriendsFinishedUpdatingNotification";
+static NSString* const kParseConnectionsUpdated = @"kParseConnectionsUpdated";
+static NSString* const kParseConnectionsSentUpdated = @"kParseConnectionsSentUpdated";
+static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsReceivedUpdated";
 
 @class ViewController;
 
@@ -47,11 +50,17 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 @property (nonatomic) CLLocation * lastLocation;
 
 @property (nonatomic) NSMutableDictionary * linkedInFriends;
-@property (nonatomic, strong) NSMutableSet * connected;
 @property (nonatomic) NSMutableArray * allJunctionUserInfos;
 @property (nonatomic) NSMutableDictionary * allPulses;
 
--(BOOL)isConnectedWithUser:(UserInfo*)user;
--(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo;
+// Parse relations
+@property (nonatomic, strong) NSMutableSet * connected;
+@property (nonatomic, strong) NSMutableSet * connectRequestsReceived;
+@property (nonatomic, strong) NSMutableSet * connectRequestsSent;
 
+-(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo;
+-(BOOL)isConnectedWithUser:(UserInfo*)user;
+-(BOOL)isConnectRequestSentToUser:(UserInfo*)user;
+-(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user;
+-(void)sendConnectionRequestToUser:(UserInfo*)user;
 @end

@@ -79,6 +79,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                                              selector:@selector(stopAnimating) 
                                                  name:kParseFriendsFinishedUpdatingNotification 
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsUpdated
+                                               object:nil];
 }
 
 - (void)viewDidUnload
@@ -99,8 +103,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator    
                                                     name:kParseFriendsStartedUpdatingNotification  
                                                   object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator    
-                                                    name:kParseFriendsFinishedUpdatingNotification  
+    [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator
+                                                    name:kParseFriendsFinishedUpdatingNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator
+                                                    name:kParseConnectionsUpdated
                                                   object:nil];
 }
 
@@ -117,6 +124,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 //    [nameLabel setText:myUserInfo.username];
 //    [photoView setImage:myUserInfo.photo];
 //    [descLabel setText:myUserInfo.headline];
+}
+
+-(void)updateConnections {
+    if (showConnectionsOnly)
+        [self reloadAll];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -184,8 +196,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 {
     float ct = ((float)[[distanceGroups objectAtIndex:section] count]);
     float rows = ceil( ct / NUM_COLUMNS);
-    NSLog(@"Distance group: %d count: %d rows: %f", [distanceGroups count], [[distanceGroups objectAtIndex:section] count], rows);
-    //return [[distanceGroups objectAtIndex:section] count];
+    //NSLog(@"Distance group: %d count: %d rows: %f", [distanceGroups count], [[distanceGroups objectAtIndex:section] count], rows);
     return rows;
 }
 
@@ -204,7 +215,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     //if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
     //    return 0;
     float height = self.tableView.frame.size.width / NUM_COLUMNS;
-    NSLog(@"Row height for section %d row %d: %f", indexPath.section, indexPath.row, height);
+    //NSLog(@"Row height for section %d row %d: %f", indexPath.section, indexPath.row, height);
     return height;
 }
 
@@ -214,7 +225,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     if (index >= [group count])
         return nil;
     NSString * userID = [group objectAtIndex:index];
-    NSLog(@"Section %d row %d col %d index %d count %d userID %@", section, row, column, index, [group count], userID);
+    //NSLog(@"Section %d row %d col %d index %d count %d userID %@", section, row, column, index, [group count], userID);
     
     if (![portraitViews objectForKey:userID]) {
         // create new portraitView
@@ -274,7 +285,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(void)reloadAll {
-    NSLog(@"***Reloading all in proximityView!***");
+    //NSLog(@"***Reloading all in proximityView!***");
     //[userInfos removeAllObjects];
     //for (NSMutableArray * group in distanceGroups) {
     //    [group removeAllObjects];
@@ -321,7 +332,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             NSMutableArray * group = [distanceGroups objectAtIndex:i];
             if (distanceInMeters < DISTANCE_BOUNDARIES[i]) {
                 [group addObject:userID];
-                NSLog(@"Added %@ to distance %d, now %d users here", friendUserInfo.username, DISTANCE_BOUNDARIES[i], [group count]);
+                //NSLog(@"Added %@ to distance %d, now %d users here", friendUserInfo.username, DISTANCE_BOUNDARIES[i], [group count]);
                 break;
             }
         }

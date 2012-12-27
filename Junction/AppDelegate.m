@@ -29,7 +29,7 @@
 @synthesize allPulses;
 @synthesize notificationsController;
 @synthesize chatsTableController;
-@synthesize connected;
+@synthesize connected, connectRequestsReceived, connectRequestsSent;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -86,6 +86,8 @@
     }];
     allPulses = [[NSMutableDictionary alloc] init];
     connected = [[NSMutableSet alloc] init];
+    connectRequestsSent = [[NSMutableSet alloc] init];
+    connectRequestsReceived = [[NSMutableSet alloc] init];
     
     // check linkedIn first
     if (![self.viewController loadCachedOauth]) {
@@ -328,12 +330,20 @@
 #if TESTING
             for (UserInfo * friendUserInfo in allJunctionUserInfos) {
                 if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                    [ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
-                    [ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
+                    //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
+                    //[ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
+                    
+                    [ParseHelper removeRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo];
+                    [ParseHelper removeRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo];
+                    
+                    //[ParseHelper addRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo withBlock:nil];
+                    //[ParseHelper addRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo withBlock:nil];
                 }
             }
 #endif
             [self getMyConnections];
+            [self getMyConnectionsReceived];
+            [self getMyConnectionsSent];
         }];
 
     }
@@ -406,19 +416,6 @@
     }
 }
 
--(void)getMyConnections {
-    [ParseHelper findConnectionsForUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
-        NSLog(@"%d connections found for user %@", [connectedUsers count], myUserInfo.username);
-        for (PFObject * user in connectedUsers) {
-            NSLog(@"Connected user: class %@ pfObjectID %@", [user class], ((PFObject*)user).objectId);
-            UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
-            [connected addObject:connectedUserInfo];
-        }
-        NSLog(@"Connected users: %@", connected);
-        [connectionsController reloadAll];
-    }];
-}
-
 -(BOOL)isConnectedWithUser:(UserInfo*)user {
     for (UserInfo * userInfo in connected) {
         if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
@@ -435,5 +432,107 @@
     [self.nav pushViewController:rightTabController animated:YES];
     
     [rightTabController didSelectViewController:0];
+}
+
+-(void)getMyConnections {
+    static int getMyConnectionsRetry = 1;
+    [ParseHelper findRelation:@"connections" forUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
+        if (error) {
+            if (getMyConnectionsRetry)
+                [self performSelector:@selector(getMyConnectionsReceived) withObject:nil afterDelay:300];
+            getMyConnectionsRetry = 0;
+        }
+        else {
+            NSLog(@"%d connections found for user %@", [connectedUsers count], myUserInfo.username);
+            for (PFObject * user in connectedUsers) {
+                NSLog(@"Connected user: class %@ pfObjectID %@", [user class], ((PFObject*)user).objectId);
+                UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
+                [connected addObject:connectedUserInfo];
+            }
+            NSLog(@"Connected users: %@", connected);
+            [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsUpdated object:self userInfo:nil];
+        }
+    }];
+}
+
+-(void)getMyConnectionsSent {
+    static int getMyConnectionsSentRetry = 1;
+    [ParseHelper findRelation:@"connectionsSent" forUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
+        if (error) {
+            if (getMyConnectionsSentRetry)
+                [self performSelector:@selector(getMyConnectionsSent) withObject:nil afterDelay:300];
+            getMyConnectionsSentRetry = 0;
+        }
+        else {
+            NSLog(@"%d connection requests sent by user %@", [connectedUsers count], myUserInfo.username);
+            for (PFObject * user in connectedUsers) {
+                NSLog(@"Connect sent for user: pfObjectID %@", ((PFObject*)user).objectId);
+                UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
+                [connectRequestsSent addObject:connectedUserInfo];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsSentUpdated object:self userInfo:nil];
+            }
+        }
+    }];
+}
+
+-(void)getMyConnectionsReceived {
+    static int getMyConnectionsReceivedRetry = 1;
+    [ParseHelper findRelation:@"connectionsReceived" forUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
+        if (error) {
+            if (getMyConnectionsReceivedRetry)
+                [self performSelector:@selector(getMyConnectionsReceived) withObject:nil afterDelay:300];
+            getMyConnectionsReceivedRetry = 0;
+        }
+        else {
+            NSLog(@"%d connection requests received by user %@", [connectedUsers count], myUserInfo.username);
+            for (PFObject * user in connectedUsers) {
+                NSLog(@"Connect sent from user: pfObjectID %@", ((PFObject*)user).objectId);
+                UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
+                [connectRequestsSent addObject:connectedUserInfo];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsReceivedUpdated object:self userInfo:nil];
+            }
+        }
+    }];
+}
+
+-(BOOL)isConnectRequestSentToUser:(UserInfo*)user {
+    for (UserInfo * userInfo in connectRequestsSent) {
+        NSLog(@"Userinfo: %@ user: %@", userInfo.linkedInString, user.linkedInString);
+        if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
+            NSLog(@"User with linkedInString %@ is connected!", user.linkedInString);
+            return YES;
+        }
+    }
+    return NO;
+}
+-(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user {
+    for (UserInfo * userInfo in connectRequestsReceived) {
+        if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
+            NSLog(@"User with linkedInString %@ is connected!", user.linkedInString);
+            return YES;
+        }
+    }
+    return NO;
+}
+
+-(void)sendConnectionRequestToUser:(UserInfo *)user {
+    [ParseHelper addRelation:@"connectionsSent" betweenUser:myUserInfo andUser:user withBlock:^(BOOL succeeded, NSError * error) {
+        if (!succeeded) {
+            NSLog(@"Add relation got error: %@", error.description);
+        }
+        else {
+            [self getMyConnectionsSent];
+        }
+    }];
+    [ParseHelper addRelation:@"connectionsReceived" betweenUser:user andUser:myUserInfo withBlock:^(BOOL succeeded, NSError * error) {
+        if (!succeeded) {
+            NSLog(@"Add relation got error: %@", error.description);
+        }
+        else {
+            // no need to update requests received
+            // todo: send notification to user to update requests!
+        }
+    }];
+    
 }
 @end

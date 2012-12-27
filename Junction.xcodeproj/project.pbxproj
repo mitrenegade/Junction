@@ -90,6 +90,7 @@
 		9E99545516804DD2001E034A /* tab_world.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E99544B16804DD2001E034A /* tab_world.png */; };
 		9E99545A16804E11001E034A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99545916804E11001E034A /* main.m */; };
 		9E9D1DA71686EC830008E68B /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E9D1DA61686EC830008E68B /* Constants.m */; };
+		9EA2F2AB168A98F200054FB2 /* UIImage+GaussianBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
 		9EC27748161043160069F6E5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27747161043160069F6E5 /* MobileCoreServices.framework */; };
@@ -97,6 +98,9 @@
 		9EC2774C161043280069F6E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774B161043280069F6E5 /* StoreKit.framework */; };
 		9EC2774E161043320069F6E5 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774D161043320069F6E5 /* libsqlite3.dylib */; };
 		9EC27750161043370069F6E5 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */; };
+		9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EECDF5F15EACB3A00AD89D8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */; };
 		9EECDF6115EACB3A00AD89D8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6015EACB3A00AD89D8 /* Foundation.framework */; };
 		9EECDF6315EACB3A00AD89D8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6215EACB3A00AD89D8 /* CoreGraphics.framework */; };
@@ -242,6 +246,8 @@
 		9E99545C16804E18001E034A /* Junction-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Junction-Prefix.pch"; path = "Junction/Junction-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		9E9D1DA51686EC830008E68B /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = SOURCE_ROOT; };
 		9E9D1DA61686EC830008E68B /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = SOURCE_ROOT; };
+		9EA2F2A8168A987100054FB2 /* UIImage+GaussianBlur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+GaussianBlur.h"; sourceTree = SOURCE_ROOT; };
+		9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+GaussianBlur.m"; sourceTree = SOURCE_ROOT; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9EC277451610430A0069F6E5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9EC27747161043160069F6E5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -249,6 +255,13 @@
 		9EC2774B161043280069F6E5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		9EC2774D161043320069F6E5 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.1.3.dylib; path = usr/lib/libz.1.1.3.dylib; sourceTree = SDKROOT; };
+		9ED3D08F168B61DC0096A7EB /* MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKBlockAdditions.h; sourceTree = "<group>"; };
+		9ED3D090168B61DC0096A7EB /* NSObject+MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MKBlockAdditions.h"; sourceTree = "<group>"; };
+		9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MKBlockAdditions.m"; sourceTree = "<group>"; };
+		9ED3D092168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+MKBlockAdditions.h"; sourceTree = "<group>"; };
+		9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+MKBlockAdditions.m"; sourceTree = "<group>"; };
+		9ED3D094168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKBlockAdditions.h"; sourceTree = "<group>"; };
+		9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKBlockAdditions.m"; sourceTree = "<group>"; };
 		9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9EECDF6015EACB3A00AD89D8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9EECDF6215EACB3A00AD89D8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -440,6 +453,7 @@
 		9E99537616804D19001E034A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9ED3D08E168B61DC0096A7EB /* MKAdditions */,
 				9E3058C716805C9600A35ABE /* LinkedIn-OAuth */,
 				9E99541316804D3C001E034A /* Crashlytics.framework */,
 				9E99541116804D36001E034A /* Parse.framework */,
@@ -498,6 +512,20 @@
 			);
 			name = Profile;
 			sourceTree = "<group>";
+		};
+		9ED3D08E168B61DC0096A7EB /* MKAdditions */ = {
+			isa = PBXGroup;
+			children = (
+				9ED3D08F168B61DC0096A7EB /* MKBlockAdditions.h */,
+				9ED3D090168B61DC0096A7EB /* NSObject+MKBlockAdditions.h */,
+				9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */,
+				9ED3D092168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.h */,
+				9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */,
+				9ED3D094168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.h */,
+				9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */,
+			);
+			path = MKAdditions;
+			sourceTree = SOURCE_ROOT;
 		};
 		9EECDF4F15EACB3900AD89D8 = {
 			isa = PBXGroup;
@@ -585,6 +613,8 @@
 		9EECDF9415EB2D8200AD89D8 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				9EA2F2A8168A987100054FB2 /* UIImage+GaussianBlur.h */,
+				9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */,
 				9E99543816804DA5001E034A /* UIImage+Alpha.h */,
 				9E99543916804DA5001E034A /* UIImage+Alpha.m */,
 				9E99543A16804DA5001E034A /* UIImage+Resize.h */,
@@ -753,6 +783,10 @@
 				9E4FA34E16894BE300B9A336 /* RightTabController.m in Sources */,
 				9E4FA35916894E0100B9A336 /* UserChatViewController.m in Sources */,
 				9E4FA35E16894E1700B9A336 /* UserShareViewController.m in Sources */,
+				9EA2F2AB168A98F200054FB2 /* UIImage+GaussianBlur.m in Sources */,
+				9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */,
+				9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */,
+				9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,7 +862,7 @@
 				GCC_PREFIX_HEADER = "Junction/Junction-Prefix.pch";
 				INFOPLIST_FILE = "Junction/Junction-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "49FB971F-5F76-4B17-BDBA-2E948DBCB59C";
+				PROVISIONING_PROFILE = "E600C4E3-3569-4BAE-9C4F-DDEC621D7F05";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -837,8 +871,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Saad Ansari (P536AZMPAD)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Saad Ansari (P536AZMPAD)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Saad Ansari";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -847,8 +881,8 @@
 				GCC_PREFIX_HEADER = "Junction/Junction-Prefix.pch";
 				INFOPLIST_FILE = "Junction/Junction-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "49FB971F-5F76-4B17-BDBA-2E948DBCB59C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "49FB971F-5F76-4B17-BDBA-2E948DBCB59C";
+				PROVISIONING_PROFILE = "25D29F25-B5E4-4AEA-ABC8-36540623A17B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

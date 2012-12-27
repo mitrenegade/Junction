@@ -60,11 +60,16 @@ static NSMutableDictionary * allUserPulses;
     // Create a PFGeoPoint using the user's location
     PFGeoPoint *currentPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
                                                       longitude:coordinate.longitude];
-    
-    [self.pfObject setObject:pfUser forKey:@"pfUser"];
-    [self.pfObject setObject:currentPoint forKey:@"pfGeopoint"];
-    [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
-    [self.pfObject setObject:linkedInID forKey:@"linkedInID"];
+    @try {
+        [self.pfObject setObject:pfUser forKey:@"pfUser"];
+        [self.pfObject setObject:currentPoint forKey:@"pfGeopoint"];
+        [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
+        [self.pfObject setObject:linkedInID forKey:@"linkedInID"];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Caught exception in trying to convert UserPulse to PFObject!");
+        return nil;
+    }
     
     NSLog(@"Creating new pulse PFObject with pfUserID %@ linkedInID %@", pfUserID, linkedInID);
     
@@ -150,7 +155,7 @@ static NSMutableDictionary * allUserPulses;
 }
 
 +(void)FindUserPulseForUserInfo:(UserInfo*)userInfo withBlock:(void (^)(NSArray *, NSError *))queryCompletedWithResults {
-    NSLog(@"In FindUserPulse");
+    //NSLog(@"In FindUserPulse");
     // returns a userPulse
     if (!allUserPulses) {
         allUserPulses = [[NSMutableDictionary alloc] init];
@@ -160,6 +165,10 @@ static NSMutableDictionary * allUserPulses;
         // allUserPulses already contains the pulse, so use the pfObject to directly query Parse
         UserPulse * pulse = [allUserPulses objectForKey:userInfo.pfUserID];
         PFObject * pfObject = [pulse toPFObject];
+        if (!pfObject) {
+            NSLog(@"Could not create pfObject!");
+            queryCompletedWithResults(nil, nil);
+        }
         [pfObject refreshInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             if (error) {
                 NSLog(@"FindUserPulseForUserInfo: Could not refresh pfObject!");
@@ -208,7 +217,7 @@ static NSMutableDictionary * allUserPulses;
                 else {
                     PFObject * object = [objects objectAtIndex:0];
                     UserPulse * pulse = [[UserPulse alloc] initWithPFObject:object];
-                    NSLog(@"pulse->pfUser: %@", pulse.pfUser);
+                    //NSLog(@"pulse->pfUser: %@", pulse.pfUser);
                     [allUserPulses setObject:pulse forKey:[userInfo pfUserID]];
                     NSArray * queryArray = [NSArray arrayWithObject:pulse];
                     queryCompletedWithResults(queryArray, nil);

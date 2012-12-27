@@ -7,6 +7,8 @@
 //
 
 #import "PortraitScrollViewController.h"
+#import "AppDelegate.h"
+#import "UIImage+GaussianBlur.h"
 
 @interface PortraitScrollViewController ()
 
@@ -62,7 +64,11 @@
     //int pageCt = 0;
     
     // background photo
-    [self addPhoto:userInfo.photo];
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate isConnectedWithUser:userInfo])
+        [self addPhoto:userInfo.photo];
+    else
+        [self addPhoto:[userInfo.photo imageWithGaussianBlur]];
     
     int fontSizeName = 20;
     int fontSize = 15;
@@ -82,9 +88,10 @@
     [nameLabel setBackgroundColor:[UIColor clearColor]];
     [nameLabel setTextColor:[UIColor whiteColor]];
     [page1 addSubview:nameLabel];
-    if (userInfo.username)
-        [pages addObject:page1];
-    
+    if ([appDelegate isConnectedWithUser:userInfo]) {
+        if (userInfo.username)
+            [pages addObject:page1];
+    }
     //pageCt++;
     UIView * page2 = [[UIView alloc] initWithFrame:portraitframe];
     UILabel * headlineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
@@ -194,6 +201,7 @@
 	// Update the scroll view to the appropriate page
 	CGRect frame;
 	frame.origin.x = self.pageControl.currentPage;
+    frame.origin.y = 0;
     //self.scrollView.frame.size.width * currentPage; //	frame.origin.y = 0;
 	frame.size = self.scrollView.frame.size;
 	[self.scrollView scrollRectToVisible:frame animated:YES];

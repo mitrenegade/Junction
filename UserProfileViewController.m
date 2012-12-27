@@ -8,6 +8,7 @@
 
 #import "UserProfileViewController.h"
 #import "AppDelegate.h" 
+#import "UIImage+GaussianBlur.h"
 
 @interface UserProfileViewController ()
 
@@ -38,11 +39,31 @@
     
     // must set userinfo before controller is displayed
     [self updateUserInfo];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsUpdated
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsSentUpdated
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsReceivedUpdated
+                                               object:nil];
 }
 
 -(void)updateUserInfo {
-    [photoView setImage:userInfo.photo];
-    [nameLabel setText:userInfo.username];
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate isConnectedWithUser:userInfo]) {
+        [photoView setImage:userInfo.photo];
+        [nameLabel setText:userInfo.username];
+    }
+    else {
+        [photoView setImage:[userInfo.photo imageWithGaussianBlur]];
+        [nameLabel setText:@"Name Hidden"];
+    }
     [self.titleLabel setText:userInfo.headline];
     [self.industryLabel setText:userInfo.industry];
     [self.descriptionLabel setText:userInfo.summary];
@@ -53,6 +74,19 @@
     [self.scrollView setContentSize:CGSizeMake(width, height)];
 }
 
+-(void)updateConnections {
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate isConnectedWithUser:userInfo]) {
+
+    }
+    else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
+        
+    }
+    else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
+        
+    }
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -60,13 +94,25 @@
     // e.g. self.myOutlet = nil;
     // remove observers
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:kMyUserInfoDidChangeNotification
+                                                    name:kParseConnectionsReceivedUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsSentUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsUpdated
                                                   object:nil];
 }
 -(void)dealloc {
     // remove observers
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:kMyUserInfoDidChangeNotification
+                                                    name:kParseConnectionsReceivedUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsSentUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsUpdated
                                                   object:nil];
 }
 
