@@ -281,11 +281,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "378233053.972471"
+         timestampString = "378373227.286873"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "250"
-         endingLineNumber = "250"
+         startingLineNumber = "251"
+         endingLineNumber = "251"
          landmarkName = "-didLoginWithUsername:andEmail:andPhoto:andPfUser:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -307,11 +307,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "378233053.972471"
+         timestampString = "378373227.286873"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "165"
-         endingLineNumber = "165"
+         startingLineNumber = "166"
+         endingLineNumber = "166"
          landmarkName = "-loadUserInfo"
          landmarkType = "5">
       </FileBreakpoint>
@@ -326,6 +326,32 @@
          startingLineNumber = "102"
          endingLineNumber = "102"
          landmarkName = "-profileApiCallResult:didFinish:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "378375771.384493"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "547"
+         endingLineNumber = "547"
+         landmarkName = "-sendConnectionRequestToUser:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "378375771.384493"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "554"
+         endingLineNumber = "554"
+         landmarkName = "-sendConnectionRequestToUser:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

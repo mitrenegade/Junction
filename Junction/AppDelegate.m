@@ -12,6 +12,7 @@
 #import "UserPulse.h"
 #import "ViewController.h"
 #import <CoreLocation/CoreLocation.h>
+#import "JunctionNotification.h"
 
 @implementation AppDelegate
 
@@ -263,6 +264,14 @@
 
 -(UserInfo*)getMyUserInfo {
     return myUserInfo;
+}
+
+-(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID {
+    for (UserInfo* userInfo in allJunctionUserInfos) {
+        if ([userInfo.pfUserID isEqualToString:pfUserID])
+            return userInfo;
+    }
+    return nil;
 }
 
 #pragma mark ViewControllerDelegate - new login process
@@ -534,5 +543,20 @@
         }
     }];
     
+    // create notification for display
+    JunctionNotification * notification = [[JunctionNotification alloc] init];
+    [notification setSenderPfUserID:myUserInfo.pfUserID];
+    [notification setPfUserID:user.pfUserID];
+    [notification setPfUser:user.pfUser];
+    [notification setType:jnConnectionRequestNotification];
+    PFObject * pfObject = [notification toPFObject];
+    [pfObject saveEventually:^(BOOL succeeded, NSError *error) {
+        if (!succeeded) {
+            NSLog(@"Error: %@", error);
+        }
+        else {
+            NSLog(@"Notification created!");
+        }
+    }];
 }
 @end

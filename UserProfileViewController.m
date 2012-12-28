@@ -18,7 +18,6 @@
 
 @synthesize photoView;
 @synthesize userInfo;
-//@synthesize delegate;
 @synthesize scrollView;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionLabel;

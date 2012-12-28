@@ -7,15 +7,20 @@
 //
 
 #import "NotificationsViewController.h"
-
+#import "AppDelegate.h"
+#import "JunctionNotification.h"    
 @interface NotificationsViewController ()
 
 @end
 
 @implementation NotificationsViewController
 
-@synthesize users;
-@synthesize messages;
+//@synthesize users;
+//@synthesize messages;
+@synthesize tableView;
+@synthesize notifications;
+@synthesize connectRequestUserInfos;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,6 +35,24 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.connectRequestUserInfos = [[NSMutableArray alloc] init];
+    self.notifications = [[NSMutableArray alloc] init];
+    
+    [self refreshNotifications];
+    
+/*    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnectionRequests)
+                                                 name:kParseConnectionsReceivedUpdated
+                                               object:nil];
+ */
+}
+
+-(void)dealloc {
+    // remove observers
+/*    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsReceivedUpdated
+                                                  object:nil];
+ */
 }
 
 - (void)didReceiveMemoryWarning
@@ -40,6 +63,10 @@
 
 #pragma mark - Table view data source
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
@@ -49,7 +76,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return 0;
+    return [notifications count] + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -58,51 +85,65 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        
+        UIImageView * photoView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
+        [photoView setTag:TAG_PHOTO];
+        [cell.contentView addSubview:photoView];
+        
+        UILabel * notificationType = [[UILabel alloc] initWithFrame:CGRectMake(60, 15, self.tableView.frame.size.width-60, 15)];
+        [notificationType setFont:[UIFont boldSystemFontOfSize:8]];
+        [notificationType setTag:TAG_TEXTLABEL];
+        [cell.contentView addSubview:notificationType];
+
+        UILabel * infoLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 35, self.tableView.frame.size.width-60, 15)];
+        [infoLabel setFont:[UIFont systemFontOfSize:10]];
+        [infoLabel setTag:TAG_INFOLABEL];
+        [cell.contentView addSubview:infoLabel];
+
+        UILabel * lastRowLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.tableView.frame.size.width, 30)];
+        [lastRowLabel setFont:[UIFont systemFontOfSize:10]];
+        [lastRowLabel setTextAlignment:NSTextAlignmentCenter];
+        [lastRowLabel setTag:TAG_LASTROW];
+        [cell.contentView addSubview:lastRowLabel];
     }
     
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+
     // Configure the cell...
+    int row = indexPath.row;
+    UIImageView * photoView = (UIImageView*)[cell.contentView viewWithTag:TAG_PHOTO];
+    UILabel * notificationType = (UILabel*)[cell.contentView viewWithTag:TAG_TEXTLABEL];
+    UILabel * infoLabel = (UILabel*)[cell.contentView viewWithTag:TAG_INFOLABEL];
+    UILabel * lastRow = (UILabel*)[cell.contentView viewWithTag:TAG_LASTROW];
     
+    if (row >= [notifications count]) {
+        [photoView setHidden:YES];
+        [notificationType setHidden:YES];
+        [infoLabel setHidden:YES];
+        [lastRow setHidden:NO];
+        [lastRow setText:@"No more notifications"];
+    }
+    else {
+        [photoView setHidden:NO];
+        [notificationType setHidden:NO];
+        [infoLabel setHidden:NO];
+        [lastRow setHidden:YES];
+        
+        JunctionNotification * notification = [notifications objectAtIndex:row];
+        NSString * type = notification.type;
+        NSString * senderPfUserID = notification.senderPfUserID;
+        NSDate * timestamp = notification.pfObject.createdAt;
+        UserInfo * sender = [appDelegate getUserInfoForPfUserID:senderPfUserID];
+        
+        [photoView setImage:sender.photo];
+        if ([type isEqualToString:jnConnectionRequestNotification])
+            [notificationType setText:@"CONNECTION REQUEST"];
+        
+        NSString * info = [NSString stringWithFormat:@"%@, %@", sender.username, sender.headline];
+        [infoLabel setText:info];
+    }
     return cell;
 }
-
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- }
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
 
 #pragma mark - Table view delegate
 
@@ -110,13 +151,87 @@
 {
     // Navigation logic may go here. Create and push another view controller.
     /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
      // ...
      // Pass the selected object to the new view controller.
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
 }
 
+#pragma mark EGOrefresh
+
+#pragma mark -
+#pragma mark Data Source Loading / Reloading Methods
+
+- (void)reloadTableViewDataSource{
+    
+    //  should be calling your tableviews data source model to reload
+    //  put here just for demo
+    _reloading = YES;
+    //[tableView reloadData];
+    [self refreshNotifications];
+}
+
+- (void)doneLoadingTableViewData{
+    
+    //  model should call this when its done loading
+    _reloading = NO;
+    [refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:tableView];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    [refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    [refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    
+}
 
 
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(PF_EGORefreshTableHeaderView*)view{
+    
+    [self reloadTableViewDataSource];
+    [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
+    
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(PF_EGORefreshTableHeaderView*)view{
+    
+    return _reloading; // should return if data source model is reloading
+    
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(PF_EGORefreshTableHeaderView*)view{
+    
+    return [NSDate date]; // should return date data source was last changed
+    
+}
+
+-(void)refreshNotifications {
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [JunctionNotification FindNotificationsForUser:appDelegate.myUserInfo withBlock:^(NSArray *results, NSError *error) {
+        if (error) {
+            NSLog(@"Error getting notifications! code %d error %@", error.code, error.description);
+        }
+        else {
+            [notifications removeAllObjects];
+            NSLog(@"Loaded %d notifications for user %@", [results count], appDelegate.myUserInfo.linkedInString);
+            
+            for (PFObject * pfObject in results) {
+                JunctionNotification * notification = [[JunctionNotification alloc] initWithPFObject:pfObject];
+                [notifications addObject:notification];
+            }
+            [self.tableView reloadData];
+        }
+    }];
+}
 @end

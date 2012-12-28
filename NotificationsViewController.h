@@ -7,31 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
-@interface NotificationsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+#define TAG_PHOTO 1001
+#define TAG_TYPELABEL 1002
+#define TAG_INFOLABEL 1003
+#define TAG_LASTROW 1004
+@interface NotificationsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, PF_EGORefreshTableHeaderDelegate>
 {
-#if USE_PULL_TO_REFRESH
-	EGORefreshTableHeaderView *refreshHeaderView;
-	BOOL _reloading;
-    int numColumns;
-    int borderWidth;
-    int columnPadding;
-    int columnWidth;
-    int columnHeight;
-#endif
+    PF_EGORefreshTableHeaderView *refreshHeaderView;
+    BOOL _reloading;
 }
 @property (nonatomic) IBOutlet UITableView * tableView;
-@property (nonatomic, strong) NSMutableArray * users;
-@property (nonatomic, strong) NSMutableArray * messages;
-
-#if USE_PULL_TO_REFRESH
-@property(assign,getter=isReloading) BOOL reloading;
-@property(nonatomic,readonly) EGORefreshTableHeaderView *refreshHeaderView;
-@property (nonatomic, assign) BOOL hasHeaderRow;
-#endif
-
-#if USE_PULL_TO_REFRESH
-- (void)dataSourceDidFinishLoadingNewData;
-#endif
-
+//@property (nonatomic, strong) NSMutableArray * users;
+@property (nonatomic, strong) NSMutableArray * notifications;
+@property (nonatomic, strong) NSMutableArray * connectRequestUserInfos;
 @end

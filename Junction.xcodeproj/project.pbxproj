@@ -108,6 +108,7 @@
 		9EECE06415EB31BA00AD89D8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECE06315EB31BA00AD89D8 /* MapKit.framework */; };
 		9EECE06615EB31BE00AD89D8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECE06515EB31BE00AD89D8 /* CoreLocation.framework */; };
 		9EECE06815EB31C700AD89D8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECE06715EB31C700AD89D8 /* SystemConfiguration.framework */; };
+		9EEE9B9B168D7FA500977C86 /* JunctionNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE9B9A168D7FA500977C86 /* JunctionNotification.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -269,6 +270,8 @@
 		9EECE06315EB31BA00AD89D8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		9EECE06515EB31BE00AD89D8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		9EECE06715EB31C700AD89D8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		9EEE9B99168D7FA500977C86 /* JunctionNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JunctionNotification.h; sourceTree = SOURCE_ROOT; };
+		9EEE9B9A168D7FA500977C86 /* JunctionNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JunctionNotification.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -596,6 +599,8 @@
 				9E99542116804D5D001E034A /* UserInfo.m */,
 				9E99542216804D5D001E034A /* UserPulse.h */,
 				9E99542316804D5D001E034A /* UserPulse.m */,
+				9EEE9B99168D7FA500977C86 /* JunctionNotification.h */,
+				9EEE9B9A168D7FA500977C86 /* JunctionNotification.m */,
 			);
 			name = Users;
 			sourceTree = "<group>";
@@ -787,6 +792,7 @@
 				9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */,
 				9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */,
 				9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */,
+				9EEE9B9B168D7FA500977C86 /* JunctionNotification.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

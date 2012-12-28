@@ -25,6 +25,9 @@ static NSString* const kParseConnectionsUpdated = @"kParseConnectionsUpdated";
 static NSString* const kParseConnectionsSentUpdated = @"kParseConnectionsSentUpdated";
 static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsReceivedUpdated";
 
+// junction notifications
+static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
+
 @class ViewController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, LinkedInHelperDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
@@ -58,6 +61,7 @@ static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsRec
 @property (nonatomic, strong) NSMutableSet * connectRequestsReceived;
 @property (nonatomic, strong) NSMutableSet * connectRequestsSent;
 
+-(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID;
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo;
 -(BOOL)isConnectedWithUser:(UserInfo*)user;
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user;
