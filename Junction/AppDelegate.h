@@ -17,6 +17,7 @@
 #import "NotificationsViewController.h"
 #import "Constants.h"
 #import "RightTabController.h"
+#import "JunctionNotification.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -24,6 +25,7 @@ static NSString* const kParseFriendsFinishedUpdatingNotification = @"kParseFrien
 static NSString* const kParseConnectionsUpdated = @"kParseConnectionsUpdated";
 static NSString* const kParseConnectionsSentUpdated = @"kParseConnectionsSentUpdated";
 static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsReceivedUpdated";
+static NSString* const kNotificationsChanged = @"kNotificationsChanged";
 
 // junction notifications
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
@@ -67,4 +69,5 @@ static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestN
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user;
 -(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user;
 -(void)sendConnectionRequestToUser:(UserInfo*)user;
+-(void)acceptConnectionRequestFromUser:(UserInfo*)user withNotification:(JunctionNotification *)notification;
 @end

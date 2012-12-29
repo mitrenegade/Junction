@@ -38,21 +38,30 @@
     self.connectRequestUserInfos = [[NSMutableArray alloc] init];
     self.notifications = [[NSMutableArray alloc] init];
     
+    if (refreshHeaderView == nil) {
+        
+        PF_EGORefreshTableHeaderView *view = [[PF_EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
+        view.delegate = self;
+        [tableView addSubview:view];
+        refreshHeaderView = view;
+    }
+    //  update the last update date
+    [refreshHeaderView refreshLastUpdatedDate];
+    
     [self refreshNotifications];
     
-/*    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnectionRequests)
-                                                 name:kParseConnectionsReceivedUpdated
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshNotifications)
+                                                 name:kNotificationsChanged
                                                object:nil];
- */
+ 
 }
 
 -(void)dealloc {
     // remove observers
-/*    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:kParseConnectionsReceivedUpdated
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kNotificationsChanged
                                                   object:nil];
- */
 }
 
 - (void)didReceiveMemoryWarning
@@ -149,12 +158,32 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    int row = indexPath.row;
+    if (row >= [notifications count]) {
+        NSLog(@"No notifications clicked");
+        return;
+    }
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    JunctionNotification * notification = [notifications objectAtIndex:row];
+    NSString * type = notification.type;
+    NSString * senderPfUserID = notification.senderPfUserID;
+    NSDate * timestamp = notification.pfObject.createdAt;
+    UserInfo * sender = [appDelegate getUserInfoForPfUserID:senderPfUserID];
+    
+    if ([type isEqualToString:jnConnectionRequestNotification]) {
+        [UIAlertView alertViewWithTitle:@"Accept connection request" message:[NSString stringWithFormat:@"Would you like to accept %@'s connection request?", sender.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObjects:@"Accept", @"Reject", nil] onDismiss:^(int buttonIndex) {
+            if (buttonIndex == 0) {
+                // accept
+                [appDelegate acceptConnectionRequestFromUser:sender withNotification:notification];
+            }
+            else if (buttonIndex == 1) {
+                // reject
+                //[appDelegate rejectConnectionRequestFromUser:sender withNotification:notification];
+            }
+        } onCancel:^{
+            
+        }];
+    }
 }
 
 #pragma mark EGOrefresh

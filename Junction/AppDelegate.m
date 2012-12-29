@@ -559,4 +559,18 @@
         }
     }];
 }
+
+-(void)acceptConnectionRequestFromUser:(UserInfo*)user withNotification:(JunctionNotification *)notification {
+    [ParseHelper removeRelation:@"connectionsReceived" betweenUser:myUserInfo andUser:user];
+    [ParseHelper removeRelation:@"connectionsSent" betweenUser:user andUser:myUserInfo];
+    [notification.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Could not delete notification with objectID %@", notification.pfObject.objectId);
+        }
+        else {
+            NSLog(@"Deleted junction notification!");
+            
+        }
+    }];
+}
 @end
