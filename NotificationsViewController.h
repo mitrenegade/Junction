@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "JunctionNotification.h"
 
 #define TAG_PHOTO 1001
 #define TAG_TYPELABEL 1002
@@ -22,4 +23,8 @@
 //@property (nonatomic, strong) NSMutableArray * users;
 @property (nonatomic, strong) NSMutableArray * notifications;
 @property (nonatomic, strong) NSMutableArray * connectRequestUserInfos;
+
+-(JunctionNotification*) findNotificationOfType:(NSString*)notificationType fromSender:(UserInfo*)sender;
+-(void)refreshNotifications;
+
 @end

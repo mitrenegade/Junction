@@ -70,6 +70,7 @@
     [buttonTitle setFont:[UIFont systemFontOfSize:10]];
     [buttonTitle setTextColor:[UIColor whiteColor]];
     [buttonTitle setTextAlignment:NSTextAlignmentCenter];
+    [buttonTitle setAdjustsFontSizeToFitWidth:YES];
     [button addSubview:buttonTitle];
 
     [sidebarItems addObject:button];

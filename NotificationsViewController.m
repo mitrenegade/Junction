@@ -158,6 +158,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+    
     int row = indexPath.row;
     if (row >= [notifications count]) {
         NSLog(@"No notifications clicked");
@@ -171,23 +173,8 @@
     UserInfo * sender = [appDelegate getUserInfoForPfUserID:senderPfUserID];
     
     if ([type isEqualToString:jnConnectionRequestNotification]) {
-        [UIAlertView alertViewWithTitle:@"Accept connection request" message:[NSString stringWithFormat:@"Would you like to accept %@'s connection request?", sender.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObjects:@"Accept", @"Reject", nil] onDismiss:^(int buttonIndex) {
-            if (buttonIndex == 0) {
-#if 0
-                // accept
-                [appDelegate acceptConnectionRequestFromUser:sender withNotification:notification];
-#else
-                // jump to user
-                [appDelegate displayUserWithUserInfo:sender];
-#endif
-            }
-            else if (buttonIndex == 1) {
-                // reject
-                //[appDelegate rejectConnectionRequestFromUser:sender withNotification:notification];
-            }
-        } onCancel:^{
-            
-        }];
+        // jump to user
+        [appDelegate displayUserWithUserInfo:sender];
     }
 }
 
@@ -267,5 +254,13 @@
             [self.tableView reloadData];
         }
     }];
+}
+
+-(JunctionNotification*) findNotificationOfType:(NSString*)notificationType fromSender:(UserInfo*)sender {
+    for (JunctionNotification * notif in notifications) {
+        if ([notif.type isEqualToString:notificationType] && [notif.senderPfUserID isEqualToString:sender.pfUserID])
+            return notif;
+    }
+    return nil;
 }
 @end

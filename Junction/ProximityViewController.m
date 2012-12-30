@@ -138,8 +138,9 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(void)updateConnections {
-    if (showConnectionsOnly)
-        [self reloadAll];
+    // show new people connections in Connections tab
+    // also change blurriness in proximity tab
+    [self reloadAll];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -305,6 +306,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NSMutableArray * allUserInfos = [appDelegate allJunctionUserInfos];
     NSMutableDictionary * allPulses = [appDelegate allPulses];
+    [self.portraitViews removeAllObjects];
     for (UserInfo * friendUserInfo in allUserInfos) {
         NSString * userID = friendUserInfo.pfUserID;
         UserPulse * pulse = [allPulses objectForKey:userID];

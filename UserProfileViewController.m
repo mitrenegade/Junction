@@ -92,7 +92,12 @@
 -(void)updateConnections {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo]) {
-
+#if 0
+        [self.nameLabel setText:userInfo.username];
+        [self.photoView setImage:userInfo.photo];
+#else
+        [self updateUserInfo];
+#endif
     }
     else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
         

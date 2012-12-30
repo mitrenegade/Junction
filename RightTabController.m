@@ -97,6 +97,7 @@
     [buttonTitle setFont:[UIFont systemFontOfSize:10]];
     [buttonTitle setTextColor:[UIColor whiteColor]];
     [buttonTitle setTextAlignment:NSTextAlignmentCenter];
+    [buttonTitle setAdjustsFontSizeToFitWidth:YES];
     [button addSubview:buttonTitle];
     
     [sidebarItems addObject:button];
@@ -171,6 +172,20 @@
     }
     else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
         NSLog(@"Accept connection request!");
+        [UIAlertView alertViewWithTitle:@"Accept connection request" message:[NSString stringWithFormat:@"Would you like to accept %@'s connection request?", userInfo.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObjects:@"Accept", @"Reject", nil] onDismiss:^(int buttonIndex) {
+            if (buttonIndex == 0) {
+                // accept
+                [appDelegate acceptConnectionRequestFromUser:userInfo];
+            }
+            else if (buttonIndex == 1) {
+                // reject
+                //[appDelegate rejectConnectionRequestFromUser:sender withNotification:notification];
+                NSLog(@"Why? You have few enough friends as it is!");
+            }
+        } onCancel:^{
+            
+        }];
+
     }
     else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
         NSLog(@"Connection request already sent!");

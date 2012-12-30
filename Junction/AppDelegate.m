@@ -583,16 +583,44 @@
     }];
 }
 
--(void)acceptConnectionRequestFromUser:(UserInfo*)user withNotification:(JunctionNotification *)notification {
+-(void)acceptConnectionRequestFromUser:(UserInfo*)user {
     [ParseHelper removeRelation:@"connectionsReceived" betweenUser:myUserInfo andUser:user];
     [ParseHelper removeRelation:@"connectionsSent" betweenUser:user andUser:myUserInfo];
-    [notification.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [ParseHelper addRelation:@"connections" betweenUser:myUserInfo andUser:user withBlock:^(BOOL succeeded, NSError * error) {
         if (error) {
-            NSLog(@"Could not delete notification with objectID %@", notification.pfObject.objectId);
+            NSLog(@"AcceptConnectionRequest->addRelation had error: %@", error);
+        }
+        else {
+            NSLog(@"Connection created! success!");
+            [self getMyConnectionsReceived];
+            [self getMyConnections];
+        }
+    }];
+    [ParseHelper addRelation:@"connections" betweenUser:user andUser:myUserInfo withBlock:^(BOOL succeeded, NSError * error) {
+        if (error) {
+            NSLog(@"AcceptConnectionRequest->addRelation had error: %@", error);
+        }
+        else {
+            NSLog(@"Connection created! success!");
+            [self getMyConnectionsReceived];
+            [self getMyConnections];
+        }
+    }];
+    
+    JunctionNotification * notificationForDeletion = [self.notificationsController findNotificationOfType:jnConnectionRequestNotification fromSender:user];
+    
+    if (!notificationForDeletion) {
+        //[notificationsController refreshNotifications];
+        return;
+    }
+    
+    [notificationForDeletion.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Could not delete notification with objectID %@", notificationForDeletion.pfObject.objectId);
         }
         else {
             NSLog(@"Deleted junction notification!");
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationsChanged object:self userInfo:nil];
         }
     }];
 }

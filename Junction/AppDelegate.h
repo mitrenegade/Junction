@@ -70,5 +70,5 @@ static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestN
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user;
 -(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user;
 -(void)sendConnectionRequestToUser:(UserInfo*)user;
--(void)acceptConnectionRequestFromUser:(UserInfo*)user withNotification:(JunctionNotification *)notification;
+-(void)acceptConnectionRequestFromUser:(UserInfo*)user;
 @end
