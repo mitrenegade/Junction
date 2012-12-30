@@ -170,19 +170,19 @@
     
     PFUser * pfUser = userInfo.pfUser;
     if (pfUser) {
-        NSLog(@"FindUserPulse using pfUser");
+        NSLog(@"FindUserInfo using pfUser");
         // add user constraint
         [query whereKey:@"pfUser" equalTo:pfUser];
     }
     else if (userInfo.pfUserID) {
         NSString * pfUserID = userInfo.pfUserID;
-        NSLog(@"FindUserPulse using pfUserID %@", pfUserID);
+        NSLog(@"FindUserInfo using pfUserID %@", pfUserID);
         // add user constraint
         [query whereKey:@"pfUserID" equalTo:pfUserID];
     }
     else if (userInfo.linkedInString) {
         NSString * linkedInString = userInfo.linkedInString;
-        NSLog(@"FindUserPulse using linkedInString %@", linkedInString);
+        NSLog(@"FindUserInfo using linkedInString %@", linkedInString);
         // add user constraint
         [query whereKey:@"linkedInString" equalTo:linkedInString];
     }

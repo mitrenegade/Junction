@@ -353,9 +353,14 @@
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
     PFQuery *query = [PFQuery queryWithClassName:CLASSNAME];
-    // additional whereKeys are OR
-    [query whereKey:@"chatChannel" containsString:[NSString stringWithFormat:@"%@+%@", appDelegate.myUserInfo.pfUserID, userInfo.pfUserID]];
-    [query whereKey:@"chatChannel" containsString:[NSString stringWithFormat:@"%@+%@",  userInfo.pfUserID, appDelegate.myUserInfo.pfUserID]];
+    // additional whereKeys are AND
+//    NSString * channel1 = [NSString stringWithFormat:@"%@+%@", appDelegate.myUserInfo.pfUserID, userInfo.pfUserID];
+//    NSString * channel2 = [NSString stringWithFormat:@"%@+%@",  userInfo.pfUserID, appDelegate.myUserInfo.pfUserID];
+    NSString * channel1 = [NSString stringWithFormat:@"%@", appDelegate.myUserInfo.pfUserID];
+    NSString * channel2 = [NSString stringWithFormat:@"%@",  userInfo.pfUserID];
+    [query whereKey:@"chatChannel" containsString:channel1];
+    [query whereKey:@"chatChannel" containsString:channel2];
+    NSLog(@"Querying for chats with channel %@ and %@", channel1, channel2);
     
     // If no objects are loaded in memory, we look to the cache first to fill the table
     // and then subsequently do a query against the network.
@@ -366,7 +371,7 @@
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (!error) {
                 // The find succeeded.
-                //NSLog(@"Successfully retrieved %d chats from cache.", objects.count);
+                NSLog(@"Successfully retrieved %d chats.", objects.count);
                 [chatData removeAllObjects];
                 [chatData addObjectsFromArray:objects];
                 [tableView reloadData];

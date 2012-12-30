@@ -46,6 +46,9 @@
     [Parse setApplicationId:@"DZQGQhktsXFRFj4yXEeePFcdLc5VjuLkvTq9dY4c" clientKey:@"aV2QzGLjAfRSceAcQuoSf3NWRW5ge0VNmMvU1Ws4"];
     [Crashlytics startWithAPIKey:@"747b4305662b69b595ac36f88f9c2abe54885ba3"];
     
+    // register for apple notifications
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
@@ -55,36 +58,10 @@
     self.locationManager = [[CLLocationManager alloc] init];
     [self.locationManager setDelegate:self];
     [self locationSetHighAccuracy];
-    if ([CLLocationManager locationServicesEnabled]) {
-//        [self.locationManager startMonitoringSignificantLocationChanges]; // monitor changes
-        [self.locationManager startUpdatingLocation];
-    }
-    else {
-        [[[UIAlertView alloc] initWithTitle:@"Location Services Off" message:@"Could not discover your location! Please ensure GPS or wireless are on." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
-    }
     
     // get junction users
-    [ParseHelper queryForAllParseObjectsWithClass:@"UserInfo" withBlock:^(NSArray * results, NSError * error) {
-        if (results) {
-            NSLog(@"Got %d users on Parse", [results count]);
-            if (!allJunctionUserInfos)
-                allJunctionUserInfos = [[NSMutableArray alloc] init];
-            
-            [allJunctionUserInfos removeAllObjects];
-            for (PFObject * user in results) {
-                UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
-                NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
-#if !TESTING
-                if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                    continue;
-                }
-#endif
-                [allJunctionUserInfos addObject:friendUserInfo];
-            }
-            
-            [self updateFriendDistances];
-        }
-    }];
+    [self getJunctionUsers];
+
     allPulses = [[NSMutableDictionary alloc] init];
     connected = [[NSMutableSet alloc] init];
     connectRequestsSent = [[NSMutableSet alloc] init];
@@ -140,6 +117,30 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+-(void)getJunctionUsers {
+    [ParseHelper queryForAllParseObjectsWithClass:@"UserInfo" withBlock:^(NSArray * results, NSError * error) {
+        if (results) {
+            NSLog(@"Got %d users on Parse", [results count]);
+            if (!allJunctionUserInfos)
+                allJunctionUserInfos = [[NSMutableArray alloc] init];
+            
+            [allJunctionUserInfos removeAllObjects];
+            for (PFObject * user in results) {
+                UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
+                NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
+#if !TESTING
+                if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+                    continue;
+                }
+#endif
+                [allJunctionUserInfos addObject:friendUserInfo];
+            }
+            
+            [self updateFriendDistances];
+        }
+    }];
+}
+
 -(void)linkedInParseSimpleProfile:(NSDictionary *)profile {
     NSLog(@"Here");
 }
@@ -153,7 +154,7 @@
 }
 
 -(UserInfo*)loadUserInfo {
-    
+    // not used
     // load cached tags
     // archive most recent tags for faster loading
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -178,6 +179,16 @@
 #pragma mark CLLocationManager delegate
 #define LOCATION_RECENT_TIME_INTERVAL 15.0  // threshold for old location updates - if older than this, we discard
 #define LOCATION_MIN_DISTANCE_FOR_UPDATE 10.0 // threshold for updating location to Parse. may not be needed if significantChanges is used
+-(void)startPulsing {
+    if ([CLLocationManager locationServicesEnabled]) {
+        //        [self.locationManager startMonitoringSignificantLocationChanges]; // monitor changes
+        [self.locationManager startUpdatingLocation];
+    }
+    else {
+        [[[UIAlertView alloc] initWithTitle:@"Location Services Off" message:@"Could not discover your location! Please ensure GPS or wireless are on." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+    }
+}
+
 -(void)locationSetHighAccuracy {
     // we are monitoring significant changes, these have no effect
     [locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
@@ -320,42 +331,59 @@
     
     [sideTabController didSelectViewController:0];
 #endif
+    NSLog(@"MyUserInfo pfUser: %@", myUserInfo.pfUser);
     
-    if (isNewUser) {
-        // add userinfo for user
-        PFObject * jpPFObject = [myUserInfo toPFObject];
-        [ParseHelper addParseObjectToParse:jpPFObject withBlock:^(BOOL success, NSError * error) {
-            if (success) {
-                NSLog(@"New user added to parse!");
-            }
-        }];
-        
-    }
-    else {
+//    if (isNewUser) {
+//    }
+//    else
+    {
         [UserInfo FindUserInfoFromParse:myUserInfo withBlock:^(UserInfo * userInfo, NSError * error) {
-            myUserInfo.pfObject = userInfo.pfObject;
-            myUserInfo.pfUser = userInfo.pfUser;
-
+            if (error) {
+                NSLog(@"Error: %@", error);
+            }
+            else {
+                if (userInfo == nil) {
+                    // no userInfo found
+                    // user not found, create
+                    PFObject * jpPFObject = [myUserInfo toPFObject];
+                    [ParseHelper addParseObjectToParse:jpPFObject withBlock:^(BOOL success, NSError * error) {
+                        if (success) {
+                            NSLog(@"New user added to parse!");
+                            [self continueInit];
+                        }
+                    }];
+                }
+                else {
+                    myUserInfo.pfObject = userInfo.pfObject;
+                    myUserInfo.pfUser = userInfo.pfUser;
+                    
 #if TESTING
-            for (UserInfo * friendUserInfo in allJunctionUserInfos) {
-                if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                    //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
-                    //[ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
-                    
-                    [ParseHelper removeRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo];
-                    [ParseHelper removeRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo];
-                    
-                    //[ParseHelper addRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo withBlock:nil];
-                    //[ParseHelper addRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo withBlock:nil];
+                    for (UserInfo * friendUserInfo in allJunctionUserInfos) {
+                        if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+                            //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
+                            //[ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
+                            
+                            [ParseHelper removeRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo];
+                            [ParseHelper removeRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo];
+                            
+                            //[ParseHelper addRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo withBlock:nil];
+                            //[ParseHelper addRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo withBlock:nil];
+                        }
+                    }
+#endif
+                    [self continueInit];
                 }
             }
-#endif
-            [self getMyConnections];
-            [self getMyConnectionsReceived];
-            [self getMyConnectionsSent];
         }];
 
     }
+}
+
+-(void)continueInit {
+    [self startPulsing];
+    [self getMyConnections];
+    [self getMyConnectionsReceived];
+    [self getMyConnectionsSent];
 }
 
 -(void)didGetLinkedInFriends:(NSArray*)friendResults {

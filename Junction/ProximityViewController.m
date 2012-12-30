@@ -67,7 +67,18 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
         [distanceGroups addObject:[[NSMutableArray alloc] init]];
     }
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    
+    if (refreshHeaderView == nil) {
+        
+        PF_EGORefreshTableHeaderView *view = [[PF_EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
+        view.delegate = self;
+        [tableView addSubview:view];
+        refreshHeaderView = view;
+    }
+    //  update the last update date
+    [refreshHeaderView refreshLastUpdatedDate];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateMyUserInfo) 
                                                  name:kMyUserInfoDidChangeNotification 
                                                object:nil];
@@ -358,10 +369,68 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     NSLog(@"Proximity view clicked search");
 }
 
-/*
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-    int row = indexPath.row;
-    int size = self.tableView.frame.size.width / NUM_COLUMNS;
+-(void)refreshProximity {
+    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [appDelegate getJunctionUsers];
 }
- */
+
+#pragma mark EGOrefresh
+
+#pragma mark -
+#pragma mark Data Source Loading / Reloading Methods
+
+- (void)reloadTableViewDataSource{
+    
+    //  should be calling your tableviews data source model to reload
+    //  put here just for demo
+    _reloading = YES;
+
+    [self refreshProximity];
+}
+
+- (void)doneLoadingTableViewData{
+    
+    //  model should call this when its done loading
+    _reloading = NO;
+    [refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:tableView];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    [refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    [refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    
+}
+
+
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(PF_EGORefreshTableHeaderView*)view{
+    
+    [self reloadTableViewDataSource];
+    [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
+    
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(PF_EGORefreshTableHeaderView*)view{
+    
+    return _reloading; // should return if data source model is reloading
+    
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(PF_EGORefreshTableHeaderView*)view{
+    
+    return [NSDate date]; // should return date data source was last changed
+    
+}
+
 @end

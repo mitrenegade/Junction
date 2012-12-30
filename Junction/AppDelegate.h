@@ -63,6 +63,7 @@ static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestN
 @property (nonatomic, strong) NSMutableSet * connectRequestsReceived;
 @property (nonatomic, strong) NSMutableSet * connectRequestsSent;
 
+-(void)getJunctionUsers;
 -(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID;
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo;
 -(BOOL)isConnectedWithUser:(UserInfo*)user;

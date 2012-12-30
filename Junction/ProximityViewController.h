@@ -27,9 +27,12 @@ enum DISTANCE_GROUPS {
     MAX_DISTANCE_GROUPS
     };
 
-@interface ProximityViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, PortraitScrollDelegate>
+@interface ProximityViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, PortraitScrollDelegate, PF_EGORefreshTableHeaderDelegate>
 {
+    PF_EGORefreshTableHeaderView *refreshHeaderView;
+    BOOL _reloading;
 }
+
 @property (nonatomic) BOOL showConnectionsOnly;
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
