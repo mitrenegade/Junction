@@ -339,7 +339,7 @@
     {
         [UserInfo FindUserInfoFromParse:myUserInfo withBlock:^(UserInfo * userInfo, NSError * error) {
             if (error) {
-                NSLog(@"Error: %@", error);
+                NSLog(@"DidLogin->FindUserInfoFromParse Error: %@", error);
             }
             else {
                 if (userInfo == nil) {
@@ -434,19 +434,6 @@
                     CLLocation * friendLocation = [[CLLocation alloc] initWithLatitude:pulse.coordinate.latitude longitude:pulse.coordinate.longitude];
                     distanceInMeters = [lastLocation distanceFromLocation:friendLocation];
                 }
-                
-                /*
-                 // populate friends with full information, and strangers with only some information
-                 if ([linkedInFriends objectForKey:friendUserInfo.linkedInString] != nil) {
-                 NSString * friendID = friendUserInfo.linkedInString;
-                 NSMutableDictionary * friend = [linkedInFriends objectForKey:friendID];
-                 NSString * friendName = [NSString stringWithFormat:@"%@ %@", [friend objectForKey:@"firstName"], [friend objectForKey:@"lastName"]];
-                 NSString * friendHeadline = [friend objectForKey:@"headline"];
-                 UIImage * photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[friend objectForKey:@"pictureURL"]]]];
-                 NSLog(@"Friend found! name %@ id %@ headline %@",friendName, friendID, friendHeadline);
-                 [proxController addUser:friendID withName:friendName withHeadline:friendHeadline withPhoto:photo atDistance:distanceInMeters];
-                 }
-                 */
             }
         }];
         
@@ -455,8 +442,8 @@
 
 -(BOOL)isConnectedWithUser:(UserInfo*)user {
     for (UserInfo * userInfo in connected) {
-        if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
-            NSLog(@"User with linkedInString %@ is connected!", user.linkedInString);
+        if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
+            NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
             return YES;
         }
     }
@@ -472,9 +459,11 @@
 }
 
 -(void)getMyConnections {
+    NSLog(@"GetMyConnections started");
     static int getMyConnectionsRetry = 1;
     [ParseHelper findRelation:@"connections" forUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
         if (error) {
+            NSLog(@"getMyConnections->findRelation failed with error: %@", error.description);
             if (getMyConnectionsRetry)
                 [self performSelector:@selector(getMyConnectionsReceived) withObject:nil afterDelay:300];
             getMyConnectionsRetry = 0;
@@ -490,9 +479,11 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsUpdated object:self userInfo:nil];
         }
     }];
+    NSLog(@"GetMyConnections finished");
 }
 
 -(void)getMyConnectionsSent {
+    NSLog(@"GetMyConnectionsSent started");
     static int getMyConnectionsSentRetry = 1;
     [ParseHelper findRelation:@"connectionsSent" forUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
         if (error) {
@@ -510,9 +501,12 @@
             }
         }
     }];
+    NSLog(@"GetMyConnectionsSent started");
+
 }
 
 -(void)getMyConnectionsReceived {
+    NSLog(@"GetMyConnectionsReceived started");
     static int getMyConnectionsReceivedRetry = 1;
     [ParseHelper findRelation:@"connectionsReceived" forUser:myUserInfo withBlock:^(NSArray * connectedUsers, NSError * error) {
         if (error) {
@@ -530,13 +524,14 @@
             }
         }
     }];
+    NSLog(@"GetMyConnectionsReceived started");
 }
 
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user {
     for (UserInfo * userInfo in connectRequestsSent) {
-        NSLog(@"Userinfo: %@ user: %@", userInfo.linkedInString, user.linkedInString);
-        if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
-            NSLog(@"User with linkedInString %@ is connected!", user.linkedInString);
+        NSLog(@"Userinfo: %@ user: %@", userInfo.pfUserID, user.pfUserID);
+        if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
+            NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
             return YES;
         }
     }
@@ -544,8 +539,8 @@
 }
 -(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user {
     for (UserInfo * userInfo in connectRequestsReceived) {
-        if ([userInfo.linkedInString isEqualToString:user.linkedInString]) {
-            NSLog(@"User with linkedInString %@ is connected!", user.linkedInString);
+        if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
+            NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
             return YES;
         }
     }

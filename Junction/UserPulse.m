@@ -133,7 +133,7 @@ static NSMutableDictionary * allUserPulses;
                     [pulse setPfUser:pfUser];
                     [pulse setPfUserID:pfUser.objectId];
                     [pulse setCoordinate:location.coordinate];
-                    [pulse setLinkedInID:myUserInfo.linkedInString];
+                    //[pulse setLinkedInID:myUserInfo.linkedInString];
                     PFObject * pulseObject = [pulse toPFObject];
                     [pulse setPfObject:pulseObject];
                     [myUserInfo setUserPulse:pulse];
@@ -198,12 +198,14 @@ static NSMutableDictionary * allUserPulses;
             // add user constraint
             [query whereKey:@"pfUserID" equalTo:pfUserID];
         }
+        /*
         else if (userInfo.linkedInString) {
             NSString * linkedInString = userInfo.linkedInString;
             NSLog(@"FindUserPulse using linkedInString %@", linkedInString);
             // add user constraint
             [query whereKey:@"linkedInString" equalTo:linkedInString];
         }
+         */
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (error) {
                 NSLog(@"FindUserPulseForUserInfo: findPulse Query resulted in error!");

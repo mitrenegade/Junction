@@ -253,7 +253,7 @@
         }
         else {
             [notifications removeAllObjects];
-            NSLog(@"Loaded %d notifications for user %@", [results count], appDelegate.myUserInfo.linkedInString);
+            NSLog(@"Loaded %d notifications for user %@", [results count], appDelegate.myUserInfo.pfUserID);
             
             for (PFObject * pfObject in results) {
                 JunctionNotification * notification = [[JunctionNotification alloc] initWithPFObject:pfObject];

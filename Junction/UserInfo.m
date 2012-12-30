@@ -107,32 +107,38 @@
 
 - (PFObject *)toPFObject {
     //PFObject *junctionPFObject = [[PFObject alloc] initWithClassName:@"UserInfo"];
-    if (username)
-        [self.pfObject setObject:username forKey:@"username"];
-    if (password)
-        [self.pfObject setObject:password forKey:@"password"];
-    if (email)
-        [self.pfObject setObject:email forKey:@"email"];
-    if (linkedInString)
-        [self.pfObject setObject:linkedInString forKey:@"linkedInString"];
-    if (headline)
-        [self.pfObject setObject:headline forKey:@"headline"];
-    if (photo)
-        [self.pfObject setObject:UIImagePNGRepresentation(photo) forKey:@"photoData"];
-    if (photoURL)
-        [self.pfObject setObject:photoURL forKey:@"photoURL"];
-    if (position)
-        [self.pfObject setObject:position forKey:@"position"];
-    if (industry)
-        [self.pfObject setObject:industry forKey:@"industry"];
-    if (summary)
-        [self.pfObject setObject:summary forKey:@"summary"];
-    if (location)
-        [self.pfObject setObject:location forKey:@"location"];
-    if (pfUserID)
-        [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
-    if (pfUser)
-        [self.pfObject setObject:pfUser forKey:@"pfUser"];
+    @try {
+        if (username)
+            [self.pfObject setObject:username forKey:@"username"];
+        if (password)
+            [self.pfObject setObject:password forKey:@"password"];
+        if (email)
+            [self.pfObject setObject:email forKey:@"email"];
+        if (linkedInString)
+            [self.pfObject setObject:linkedInString forKey:@"linkedInString"];
+        if (headline)
+            [self.pfObject setObject:headline forKey:@"headline"];
+        if (photo)
+            [self.pfObject setObject:UIImagePNGRepresentation(photo) forKey:@"photoData"];
+        if (photoURL)
+            [self.pfObject setObject:photoURL forKey:@"photoURL"];
+        if (position)
+            [self.pfObject setObject:position forKey:@"position"];
+        if (industry)
+            [self.pfObject setObject:industry forKey:@"industry"];
+        if (summary)
+            [self.pfObject setObject:summary forKey:@"summary"];
+        if (location)
+            [self.pfObject setObject:location forKey:@"location"];
+        if (pfUserID)
+            [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
+        if (pfUser)
+            [self.pfObject setObject:pfUser forKey:@"pfUser"];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Exception in UserInfo.toPFObject! %@", exception.description);
+        return nil;
+    }
     
     NSLog(@"Created new UserInfo for user %@ pfUserID %@", username, pfUserID);
     
@@ -180,12 +186,14 @@
         // add user constraint
         [query whereKey:@"pfUserID" equalTo:pfUserID];
     }
+    /*
     else if (userInfo.linkedInString) {
         NSString * linkedInString = userInfo.linkedInString;
         NSLog(@"FindUserInfo using linkedInString %@", linkedInString);
         // add user constraint
         [query whereKey:@"linkedInString" equalTo:linkedInString];
     }
+     */
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             NSLog(@"FindUserInfoFromParse: Query resulted in error!");
