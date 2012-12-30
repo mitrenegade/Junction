@@ -18,7 +18,7 @@
 //@property (weak, nonatomic) id delegate;
 @property (nonatomic, weak) IBOutlet UILabel * titleLabel;
 @property (nonatomic, weak) IBOutlet UILabel * industryLabel;
-@property (nonatomic, weak) IBOutlet UITextView * descriptionLabel;
+@property (nonatomic, weak) IBOutlet UIView * descriptionFrame;
 @property (nonatomic, strong) UITextView * descriptionView;
 @property (nonatomic, weak) IBOutlet UIScrollView * scrollView;
 

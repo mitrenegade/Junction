@@ -20,7 +20,7 @@
 @synthesize userInfo;
 @synthesize scrollView;
 @synthesize nameLabel;
-@synthesize titleLabel, industryLabel, descriptionLabel;
+@synthesize titleLabel, industryLabel, descriptionFrame;
 @synthesize descriptionView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -68,8 +68,9 @@
     [self.industryLabel setText:userInfo.industry];
     // hack: descriptionLabel only used as an initial framer
     
-    CGSize newsize = [userInfo.summary sizeWithFont:self.descriptionLabel.font constrainedToSize:CGSizeMake(self.scrollView.frame.size.width, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
-    CGRect newFrame = CGRectMake(descriptionLabel.frame.origin.x, descriptionLabel.frame.origin.y, newsize.width, newsize.height + 50);
+    UIFont * descriptionFont = [UIFont systemFontOfSize:14];
+    CGSize newsize = [userInfo.summary sizeWithFont:descriptionFont constrainedToSize:CGSizeMake(self.scrollView.frame.size.width, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
+    CGRect newFrame = CGRectMake(descriptionFrame.frame.origin.x, descriptionFrame.frame.origin.y, newsize.width, newsize.height + 50);
     if (!self.descriptionView) {
         self.descriptionView = [[UITextView alloc] initWithFrame:newFrame];
         [self.scrollView addSubview:self.descriptionView];
@@ -78,7 +79,7 @@
         [self.descriptionView setFrame:newFrame];
     }
     [self.descriptionView setText:userInfo.summary];
-    [self.descriptionView setFont:self.descriptionLabel.font];
+    [self.descriptionView setFont:descriptionFont];
     [self.descriptionView setScrollEnabled:NO];
 //    [self.descriptionView setBackgroundColor:[UIColor redColor]];
     
