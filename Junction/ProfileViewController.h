@@ -19,6 +19,7 @@
 @property (nonatomic, weak) IBOutlet UILabel * titleLabel;
 @property (nonatomic, weak) IBOutlet UILabel * industryLabel;
 @property (nonatomic, weak) IBOutlet UITextView * descriptionLabel;
+@property (nonatomic, strong) UITextView * descriptionView;
 @property (nonatomic, weak) IBOutlet UIScrollView * scrollView;
 
 @property (nonatomic, weak) IBOutlet UIButton * viewForStrangers;

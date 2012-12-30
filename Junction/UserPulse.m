@@ -13,7 +13,7 @@
 @implementation UserPulse
 
 @synthesize coordinate;
-@synthesize pfObject, pfUser, pfUserID, linkedInID;
+@synthesize pfObject, pfUser, pfUserID;
 @synthesize className;
 
 #define CLASSNAME @"UserPulse"
@@ -64,14 +64,13 @@ static NSMutableDictionary * allUserPulses;
         [self.pfObject setObject:pfUser forKey:@"pfUser"];
         [self.pfObject setObject:currentPoint forKey:@"pfGeopoint"];
         [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
-        [self.pfObject setObject:linkedInID forKey:@"linkedInID"];
     }
     @catch (NSException *exception) {
         NSLog(@"Caught exception in trying to convert UserPulse to PFObject!");
         return nil;
     }
     
-    NSLog(@"Creating new pulse PFObject with pfUserID %@ linkedInID %@", pfUserID, linkedInID);
+    NSLog(@"Creating new pulse PFObject with pfUserID %@", pfUserID);
     
     return self.pfObject;
 }
@@ -81,7 +80,6 @@ static NSMutableDictionary * allUserPulses;
     [self setClassName:pObject.className];
     [self setPfUser:[pObject objectForKey:@"pfUser"]];
     [self setPfUserID:[pObject objectForKey:@"pfUserID"]];
-    [self setLinkedInID:[pObject objectForKey:@"linkedInID"]];
     
     PFGeoPoint * geoPoint = [pObject objectForKey:@"pfGeopoint"];
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(geoPoint.latitude, geoPoint.longitude);

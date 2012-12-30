@@ -519,7 +519,7 @@
             for (PFObject * user in connectedUsers) {
                 NSLog(@"Connect sent from user: pfObjectID %@", ((PFObject*)user).objectId);
                 UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
-                [connectRequestsSent addObject:connectedUserInfo];
+                [connectRequestsReceived addObject:connectedUserInfo];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsReceivedUpdated object:self userInfo:nil];
             }
         }

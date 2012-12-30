@@ -21,6 +21,7 @@
 @synthesize scrollView;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionLabel;
+@synthesize descriptionView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -65,12 +66,26 @@
     }
     [self.titleLabel setText:userInfo.headline];
     [self.industryLabel setText:userInfo.industry];
-    [self.descriptionLabel setText:userInfo.summary];
+    // hack: descriptionLabel only used as an initial framer
     
-    float width = self.view.bounds.size.width;
-    float height = self.descriptionLabel.frame.origin.y + self.descriptionLabel.frame.size.height;
+    CGSize newsize = [userInfo.summary sizeWithFont:self.descriptionLabel.font constrainedToSize:CGSizeMake(self.scrollView.frame.size.width, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
+    CGRect newFrame = CGRectMake(descriptionLabel.frame.origin.x, descriptionLabel.frame.origin.y, newsize.width, newsize.height + 50);
+    if (!self.descriptionView) {
+        self.descriptionView = [[UITextView alloc] initWithFrame:newFrame];
+        [self.scrollView addSubview:self.descriptionView];
+    }
+    else {
+        [self.descriptionView setFrame:newFrame];
+    }
+    [self.descriptionView setText:userInfo.summary];
+    [self.descriptionView setFont:self.descriptionLabel.font];
+    [self.descriptionView setScrollEnabled:NO];
+//    [self.descriptionView setBackgroundColor:[UIColor redColor]];
     
+    float width = self.scrollView.frame.size.width;
+    float height = descriptionView.frame.origin.y + descriptionView.frame.size.height;
     [self.scrollView setContentSize:CGSizeMake(width, height)];
+//    NSLog(@"Scroll contentwidth: %f height: %f descriptionLabel size: %f %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height, descriptionLabel.frame.size.width, descriptionLabel.frame.size.height);
 }
 
 -(void)updateConnections {

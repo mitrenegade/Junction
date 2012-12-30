@@ -22,6 +22,7 @@
 @synthesize scrollView;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionLabel;
+@synthesize descriptionView;
 
 @synthesize isViewForConnections;
 @synthesize viewForConnections;
@@ -49,6 +50,7 @@
     // Do any additional setup after loading the view from its nib.
     AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self setMyUserInfo:[appDelegate myUserInfo]];
+    //[self updateMyUserInfo];
 }
 
 -(void)updateMyUserInfo {
@@ -63,12 +65,27 @@
     [nameLabel setText:myUserInfo.username];
     [self.titleLabel setText:myUserInfo.headline];
     [self.industryLabel setText:myUserInfo.industry];
-    [self.descriptionLabel setText:myUserInfo.summary];
     
-    float width = self.view.bounds.size.width;
-    float height = self.descriptionLabel.frame.origin.y + self.descriptionLabel.frame.size.height;
+    // hack: descriptionLabel only used as an initial framer
+    CGSize newsize = [self.myUserInfo.summary sizeWithFont:self.descriptionLabel.font constrainedToSize:CGSizeMake(self.scrollView.frame.size.width, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
+    CGRect newFrame = CGRectMake(descriptionLabel.frame.origin.x, descriptionLabel.frame.origin.y, newsize.width, newsize.height + 50);
+    if (!self.descriptionView) {
+        self.descriptionView = [[UITextView alloc] initWithFrame:newFrame];
+        [self.scrollView addSubview:self.descriptionView];
+    }
+    else {
+        [self.descriptionView setFrame:newFrame];
+    }
+//    NSLog(@"Text: %@", myUserInfo.summary);
+    [self.descriptionView setText:myUserInfo.summary];
+    [self.descriptionView setFont:self.descriptionLabel.font];
+    [self.descriptionView setScrollEnabled:NO];
+//    [self.descriptionView setBackgroundColor:[UIColor redColor]];
     
+    float width = self.scrollView.frame.size.width;
+    float height = self.descriptionView.frame.origin.y + self.descriptionView.frame.size.height;
     [self.scrollView setContentSize:CGSizeMake(width, height)];
+    NSLog(@"Scroll contentwidth: %f height: %f descriptionLabel size: %f %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height, descriptionLabel.frame.size.width, descriptionLabel.frame.size.height);
 }
 
 - (void)viewDidUnload
