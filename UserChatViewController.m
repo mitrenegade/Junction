@@ -16,13 +16,13 @@
 @end
 
 @implementation UserChatViewController
-@synthesize userInfo;
+@synthesize userInfo, nameLabel;
 @synthesize labelConnectionRequired, buttonConnect;
 @synthesize tableView;
 @synthesize chatData;
 @synthesize chatInput;
 @synthesize buttonChat;
-
+@synthesize chatBar;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -37,8 +37,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-//    [self updateUserInfo];
-    [self updateConnections];
+    [self updateUserInfo];
     chatData  = [[NSMutableArray alloc] init];
     
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -63,15 +62,15 @@
 
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnections)
+                                             selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsUpdated
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnections)
+                                             selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsSentUpdated
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnections)
+                                             selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsReceivedUpdated
                                                object:nil];
 }
@@ -469,23 +468,27 @@
     }];
 }
 
--(void)updateConnections {
+-(void)updateUserInfo {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo]) {
         [self toggleChat:YES];
         self.userPhoto = userInfo.photo;
+        self.nameLabel.text = userInfo.username;
     }
     else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
         [self toggleChat:YES];
-        self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
+        self.userPhoto = userInfo.photo; // imageWithGaussianBlur] imageWithGaussianBlur];
+        self.nameLabel.text = userInfo.username;
     }
     else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
         [self toggleChat:YES];
         self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
+        self.nameLabel.text = @"Name hidden";
     }
     else {
         [self toggleChat:NO];
         self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
+        self.nameLabel.text = @"Name hidden";
     }
 }
 

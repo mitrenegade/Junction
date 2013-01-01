@@ -94,6 +94,11 @@
         [subview removeFromSuperview];
     }
     [self.contentView addSubview:[controller view]];
+    CGRect frame = self.contentView.frame;
+    frame.origin.x = 0;
+    frame.origin.y = 0;
+    [controller.view setFrame:frame];
+    NSLog(@"ContentView: %f %f controller view: %f %f", contentView.frame.size.width, contentView.frame.size.height, controller.view.frame.size.width, controller.view.frame.size.height);
 }
 
 @end

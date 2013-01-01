@@ -454,6 +454,7 @@
     RightTabController * rightTabController = [[RightTabController alloc] init];
     [rightTabController setUserInfo:friendUserInfo];
     [self.nav pushViewController:rightTabController animated:YES];
+    //[rightTabController addDefaultControllers];
     
     [rightTabController didSelectViewController:0];
 }

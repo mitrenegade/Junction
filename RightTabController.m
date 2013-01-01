@@ -54,9 +54,6 @@
     
     [self addDefaultControllers];
     
-    for (UIButton * button in sidebarItems)
-        [sidebarView addSubview:button];
-
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateConnections)
                                                  name:kParseConnectionsUpdated
@@ -88,7 +85,7 @@
     
     [button setTag:[sidebarItems count]];
     int dim = SIDEBAR_WIDTH;
-    int FIRST_BUTTON_OFFSET = buttonBlock.frame.size.height;
+    int FIRST_BUTTON_OFFSET = buttonConnect.frame.size.height;
     button.frame = CGRectMake(0, (dim+20)*button.tag + FIRST_BUTTON_OFFSET, dim, dim+20);
     
     UILabel * buttonTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, dim, dim, 20)];
@@ -102,14 +99,6 @@
     
     [sidebarItems addObject:button];
     [viewControllers addObject:viewController];
-    
-    // shift block button and label down
-    CGRect buttonFrame = buttonBlock.frame;
-    buttonFrame.origin.y = button.frame.origin.y + button.frame.size.height;
-    [buttonBlock setFrame:buttonFrame];
-    [labelBlock removeFromSuperview];
-    [labelBlock setFrame:CGRectMake(0, dim, dim, 20)];
-    [buttonBlock addSubview:labelBlock];
 }
 
 -(void)selectSidebarItem:(id)sender {
@@ -129,6 +118,11 @@
         [subview removeFromSuperview];
     }
     [self.contentView addSubview:[controller view]];
+    CGRect frame = self.contentView.frame;
+    frame.origin.x = 0;
+    frame.origin.y = 0;
+    [controller.view setFrame:frame];
+    NSLog(@"ContentView: %f %f controller view: %f %f", contentView.frame.size.width, contentView.frame.size.height, controller.view.frame.size.width, controller.view.frame.size.height);
 }
 
 -(void)addDefaultControllers {
@@ -142,6 +136,28 @@
     [self addController:self.profileController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Profile"];
     [self addController:self.chatController withNormalImage:[UIImage imageNamed:@"speechbubble"] andHighlightedImage:nil andTitle:@"Chat"];
     [self addController:self.shareController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Share"];
+
+    CGRect buttonFrame = CGRectZero;
+    for (UIButton * button in sidebarItems) {
+        [sidebarView addSubview:button];
+        if (button.frame.origin.y > buttonFrame.origin.y)
+            buttonFrame = button.frame;
+    }
+
+    // shift block button and label down
+    buttonFrame.origin.y = buttonFrame.origin.y + buttonFrame.size.height;
+    buttonBlock = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonBlock setImage:[UIImage imageNamed:@"red_x"] forState:UIControlStateNormal];
+    [buttonBlock addTarget:self action:@selector(didClickBlock:) forControlEvents:UIControlEventTouchUpInside];
+    [buttonBlock setFrame:buttonFrame];
+    int dim = SIDEBAR_WIDTH;
+    labelBlock = [[UILabel alloc] initWithFrame:CGRectMake(0, dim, dim, 20)];
+    [labelBlock setBackgroundColor:[UIColor clearColor]];
+    [labelBlock setFont:[UIFont systemFontOfSize:10]];
+    [labelBlock setAdjustsFontSizeToFitWidth:YES];
+    [labelBlock setText:@"Block"];
+    [buttonBlock addSubview:labelBlock];
+    [sidebarView addSubview:buttonBlock];
 }
 
 -(void) updateConnections {

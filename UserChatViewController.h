@@ -22,11 +22,14 @@
 }
 @property (nonatomic, weak) UserInfo * userInfo;
 
+@property (nonatomic, weak) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) IBOutlet UILabel * labelConnectionRequired;
 @property (nonatomic, weak) IBOutlet UIButton * buttonConnect;
 @property (nonatomic, weak) IBOutlet UITableView * tableView;
 @property (nonatomic, weak) IBOutlet UIView * chatView;
 @property (nonatomic, weak) IBOutlet UITextField * chatInput;
+@property (nonatomic, weak) IBOutlet UITextField * chatBar;
+
 @property (nonatomic, weak) IBOutlet UIButton * buttonChat;
 @property (nonatomic, strong) NSString * chatChannel;
 @property (nonatomic, strong) UIImage * userPhoto;
@@ -36,8 +39,6 @@
 -(IBAction)didClickSendChat:(id)sender;
 -(IBAction)didClickConnect:(id)sender;
 
--(void) registerForKeyboardNotifications;
--(void) freeKeyboardNotifications;
 -(void) keyboardWasShown:(NSNotification*)aNotification;
 -(void) keyboardWillHide:(NSNotification*)aNotification;
 @end

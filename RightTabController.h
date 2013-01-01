@@ -31,11 +31,11 @@
 
 @property (nonatomic, weak) IBOutlet UIButton * buttonConnect;
 @property (nonatomic, weak) IBOutlet UILabel * labelConnect;
-@property (nonatomic, weak) IBOutlet UIButton * buttonBlock;
-@property (nonatomic, weak) IBOutlet UILabel * labelBlock;
-
 @property (nonatomic, weak) IBOutlet UIButton * backButton;
 @property (nonatomic, weak) UserInfo * userInfo;
+
+@property (nonatomic, strong) UIButton * buttonBlock;
+@property (nonatomic, strong) UILabel * labelBlock;
 
 -(IBAction)didClickConnect:(id)sender;
 -(IBAction)didClickBlock:(id)sender;
@@ -43,5 +43,5 @@
 -(void)addController:(UIViewController*)viewController withNormalImage:(UIImage*)normalImage andHighlightedImage:(UIImage*)highlightedImage andTitle:(NSString*)title;
 -(void)selectSidebarItem:(id)sender;
 -(void)didSelectViewController:(int)index;
-
+//-(void)addDefaultControllers;
 @end
