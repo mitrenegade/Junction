@@ -10,7 +10,7 @@
 
 @interface Constants : NSObject
 
-#define TESTING 1
+#define TESTING 0
 #define PARSE_HELPER_JUNCTION // parseHelper can use junction specific calls
 
 #define SIDEBAR_WIDTH 40

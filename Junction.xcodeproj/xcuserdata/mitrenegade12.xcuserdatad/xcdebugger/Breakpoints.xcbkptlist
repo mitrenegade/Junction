@@ -345,13 +345,26 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Chat.m"
-         timestampString = "378794255.308189"
+         filePath = "UserChatViewController.m"
+         timestampString = "378851186.376526"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "84"
-         endingLineNumber = "84"
-         landmarkName = "-initWithCoder:"
+         startingLineNumber = "444"
+         endingLineNumber = "444"
+         landmarkName = "-loadLocalChat"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "UserChatViewController.m"
+         timestampString = "378851218.538107"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "424"
+         endingLineNumber = "424"
+         landmarkName = "-loadLocalChat"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

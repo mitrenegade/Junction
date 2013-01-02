@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
 #import "Chat.h"
+#import "UIImage+GaussianBlur.h"
 
 @interface ChatBrowserViewController ()
 
@@ -37,6 +38,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateChats)
                                                  name:jnChatReceived
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateChats)
+                                                 name:kNeedChatBrowserUpdate
                                                object:nil];
     
     [self updateChats];
@@ -79,25 +84,26 @@
         UIButton * photoView = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
 		[photoView.layer setBorderColor: [[UIColor blackColor] CGColor]];
         [photoView.layer setBorderWidth: 2.0];
-        //[photoView addTarget:self action:@selector(didClickUserPhoto:) forControlEvents:UIControlEventTouchUpInside];
         [photoView setUserInteractionEnabled:NO];
-        photoView.tag = TAG_PHOTO;
+        photoView.tag = CB_TAG_PHOTO;
         
-        UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, 190, 35)];
+        UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 10, 190, 15)];
         [nameLabel setFont:[UIFont boldSystemFontOfSize:14]];
         [nameLabel setTextColor:[UIColor blackColor]];
         [nameLabel setTextAlignment:NSTextAlignmentLeft];
         [nameLabel setBackgroundColor:[UIColor clearColor]];
-        nameLabel.tag = TAG_NAMELABEL;
+        nameLabel.tag = CB_TAG_NAMELABEL;
         
         UITextView * textLabel = [[UITextView alloc] initWithFrame:CGRectMake(60, 25, self.tableView.frame.size.width - 45, 50)];
         [textLabel setUserInteractionEnabled:NO];
         [textLabel setBackgroundColor:[UIColor clearColor]];
+        [textLabel setTextAlignment:NSTextAlignmentLeft];
         [textLabel setScrollEnabled:NO];
-        textLabel.tag = TAG_TEXTLABEL;
+        textLabel.tag = CB_TAG_TEXTLABEL;
         
         UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 55, 100, 20)];
-        timeLabel.tag = TAG_TIMELABEL;
+        timeLabel.tag = CB_TAG_TIMELABEL;
+        [timeLabel setBackgroundColor:[UIColor clearColor]];
         
         [cell.contentView addSubview:photoView];
         [cell.contentView addSubview:textLabel];
@@ -105,7 +111,7 @@
         [cell.contentView addSubview:timeLabel];
         
 #if TESTING && 0
-        [nameLabel setBackgroundColor:[UIColor clearColor]];
+        [nameLabel setBackgroundColor:[UIColor redColor]];
         [photoView setBackgroundColor:[UIColor blueColor]];
         [textLabel setBackgroundColor:[UIColor greenColor]];
         [timeLabel setBackgroundColor:[UIColor redColor]];
@@ -121,30 +127,29 @@
         
         NSString *chatText = [chat message];
         cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
-        UIFont *font = [UIFont boldSystemFontOfSize:12];
+        UIFont *font = [UIFont systemFontOfSize:12];
         CGSize size = [chatText sizeWithFont:font constrainedToSize:CGSizeMake(self.tableView.frame.size.width - 120, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
         size.width = 190;
         //NSLog(@"Constrained textview size: %f %f", size.width, size.height);
         
-        UIButton * photoView = (UIButton*)[cell.contentView viewWithTag:TAG_PHOTO];
+        UIButton * photoView = (UIButton*)[cell.contentView viewWithTag:CB_TAG_PHOTO];
         if (chat.sender) {
-            [photoView setImage:userInfo.photo forState:UIControlStateNormal];
+            UIImage * image = userInfo.photo;
+            if ([appDelegate isConnectedWithUser:userInfo])
+                image = [image imageWithGaussianBlur];
+            [photoView setImage:image forState:UIControlStateNormal];
             [photoView setFrame:CGRectMake(10, 10, 40, 40)];
         }
         else {
             NSLog(@"Invalid sender: %@!", [chat sender]);
         }
         
-        UILabel * nameLabel = (UILabel*)[cell.contentView viewWithTag:TAG_NAMELABEL];
+        UILabel * nameLabel = (UILabel*)[cell.contentView viewWithTag:CB_TAG_NAMELABEL];
         [nameLabel setText:@"Name hidden"];
-        nameLabel.text = @"ASDfasdfasdf";
-        [nameLabel setFont:[UIFont boldSystemFontOfSize:5]];
-        [nameLabel setTextColor:[UIColor blackColor]];
-        [nameLabel setFrame:CGRectMake(60, 10, 190, 55)];
-        //if ([appDelegate isConnectedWithUser:userInfo])
-            //nameLabel.text = userInfo.username;
+        if ([appDelegate isConnectedWithUser:userInfo])
+            nameLabel.text = userInfo.username;
         
-        UITextView * textLabel = (UITextView*)[cell.contentView viewWithTag:TAG_TEXTLABEL];
+        UITextView * textLabel = (UITextView*)[cell.contentView viewWithTag:CB_TAG_TEXTLABEL];
         textLabel.frame = CGRectMake(60, 25, size.width+10, size.height + 30);
         textLabel.font = font;
         textLabel.text = chatText;
@@ -152,7 +157,7 @@
         NSDate *theDate = [chat.pfObject createdAt];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"HH:mm a"];
-        UILabel * timeLabel = (UILabel*)[cell.contentView viewWithTag:TAG_TIMELABEL];
+        UILabel * timeLabel = (UILabel*)[cell.contentView viewWithTag:CB_TAG_TIMELABEL];
         [timeLabel setFrame:CGRectMake(10, 55, 100, 20)];
         NSString *timeString = [formatter stringFromDate:theDate];
         UIFont * timeFont = [UIFont systemFontOfSize:11];
@@ -186,8 +191,9 @@
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
 
     Chat * chat = [recentChatsArray objectAtIndex:indexPath.row];
-    UserInfo * userInfo = [chat userInfo];
-    [appDelegate displayUserWithUserInfo:userInfo];
+    NSString * sender = chat.sender;
+    UserInfo * userInfo = [appDelegate getUserInfoForPfUserID:sender];
+    [appDelegate displayUserWithUserInfo:userInfo forChat:YES];
 }
 
 -(void)requestUpdateChats {

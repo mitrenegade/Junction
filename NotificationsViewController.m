@@ -174,7 +174,7 @@
     
     if ([type isEqualToString:jnConnectionRequestNotification]) {
         // jump to user
-        [appDelegate displayUserWithUserInfo:sender];
+        [appDelegate displayUserWithUserInfo:sender forChat:NO];
     }
 }
 

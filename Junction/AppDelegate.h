@@ -18,6 +18,7 @@
 #import "Constants.h"
 #import "RightTabController.h"
 #import "JunctionNotification.h"
+#import "Chat.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -26,6 +27,7 @@ static NSString* const kParseConnectionsUpdated = @"kParseConnectionsUpdated";
 static NSString* const kParseConnectionsSentUpdated = @"kParseConnectionsSentUpdated";
 static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsReceivedUpdated";
 static NSString* const kNotificationsChanged = @"kNotificationsChanged";
+static NSString* const kNeedChatBrowserUpdate = @"kNeedChatBrowserUpdate";
 
 // junction notifications
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
@@ -75,10 +77,11 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 
 -(void)getJunctionUsers;
 -(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID;
--(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo;
+-(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat;
 -(BOOL)isConnectedWithUser:(UserInfo*)user;
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user;
 -(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user;
 -(void)sendConnectionRequestToUser:(UserInfo*)user;
 -(void)acceptConnectionRequestFromUser:(UserInfo*)user;
+-(void)updateChatBrowserWithChat:(Chat*)mostRecentChatReceived;
 @end

@@ -345,7 +345,7 @@
     UITextView * tmp = [[UITextView alloc] initWithFrame:CGRectMake(60, 10, size.width+10, size.height + 30)];
     tmp.font = font;
     tmp.text = chatText;
-    [tmp sizeToFit];
+//    [tmp sizeToFit];
     CGRect frame = tmp.frame;
     
     float height = MAX(frame.origin.y + frame.size.height, 80);
@@ -361,17 +361,20 @@
     
     PFQuery *query = [PFQuery queryWithClassName:[Chat getClassName]];
     // additional whereKeys are AND
-//    NSString * channel1 = [NSString stringWithFormat:@"%@+%@", appDelegate.myUserInfo.pfUserID, userInfo.pfUserID];
-//    NSString * channel2 = [NSString stringWithFormat:@"%@+%@",  userInfo.pfUserID, appDelegate.myUserInfo.pfUserID];
-    NSString * channel1 = [NSString stringWithFormat:@"%@", appDelegate.myUserInfo.pfUserID];
-    NSString * channel2 = [NSString stringWithFormat:@"%@",  userInfo.pfUserID];
-    [query whereKey:@"chatChannel" containsString:channel1];
-    [query whereKey:@"chatChannel" containsString:channel2];
-    NSLog(@"Querying for chats with channel %@ and %@", channel1, channel2);
+    NSString * channel1 = [NSString stringWithFormat:@"%@+%@", appDelegate.myUserInfo.pfUserID, userInfo.pfUserID];
+    NSString * channel2 = [NSString stringWithFormat:@"%@+%@",  userInfo.pfUserID, appDelegate.myUserInfo.pfUserID];
+    //NSString * channel1 = [NSString stringWithFormat:@"%@", appDelegate.myUserInfo.pfUserID];
+    //NSString * channel2 = [NSString stringWithFormat:@"%@",  userInfo.pfUserID];
+    //[query whereKey:@"chatChannel" containsString:channel1];
+    //[query whereKey:@"chatChannel" containsString:channel2];
+    [query whereKey:@"chatChannel" containedIn:[NSMutableArray arrayWithObjects:channel1, channel2, nil]];
+    NSLog(@"Querying for chats with channel %@ or %@", channel1, channel2);
     
     // If no objects are loaded in memory, we look to the cache first to fill the table
     // and then subsequently do a query against the network.
     if ([chatData count] == 0) {
+        __block Chat * mostRecentChatReceived = nil;
+        
         query.cachePolicy = kPFCachePolicyCacheThenNetwork;
         [query orderByAscending:@"createdAt"];
         //NSLog(@"Trying to retrieve from cache");
@@ -382,8 +385,23 @@
                 [chatData removeAllObjects];
                 for (PFObject * obj in objects) {
                     Chat * chat = [[Chat alloc] initWithPFObject:obj];
+                    NSLog(@"Chat time %@ channel: %@ sender: %@ message: %@", chat.pfObject.updatedAt, chat.chatChannel, chat.sender, chat.message);
                     [chatData addObject:chat];
+                    
+                    // update latest chat
+                    if ([chat.sender isEqualToString:userInfo.pfUserID]) {
+                        if (!mostRecentChatReceived)
+                            mostRecentChatReceived = chat;
+                        else if ([[chat.pfObject updatedAt] timeIntervalSinceDate:[mostRecentChatReceived.pfObject updatedAt]] > 0)
+                            mostRecentChatReceived = chat;
+                    }
                 }
+                
+                if (mostRecentChatReceived) {
+                    NSLog(@"Most recent chat: %@ at %@", mostRecentChatReceived.message, mostRecentChatReceived.pfObject.updatedAt);
+                    [appDelegate updateChatBrowserWithChat:mostRecentChatReceived];
+                }
+                
                 [tableView reloadData];
                 if ([chatData count] > 0) {
                     [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
@@ -505,7 +523,21 @@
             //[tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
             
             // send notification
+#if 0
             [ParseHelper Parse_sendBadgedNotification:message OfType:jpChatMessage toChannel:userInfo.pfUserID fromSender:appDelegate.myUserInfo.pfUserID];
+#else
+            NSString * channel = [userInfo.pfUserID stringByReplacingOccurrencesOfString:@" " withString:@""];
+            NSLog(@"Parse: sending notification to channel <%@> with message: %@", channel, message);
+            
+            NSMutableDictionary *data = [NSMutableDictionary dictionary];
+            [data setObject:[NSString stringWithFormat:@"%@: %@", userInfo.username, message] forKey:@"alert"];
+            [data setObject:appDelegate.myUserInfo.pfUserID forKey:@"sender"];
+            [data setObject:jpChatMessage forKey:@"type"];
+            [data setObject:message forKey:@"message"];
+            [data setObject:channel forKey:@"channel"];
+            [PFPush sendPushDataToChannelInBackground:channel withData:data];
+            
+#endif
         }
         else {
             if (error)

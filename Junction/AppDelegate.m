@@ -164,7 +164,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         Chat * chat = [[Chat alloc] init];
         chat.message = message;
         chat.sender = senderID;
-        chat.userInfo = [allJunctionUserInfosDict objectForKey:senderID];
+        //chat.userInfo = [allJunctionUserInfosDict objectForKey:senderID];
         [allRecentChats setObject:chat forKey:senderID];
         [self saveCachedRecentChats];
 
@@ -541,13 +541,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     return NO;
 }
 
--(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo {
+-(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat {
     RightTabController * rightTabController = [[RightTabController alloc] init];
     [rightTabController setUserInfo:friendUserInfo];
     [self.nav pushViewController:rightTabController animated:YES];
     //[rightTabController addDefaultControllers];
     
-    [rightTabController didSelectViewController:0];
+    if (forChat)
+        [rightTabController didSelectViewController:1];
+    else
+        [rightTabController didSelectViewController:0];
 }
 
 -(void)getMyConnections {
@@ -715,6 +718,17 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationsChanged object:self userInfo:nil];
         }
     }];
+}
+
+-(void)updateChatBrowserWithChat:(Chat *)mostRecentChatReceived {
+    NSString * sender = mostRecentChatReceived.sender;
+    Chat * oldChat = [self.allRecentChats objectForKey:sender];
+    if (!oldChat || !oldChat.pfObject || !oldChat.pfObject.updatedAt ||[[mostRecentChatReceived.pfObject updatedAt] timeIntervalSinceDate: [oldChat.pfObject updatedAt]] > 0) {
+        [self.allRecentChats setObject:mostRecentChatReceived forKey:sender];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNeedChatBrowserUpdate object:self userInfo:nil];
+        
+        [self saveCachedRecentChats];
+    }
 }
 
 @end

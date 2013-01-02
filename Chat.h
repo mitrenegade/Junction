@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "PFObjectFactory.h"
-#import "UserInfo.h"
+//#import "UserInfo.h"
 
 @interface Chat : NSObject <PFObjectFactory>
 @property (strong, nonatomic) NSString * className;
@@ -16,7 +16,6 @@
 @property (strong, nonatomic) NSString * message;
 @property (nonatomic, strong) PFObject *pfObject;
 @property (nonatomic, strong) NSString * chatChannel;
-@property (nonatomic, strong) UserInfo * userInfo;
 
 -(void)encodeWithCoder:(NSCoder *)aCoder;
 -(id)initWithCoder:(NSCoder *)aDecoder;

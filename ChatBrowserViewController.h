@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-#define TAG_PHOTO 1001
-#define TAG_NAMELABEL 1002
-#define TAG_TEXTLABEL 1003
-#define TAG_TIMELABEL 1004
+#define CB_TAG_PHOTO 1001
+#define CB_TAG_NAMELABEL 1002
+#define CB_TAG_TEXTLABEL 1003
+#define CB_TAG_TIMELABEL 1004
 
 @interface ChatBrowserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 {

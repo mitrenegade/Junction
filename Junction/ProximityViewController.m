@@ -299,7 +299,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(void)didTapPortraitWithUserInfo:(UserInfo *)tappedUserInfo {
     NSLog(@"Clicked on portrait with userInfo: %@", tappedUserInfo.pfUserID);
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    [appDelegate displayUserWithUserInfo:tappedUserInfo];
+    [appDelegate displayUserWithUserInfo:tappedUserInfo forChat:NO];
 }
 
 -(void)reloadAll {

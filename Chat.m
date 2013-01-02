@@ -17,7 +17,7 @@
 @synthesize pfObject;
 @synthesize className;
 @synthesize chatChannel;
-@synthesize userInfo;
+//@synthesize userInfo;
 
 -(id)init {
     self = [super init];
@@ -77,7 +77,7 @@
     [aCoder encodeObject:self.message forKey:@"message"];
     [aCoder encodeObject:self.sender forKey:@"sender"];
     [aCoder encodeObject:self.chatChannel forKey:@"chatChannel"];
-    [aCoder encodeObject:self.userInfo forKey:@"userInfo"];
+//    [aCoder encodeObject:self.userInfo forKey:@"userInfo"];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -85,7 +85,7 @@
         [self setMessage:[aDecoder decodeObjectForKey:@"message"]];
         [self setSender:[aDecoder decodeObjectForKey:@"sender"]];
         [self setChatChannel:[aDecoder decodeObjectForKey:@"chatChannel"]];
-        [self setUserInfo:[aDecoder decodeObjectForKey:@"userInfo"]];
+//        [self setUserInfo:[aDecoder decodeObjectForKey:@"userInfo"]];
     }
     return self;
 }
