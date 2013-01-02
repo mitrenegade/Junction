@@ -55,6 +55,7 @@
 }
 
 -(void)updateUserInfo {
+    NSLog(@"UserProfile UpdateUserInfo");
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo]) {
         [photoView setImage:userInfo.photo];
@@ -86,6 +87,8 @@
     float width = self.scrollView.frame.size.width;
     float height = descriptionView.frame.origin.y + descriptionView.frame.size.height;
     [self.scrollView setContentSize:CGSizeMake(width, height)];
+    [self.scrollView setContentOffset:CGPointMake(0,0)];
+    NSLog(@"UserProfile UpdateUserInfo done");
 //    NSLog(@"Scroll contentwidth: %f height: %f descriptionLabel size: %f %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height, descriptionLabel.frame.size.width, descriptionLabel.frame.size.height);
 }
 

@@ -99,6 +99,7 @@ static OAuthLoginView * sharedOAuthLoginView;
     }
     if ( [[profile objectForKey:@"status"] intValue] == 401 ) {
         NSLog(@"LinkedIn request received 401! Invalid token, must reauthenticate.");
+        [delegate linkedInCredentialsNeedRefresh];
         return;
     }
     if (!userID) {

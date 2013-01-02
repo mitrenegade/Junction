@@ -35,7 +35,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 @synthesize myUserInfo;
 @synthesize userInfos;
 @synthesize distanceGroups;
-@synthesize portraitViews;
+@synthesize portraitViews, portraitLoaded;
 @synthesize headerViews;
 @synthesize showConnectionsOnly;
 
@@ -239,17 +239,23 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     NSString * userID = [group objectAtIndex:index];
     //NSLog(@"Section %d row %d col %d index %d count %d userID %@", section, row, column, index, [group count], userID);
     
-    if (![portraitViews objectForKey:userID]) {
+    if (![portraitViews objectForKey:userID] || ![portraitLoaded objectForKey:userID]) {
         // create new portraitView
-        if ([userInfos objectForKey:userID]) {
+        UserInfo * userInfo = [userInfos objectForKey:userID];
+        if (userInfo) {
             int size = self.tableView.frame.size.width / NUM_COLUMNS;
             CGRect frame = CGRectMake(0, 0, size, size);
             PortraitScrollViewController * portraitView = [[PortraitScrollViewController alloc] init];
             [portraitView setDelegate:self];
             [portraitView.view setFrame:frame]; // for setting photo size
-            [portraitView addUserInfo:[userInfos objectForKey:userID]];
+            NSLog(@"AddUserInfo for user %@ id %@", userInfo.username, userID);
+            [portraitView addUserInfo:userInfo];
             
             [portraitViews setObject:portraitView forKey:userID];
+            [portraitLoaded setObject:[NSNumber numberWithBool:YES] forKey:userID];
+        }
+        else {
+            NSLog(@"Could not addUserInfo for userID %@", userID);
         }
     }
     return [[portraitViews objectForKey:userID] view];
@@ -306,7 +312,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NSMutableArray * allUserInfos = [appDelegate allJunctionUserInfos];
     NSMutableDictionary * allPulses = [appDelegate allPulses];
-    [self.portraitViews removeAllObjects];
+//    [self.portraitViews removeAllObjects];
+    [self.portraitLoaded removeAllObjects]; // force reload of all portraits but don't clear portraitViews
     for (UserInfo * friendUserInfo in allUserInfos) {
         NSString * userID = friendUserInfo.pfUserID;
         UserPulse * pulse = [allPulses objectForKey:userID];

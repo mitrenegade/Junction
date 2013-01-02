@@ -29,6 +29,10 @@ static NSString* const kNotificationsChanged = @"kNotificationsChanged";
 
 // junction notifications
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
+static NSString * const jnChatReceived = @"jnChatReceived";
+
+// junction push notifications - sent from web
+static NSString * const jpChatMessage = @"jpChatMessage";
 
 @class ViewController;
 
@@ -56,12 +60,18 @@ static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestN
 
 @property (nonatomic) NSMutableDictionary * linkedInFriends;
 @property (nonatomic) NSMutableArray * allJunctionUserInfos;
+@property (nonatomic) NSMutableDictionary * allJunctionUserInfosDict;
 @property (nonatomic) NSMutableDictionary * allPulses;
 
 // Parse relations
 @property (nonatomic, strong) NSMutableSet * connected;
 @property (nonatomic, strong) NSMutableSet * connectRequestsReceived;
 @property (nonatomic, strong) NSMutableSet * connectRequestsSent;
+
+@property (nonatomic) NSData * notificationDeviceToken;
+
+// chats
+@property (nonatomic) NSMutableDictionary * allRecentChats;
 
 -(void)getJunctionUsers;
 -(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID;

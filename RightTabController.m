@@ -153,6 +153,8 @@
     int dim = SIDEBAR_WIDTH;
     labelBlock = [[UILabel alloc] initWithFrame:CGRectMake(0, dim, dim, 20)];
     [labelBlock setBackgroundColor:[UIColor clearColor]];
+    [labelBlock setTextColor:[UIColor whiteColor]];
+    [labelBlock setTextAlignment:NSTextAlignmentCenter];
     [labelBlock setFont:[UIFont systemFontOfSize:10]];
     [labelBlock setAdjustsFontSizeToFitWidth:YES];
     [labelBlock setText:@"Block"];

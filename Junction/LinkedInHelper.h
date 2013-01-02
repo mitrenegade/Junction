@@ -15,6 +15,7 @@
 -(void)linkedInParseProfileInformation:(NSDictionary*)profile;
 -(void)linkedInParseSimpleProfile:(NSDictionary*)profile;
 -(void)linkedInParseFriends:(id)friendsResults;
+-(void)linkedInCredentialsNeedRefresh;
 @end
 
 @interface LinkedInHelper : NSObject

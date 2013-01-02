@@ -101,6 +101,7 @@
 		9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9EEB211F1693C45200A40770 /* Chat.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EEB211E1693C45200A40770 /* Chat.m */; };
 		9EECDF5F15EACB3A00AD89D8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */; };
 		9EECDF6115EACB3A00AD89D8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6015EACB3A00AD89D8 /* Foundation.framework */; };
 		9EECDF6315EACB3A00AD89D8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6215EACB3A00AD89D8 /* CoreGraphics.framework */; };
@@ -263,6 +264,8 @@
 		9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+MKBlockAdditions.m"; sourceTree = "<group>"; };
 		9ED3D094168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKBlockAdditions.h"; sourceTree = "<group>"; };
 		9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKBlockAdditions.m"; sourceTree = "<group>"; };
+		9EEB211D1693C45200A40770 /* Chat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chat.h; sourceTree = SOURCE_ROOT; };
+		9EEB211E1693C45200A40770 /* Chat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Chat.m; sourceTree = SOURCE_ROOT; };
 		9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9EECDF6015EACB3A00AD89D8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9EECDF6215EACB3A00AD89D8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -601,6 +604,8 @@
 				9E99542316804D5D001E034A /* UserPulse.m */,
 				9EEE9B99168D7FA500977C86 /* JunctionNotification.h */,
 				9EEE9B9A168D7FA500977C86 /* JunctionNotification.m */,
+				9EEB211D1693C45200A40770 /* Chat.h */,
+				9EEB211E1693C45200A40770 /* Chat.m */,
 			);
 			name = Users;
 			sourceTree = "<group>";
@@ -793,6 +798,7 @@
 				9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */,
 				9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */,
 				9EEE9B9B168D7FA500977C86 /* JunctionNotification.m in Sources */,
+				9EEB211F1693C45200A40770 /* Chat.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,7 +874,7 @@
 				GCC_PREFIX_HEADER = "Junction/Junction-Prefix.pch";
 				INFOPLIST_FILE = "Junction/Junction-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "E600C4E3-3569-4BAE-9C4F-DDEC621D7F05";
+				PROVISIONING_PROFILE = "3916596F-AFC2-4FF4-BEE5-24359D6C0493";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -878,8 +884,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Saad Ansari";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Saad Ansari (P536AZMPAD)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -888,7 +894,7 @@
 				GCC_PREFIX_HEADER = "Junction/Junction-Prefix.pch";
 				INFOPLIST_FILE = "Junction/Junction-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "25D29F25-B5E4-4AEA-ABC8-36540623A17B";
+				PROVISIONING_PROFILE = "3916596F-AFC2-4FF4-BEE5-24359D6C0493";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;

@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIImage+GaussianBlur.h"
+#import "Chat.h"
 
 @interface UserChatViewController ()
 
@@ -59,7 +60,6 @@
     // keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
@@ -72,6 +72,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsReceivedUpdated
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receivedChat:)
+                                                 name:jnChatReceived
                                                object:nil];
 }
 
@@ -100,6 +104,9 @@
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:kParseConnectionsUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:jnChatReceived
                                                   object:nil];
 }
 
@@ -276,30 +283,31 @@
 #endif
     }
 
-    NSUInteger row = [chatData count]-[indexPath row]-1;
-    PFObject * chat = (PFObject*)[chatData objectAtIndex:row];
+    NSUInteger row = [indexPath row]; //[chatData count]-[indexPath row]-1;
+    //PFObject * chatObject = (PFObject*)[chatData objectAtIndex:row];
+    Chat * chat = [chatData objectAtIndex:row];
     
     if (row < chatData.count){
         AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
 
-        NSString *chatText = [chat objectForKey:@"message"];
+        NSString *chatText = [chat message];
         cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
         UIFont *font = [UIFont boldSystemFontOfSize:14];
         CGSize size = [chatText sizeWithFont:font constrainedToSize:CGSizeMake(self.tableView.frame.size.width - 120, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
         size.width = 150;
-        NSLog(@"Constrained textview size: %f %f", size.width, size.height);
+        //NSLog(@"Constrained textview size: %f %f", size.width, size.height);
         
         UIButton * photoView = (UIButton*)[cell.contentView viewWithTag:TAG_PHOTO];
-        if ([[chat objectForKey:@"sender"] isEqualToString:appDelegate.myUserInfo.pfUserID]) {
+        if ([[chat sender] isEqualToString:appDelegate.myUserInfo.pfUserID]) {
             [photoView setImage:appDelegate.myUserInfo.photo forState:UIControlStateNormal];
             [photoView setFrame:CGRectMake(self.tableView.frame.size.width - 50, 10, 40, 40)];
         }
-        else if ([[chat objectForKey:@"sender"] isEqualToString:userInfo.pfUserID]) {
+        else if ([[chat sender] isEqualToString:userInfo.pfUserID]) {
             [photoView setImage:self.userPhoto forState:UIControlStateNormal];
             [photoView setFrame:CGRectMake(10, 10, 40, 40)];
         }
         else {
-            NSLog(@"Invalid sender: %@!", [chat objectForKey:@"sender"]);
+            NSLog(@"Invalid sender: %@!", [chat sender]);
         }
         
         UITextView * textLabel = (UITextView*)[cell.contentView viewWithTag:TAG_TEXTLABEL];
@@ -308,11 +316,11 @@
         textLabel.text = chatText;
         [textLabel sizeToFit];
         
-        NSDate *theDate = [chat createdAt];
+        NSDate *theDate = [chat.pfObject createdAt];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"HH:mm a"];
         UILabel * timeLabel = (UILabel*)[cell.contentView viewWithTag:TAG_TIMELABEL];
-        if ([[chat objectForKey:@"sender"] isEqualToString:appDelegate.myUserInfo.pfUserID]) {
+        if ([[chat sender] isEqualToString:appDelegate.myUserInfo.pfUserID]) {
             [timeLabel setFrame:CGRectMake(self.tableView.frame.size.width - 60, 55, 100, 20)];
         }
         else {
@@ -329,9 +337,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger row = [chatData count]-[indexPath row]-1;
+    NSUInteger row = [indexPath row]; //[chatData count]-[indexPath row]-1;
     
-    NSString *chatText = [[chatData objectAtIndex:row] objectForKey:@"message"];
+    NSString *chatText = [[chatData objectAtIndex:row] message];
     UIFont *font = [UIFont boldSystemFontOfSize:14];
     CGSize size = [chatText sizeWithFont:font constrainedToSize:CGSizeMake(self.tableView.frame.size.width - 120, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
     UITextView * tmp = [[UITextView alloc] initWithFrame:CGRectMake(60, 10, size.width+10, size.height + 30)];
@@ -351,7 +359,7 @@
 {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
-    PFQuery *query = [PFQuery queryWithClassName:CLASSNAME];
+    PFQuery *query = [PFQuery queryWithClassName:[Chat getClassName]];
     // additional whereKeys are AND
 //    NSString * channel1 = [NSString stringWithFormat:@"%@+%@", appDelegate.myUserInfo.pfUserID, userInfo.pfUserID];
 //    NSString * channel2 = [NSString stringWithFormat:@"%@+%@",  userInfo.pfUserID, appDelegate.myUserInfo.pfUserID];
@@ -372,8 +380,18 @@
                 // The find succeeded.
                 NSLog(@"Successfully retrieved %d chats.", objects.count);
                 [chatData removeAllObjects];
-                [chatData addObjectsFromArray:objects];
+                for (PFObject * obj in objects) {
+                    Chat * chat = [[Chat alloc] initWithPFObject:obj];
+                    [chatData addObject:chat];
+                }
                 [tableView reloadData];
+                if ([chatData count] > 0) {
+                    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                    //[tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLineEtched];
+                }
+                else {
+                    //[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+                }
             } else {
                 // Log details of the failure
                 //NSLog(@"Error: %@ %@", error, [error userInfo]);
@@ -403,7 +421,10 @@
                         if (!error) {
                             // The find succeeded.
                             NSLog(@"Successfully retrieved %d chats.", objects.count);
-                            [chatData addObjectsFromArray:objects];
+                            for (PFObject * obj in objects) {
+                                Chat * chat = [[Chat alloc] initWithPFObject:obj];
+                                [chatData addObject:chat];
+                            }
                             NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
                             for (int ind = 0; ind < objects.count; ind++) {
                                 NSIndexPath *newPath = [NSIndexPath indexPathForRow:ind inSection:0];
@@ -413,7 +434,13 @@
                             [tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationTop];
                             [tableView endUpdates];
                             [tableView reloadData];
-                            [tableView scrollsToTop];
+                            if ([chatData count] > 0) {
+                                [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                                //[tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLineEtched];
+                            }
+                            else {
+                                //[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+                            }
                         } else {
                             // Log details of the failure
                             NSLog(@"Error: %@ %@", error, [error userInfo]);
@@ -434,16 +461,31 @@
 
 -(void)sendChat {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    
+
+    /*
     PFObject * pfObject = [PFObject objectWithClassName:CLASSNAME];
     [pfObject setObject:self.chatChannel forKey:@"chatChannel"];
     [pfObject setObject:appDelegate.myUserInfo.pfUserID forKey:@"sender"];
     [pfObject setObject:self.chatInput.text forKey:@"message"];
-    //[pfObject setObject:UIImagePNGRepresentation(appDelegate.myUserInfo.photo) forKey:@"photoData"];
+    */
+    NSString * message = [chatInput.text copy];
+
+    Chat * chat = [[Chat alloc] init];
+    [chat setSender:appDelegate.myUserInfo.pfUserID];
+    [chat setMessage:message];
+    [chat setChatChannel:self.chatChannel];
     
     // updating the table immediately
-    //[chatData addObject:pfObject];
-    //[tableView reloadData];
+    chatInput.text = @"";
+    [chatData addObject:chat];
+    [tableView reloadData];
+    if ([chatData count] > 0) {
+        [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        //[tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLineEtched];
+    }
+    else {
+        //[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    }
 
     /*
     NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
@@ -452,14 +494,18 @@
     [tableView beginUpdates];
     [tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationTop];
     [tableView endUpdates];
-     */
+    */
     
     // send to parse and reload
-    [pfObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [[chat toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             chatInput.text = @"";
-            [chatData addObject:pfObject];
-            [tableView reloadData];
+            //[chatData addObject:pfObject];
+            //[tableView reloadData];
+            //[tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            
+            // send notification
+            [ParseHelper Parse_sendBadgedNotification:message OfType:jpChatMessage toChannel:userInfo.pfUserID fromSender:appDelegate.myUserInfo.pfUserID];
         }
         else {
             if (error)
@@ -527,4 +573,26 @@
     }
 }
 
+-(void)receivedChat:(NSNotification *)notification {
+    NSLog(@"%@", notification);
+    
+    NSDictionary * dict = notification.userInfo;;
+    NSString * type = [dict objectForKey:@"type"];
+    NSString * message = [dict objectForKey:@"message"];
+    NSString * senderID = [dict objectForKey:@"sender"];
+    
+    if ([senderID isEqualToString:userInfo.pfUserID]) {
+        NSLog(@"It is this user's chat!");
+        // add temporary object
+        PFObject * chat = [[PFObject alloc] initWithClassName:[Chat getClassName]];
+        [chat setObject:message forKey:@"message"];
+        [chat setObject:senderID forKey:@"sender"];
+        [chatData addObject:chat];
+        
+        [self.tableView reloadData];
+        if ([chatData count] > 0) {
+            [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        }
+    }
+}
 @end

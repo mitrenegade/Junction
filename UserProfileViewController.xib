@@ -48,7 +48,7 @@
 								<reference key="NSSuperview" ref="5882999"/>
 								<reference key="NSNextKeyView" ref="641982375"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
-								<object class="NSColor" key="IBUIBackgroundColor" id="965915489">
+								<object class="NSColor" key="IBUIBackgroundColor" id="90146218">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MCAwAA</bytes>
 								</object>
@@ -189,7 +189,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{0, 373}, {280, 138}}</string>
 								<reference key="NSSuperview" ref="641982375"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
@@ -205,7 +204,7 @@
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSNextKeyView" ref="741748835"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
-						<reference key="IBUIBackgroundColor" ref="965915489"/>
+						<reference key="IBUIBackgroundColor" ref="90146218"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>

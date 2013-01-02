@@ -13,6 +13,7 @@
 #import "ViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "JunctionNotification.h"
+#import "Chat.h"
 
 @implementation AppDelegate
 
@@ -26,11 +27,13 @@
 @synthesize locationManager;
 @synthesize lastLocation;
 @synthesize linkedInFriends;
-@synthesize allJunctionUserInfos;
+@synthesize allJunctionUserInfos,allJunctionUserInfosDict;
 @synthesize allPulses;
 @synthesize notificationsController;
 @synthesize chatsTableController;
 @synthesize connected, connectRequestsReceived, connectRequestsSent;
+@synthesize notificationDeviceToken;
+@synthesize allRecentChats;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -66,6 +69,7 @@
     connected = [[NSMutableSet alloc] init];
     connectRequestsSent = [[NSMutableSet alloc] init];
     connectRequestsReceived = [[NSMutableSet alloc] init];
+    allRecentChats = [[NSMutableDictionary alloc] init];
     
     // check linkedIn first
     if (![self.viewController loadCachedOauth]) {
@@ -84,6 +88,8 @@
         NSLog(@"Logged in with cached oauth!");
         [self.viewController tryCachedLogin];
     }
+    
+    [self loadCachedRecentChats];
     
     return YES;
 }
@@ -117,12 +123,55 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark parse push notifications
+- (void)application:(UIApplication *)application
+didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    if ([error code] == 3010) {
+        NSLog(@"Push notifications don't work in the simulator!");
+    } else {
+        NSLog(@"didFailToRegisterForRemoteNotificationsWithError: %@", [error description]);
+    }
+    self.notificationDeviceToken = nil;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+{
+    // Tell Parse about the device token.
+    NSLog(@"Storing parse device token");
+    [PFPush storeDeviceToken:newDeviceToken];
+    self.notificationDeviceToken = newDeviceToken;
+}
+
+- (void)application:(UIApplication *)application
+didReceiveRemoteNotification:(NSDictionary *)userInfo {
+#if TESTING && 0
+    [PFPush handlePush:userInfo];
+#endif
+    
+    // debug - display userInfo
+    NSLog(@"%@", userInfo);
+    
+    //NSDictionary * aps = [userInfo objectForKey:@"aps"];
+    NSString * type = [userInfo objectForKey:@"type"];
+    NSString * message = [userInfo objectForKey:@"message"];
+    NSString * senderID = [userInfo objectForKey:@"sender"];
+    UserInfo * senderUserInfo = [allJunctionUserInfosDict objectForKey:senderID];
+    
+    if ([type isEqualToString:jpChatMessage]) {
+        NSLog(@"Chat message received: %@ from %@", message, senderUserInfo.username);
+        [[NSNotificationCenter defaultCenter] postNotificationName:jnChatReceived object:self userInfo:userInfo];
+    }
+}
+
 -(void)getJunctionUsers {
     [ParseHelper queryForAllParseObjectsWithClass:@"UserInfo" withBlock:^(NSArray * results, NSError * error) {
         if (results) {
             NSLog(@"Got %d users on Parse", [results count]);
             if (!allJunctionUserInfos)
                 allJunctionUserInfos = [[NSMutableArray alloc] init];
+            if (!allJunctionUserInfosDict)
+                allJunctionUserInfosDict = [[NSMutableDictionary alloc] init];
             
             [allJunctionUserInfos removeAllObjects];
             for (PFObject * user in results) {
@@ -133,6 +182,7 @@
                     continue;
                 }
 #endif
+                [allJunctionUserInfosDict setObject:friendUserInfo forKey:friendUserInfo.pfUserID];
                 [allJunctionUserInfos addObject:friendUserInfo];
             }
             
@@ -167,6 +217,35 @@
         cachedUserInfo.pfUser = userInfo.pfUser;
     }];
     return cachedUserInfo;
+}
+
+-(void)saveCachedTags {
+    // archive most recent tags for faster loading
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray * cachedChats = [[NSMutableArray alloc] init];
+    if ([allRecentChats count] == 0)
+        return;
+    for (Chat * chat in allRecentChats)
+        [cachedChats addObject:chat];
+    
+    NSData * cacheData = [NSKeyedArchiver archivedDataWithRootObject:cachedChats];
+    [defaults setObject:cacheData forKey:@"recentChats"];
+    [defaults synchronize];
+}
+
+-(void)loadCachedRecentChats {
+    [allRecentChats removeAllObjects];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData * cacheData = [defaults objectForKey:@"recentChats"];
+    if (!cacheData)
+        return;
+    NSMutableArray * cachedChats = [NSKeyedUnarchiver unarchiveObjectWithData:cacheData];
+    NSLog(@"Loaded %d cached chats with ids:", [cachedChats count]);
+    for (Chat * chat in cachedChats) {
+        NSString * pfUserID = chat.sender;
+        NSLog(@"Chat user: %@ message: %@", pfUserID, chat);
+        [allRecentChats setObject:chat forKey:pfUserID];
+    }
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -235,8 +314,8 @@
     }
 }
 
--(void)redoPulseForLastLocation:(CLLocation*)lastLocation {
-    [UserPulse DoUserPulseWithLocation:lastLocation forUser:myUserInfo withBlock:^(BOOL success) {
+-(void)redoPulseForLastLocation:(CLLocation*)lastloc {
+    [UserPulse DoUserPulseWithLocation:lastloc forUser:myUserInfo withBlock:^(BOOL success) {
         if (!success)
             NSLog(@"Could not pulse your location! We tried twice!");
         else
@@ -384,6 +463,9 @@
     [self getMyConnections];
     [self getMyConnectionsReceived];
     [self getMyConnectionsSent];
+    
+    // register for push
+    [ParseHelper Parse_subscribeToChannel:myUserInfo.pfUserID];
 }
 
 -(void)didGetLinkedInFriends:(NSArray*)friendResults {
@@ -625,4 +707,5 @@
         }
     }];
 }
+
 @end

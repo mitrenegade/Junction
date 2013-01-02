@@ -205,6 +205,12 @@
 #endif
 }
 
+-(void)linkedInCredentialsNeedRefresh {
+    // received 401 error, manually open linkedIn
+    //[self didClickLinkedIn:nil];
+    [self.buttonLinkedIn setHidden:NO];
+}
+
 #pragma mark ParseHelper login
 -(void)tryLogin:(BOOL)isNewUser {
     [ParseHelper ParseHelper_loginUsername:myUserInfo.linkedInString withBlock:^(PFUser * user, NSError * error) {

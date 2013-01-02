@@ -13,7 +13,6 @@
 #define TAG_PHOTO 1001
 #define TAG_TEXTLABEL 1002
 #define TAG_TIMELABEL 1003
-#define CLASSNAME @"Chat"
 
 @interface UserChatViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, PF_EGORefreshTableHeaderDelegate, UITextFieldDelegate>
 {

@@ -42,6 +42,7 @@ enum DISTANCE_GROUPS {
 @property (nonatomic, strong) NSMutableArray * distanceGroups;
 
 @property (nonatomic, strong) NSMutableDictionary * portraitViews;
+@property (nonatomic, strong) NSMutableDictionary * portraitLoaded;
 @property (nonatomic, strong) NSMutableDictionary * headerViews;
 
 @property (weak, nonatomic) UserInfo * myUserInfo;
