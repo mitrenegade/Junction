@@ -16,6 +16,7 @@
 @property (strong, nonatomic) NSString * message;
 @property (nonatomic, strong) PFObject *pfObject;
 @property (nonatomic, strong) NSString * chatChannel;
+@property (nonatomic, strong) UserInfo * userInfo;
 
 -(void)encodeWithCoder:(NSCoder *)aCoder;
 -(id)initWithCoder:(NSCoder *)aDecoder;

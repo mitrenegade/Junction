@@ -14,8 +14,8 @@
 		9E1911F31680542600C50361 /* LinkedInHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1911F21680542600C50361 /* LinkedInHelper.m */; };
 		9E1EA6031681B66F005B7165 /* SideTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA6011681B66F005B7165 /* SideTabController.m */; };
 		9E1EA6041681B66F005B7165 /* SideTabController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA6021681B66F005B7165 /* SideTabController.xib */; };
-		9E1EA6101681C3E0005B7165 /* ChatsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA60E1681C3E0005B7165 /* ChatsTableViewController.m */; };
-		9E1EA6111681C3E0005B7165 /* ChatsTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */; };
+		9E1EA6101681C3E0005B7165 /* ChatBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA60E1681C3E0005B7165 /* ChatBrowserViewController.m */; };
+		9E1EA6111681C3E0005B7165 /* ChatBrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA60F1681C3E0005B7165 /* ChatBrowserViewController.xib */; };
 		9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */; };
 		9E1EA6171681C4B7005B7165 /* NotificationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */; };
 		9E3059AC16805DED00A35ABE /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -126,9 +126,9 @@
 		9E1EA6001681B66F005B7165 /* SideTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideTabController.h; sourceTree = SOURCE_ROOT; };
 		9E1EA6011681B66F005B7165 /* SideTabController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideTabController.m; sourceTree = SOURCE_ROOT; };
 		9E1EA6021681B66F005B7165 /* SideTabController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideTabController.xib; sourceTree = SOURCE_ROOT; };
-		9E1EA60D1681C3E0005B7165 /* ChatsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatsTableViewController.h; sourceTree = SOURCE_ROOT; };
-		9E1EA60E1681C3E0005B7165 /* ChatsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatsTableViewController.m; sourceTree = SOURCE_ROOT; };
-		9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatsTableViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E1EA60D1681C3E0005B7165 /* ChatBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatBrowserViewController.h; sourceTree = SOURCE_ROOT; };
+		9E1EA60E1681C3E0005B7165 /* ChatBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatBrowserViewController.m; sourceTree = SOURCE_ROOT; };
+		9E1EA60F1681C3E0005B7165 /* ChatBrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatBrowserViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E1EA6131681C4B7005B7165 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = SOURCE_ROOT; };
 		9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = SOURCE_ROOT; };
 		9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationsViewController.xib; sourceTree = SOURCE_ROOT; };
@@ -335,9 +335,9 @@
 		9E1EA6071681C0A9005B7165 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				9E1EA60D1681C3E0005B7165 /* ChatsTableViewController.h */,
-				9E1EA60E1681C3E0005B7165 /* ChatsTableViewController.m */,
-				9E1EA60F1681C3E0005B7165 /* ChatsTableViewController.xib */,
+				9E1EA60D1681C3E0005B7165 /* ChatBrowserViewController.h */,
+				9E1EA60E1681C3E0005B7165 /* ChatBrowserViewController.m */,
+				9E1EA60F1681C3E0005B7165 /* ChatBrowserViewController.xib */,
 			);
 			name = Chat;
 			sourceTree = "<group>";
@@ -711,7 +711,7 @@
 				9E3059CC16805DED00A35ABE /* ProfileTabView.xib in Resources */,
 				9E3059CD16805DED00A35ABE /* READ_ME.txt in Resources */,
 				9E1EA6041681B66F005B7165 /* SideTabController.xib in Resources */,
-				9E1EA6111681C3E0005B7165 /* ChatsTableViewController.xib in Resources */,
+				9E1EA6111681C3E0005B7165 /* ChatBrowserViewController.xib in Resources */,
 				9E1EA6171681C4B7005B7165 /* NotificationsViewController.xib in Resources */,
 				9E4FA3461689278E00B9A336 /* UserProfileViewController.xib in Resources */,
 				9E4FA34F16894BE300B9A336 /* RightTabController.xib in Resources */,
@@ -786,7 +786,7 @@
 				9E3059CB16805DED00A35ABE /* ProfileTabView.m in Sources */,
 				9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */,
 				9E1EA6031681B66F005B7165 /* SideTabController.m in Sources */,
-				9E1EA6101681C3E0005B7165 /* ChatsTableViewController.m in Sources */,
+				9E1EA6101681C3E0005B7165 /* ChatBrowserViewController.m in Sources */,
 				9E1EA6161681C4B7005B7165 /* NotificationsViewController.m in Sources */,
 				9E9D1DA71686EC830008E68B /* Constants.m in Sources */,
 				9E4FA3451689278E00B9A336 /* UserProfileViewController.m in Sources */,

@@ -13,7 +13,7 @@
 #import "ParseHelper.h"
 #import "LinkedInHelper.h"
 #import "SideTabController.h"
-#import "ChatsTableViewController.h"
+#import "ChatBrowserViewController.h"
 #import "NotificationsViewController.h"
 #import "Constants.h"
 #import "RightTabController.h"
@@ -52,7 +52,7 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 @property (nonatomic, strong) ProfileViewController * profileController;
 @property (nonatomic, strong) ProximityViewController * connectionsController;
 @property (nonatomic, strong) MapViewController * mapViewController;
-@property (nonatomic, strong) ChatsTableViewController * chatsTableController;
+@property (nonatomic, strong) ChatBrowserViewController * chatsTableController;
 @property (nonatomic, strong) NotificationsViewController * notificationsController;
 
 @property (nonatomic) CLLocationManager * locationManager;

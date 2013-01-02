@@ -160,6 +160,14 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     if ([type isEqualToString:jpChatMessage]) {
         NSLog(@"Chat message received: %@ from %@", message, senderUserInfo.username);
+        // add to recent chats
+        Chat * chat = [[Chat alloc] init];
+        chat.message = message;
+        chat.sender = senderID;
+        chat.userInfo = [allJunctionUserInfosDict objectForKey:senderID];
+        [allRecentChats setObject:chat forKey:senderID];
+        [self saveCachedRecentChats];
+
         [[NSNotificationCenter defaultCenter] postNotificationName:jnChatReceived object:self userInfo:userInfo];
     }
 }
@@ -219,15 +227,15 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     return cachedUserInfo;
 }
 
--(void)saveCachedTags {
-    // archive most recent tags for faster loading
+-(void)saveCachedRecentChats {
+    // archive most recent chats for faster loading
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray * cachedChats = [[NSMutableArray alloc] init];
     if ([allRecentChats count] == 0)
         return;
-    for (Chat * chat in allRecentChats)
+    for (Chat * chat in [[allRecentChats objectEnumerator] allObjects]) {
         [cachedChats addObject:chat];
-    
+    }
     NSData * cacheData = [NSKeyedArchiver archivedDataWithRootObject:cachedChats];
     [defaults setObject:cacheData forKey:@"recentChats"];
     [defaults synchronize];
@@ -242,10 +250,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSMutableArray * cachedChats = [NSKeyedUnarchiver unarchiveObjectWithData:cacheData];
     NSLog(@"Loaded %d cached chats with ids:", [cachedChats count]);
     for (Chat * chat in cachedChats) {
-        NSString * pfUserID = chat.sender;
-        NSLog(@"Chat user: %@ message: %@", pfUserID, chat);
-        [allRecentChats setObject:chat forKey:pfUserID];
+        NSLog(@"Chat user: %@ message: %@", chat.sender, chat.message);
+        [allRecentChats setObject:chat forKey:chat.sender];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:jnChatReceived object:self userInfo:nil];
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -380,7 +389,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     connectionsController = [[ProximityViewController alloc] init];
     [connectionsController setShowConnectionsOnly:YES];
 
-    chatsTableController = [[ChatsTableViewController alloc] init];
+    chatsTableController = [[ChatBrowserViewController alloc] init];
 
     notificationsController = [[NotificationsViewController alloc] init];
     

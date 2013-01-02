@@ -1,5 +1,5 @@
 //
-//  ChatsTableViewController.h
+//  ChatBrowserViewController
 //  Junction
 //
 //  Created by Bobby Ren on 12/19/12.
@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ChatsTableViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+#define TAG_PHOTO 1001
+#define TAG_NAMELABEL 1002
+#define TAG_TEXTLABEL 1003
+#define TAG_TIMELABEL 1004
+
+@interface ChatBrowserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 {
 #if USE_PULL_TO_REFRESH
     EGORefreshTableHeaderView *refreshHeaderView;
@@ -21,8 +26,8 @@
 #endif
 }
 @property (nonatomic) IBOutlet UITableView * tableView;
-@property (nonatomic, strong) NSMutableArray * users;
-@property (nonatomic, strong) NSMutableArray * notificationTypes;
+@property (nonatomic, weak) NSMutableDictionary * recentChats;
+@property (nonatomic, strong) NSMutableArray * recentChatsArray;
 
 #if USE_PULL_TO_REFRESH
 @property(assign,getter=isReloading) BOOL reloading;
