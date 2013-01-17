@@ -203,7 +203,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSLog(@"Here");
 }
 
--(void)saveUserInfo {
+-(void)saveUserInfoToDefaults {
     // archive most recent tags for faster loading
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData * cacheData = [NSKeyedArchiver archivedDataWithRootObject:myUserInfo];
@@ -225,6 +225,46 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         cachedUserInfo.pfUser = userInfo.pfUser;
     }];
     return cachedUserInfo;
+}
+
+-(void)saveUserInfoToParse {
+    [UserInfo FindUserInfoFromParse:myUserInfo withBlock:^(UserInfo * userInfo, NSError * error) {
+        if (error) {
+            NSLog(@"saveUserInfoToParse->FindUserInfoFromParse Error: %@", error);
+        }
+        else {
+            if (userInfo == nil) {
+                // no userInfo found
+                // user not found, create
+                PFObject * jpPFObject = [myUserInfo toPFObject];
+                [ParseHelper addParseObjectToParse:jpPFObject withBlock:^(BOOL success, NSError * error) {
+                    if (success) {
+                        NSLog(@"New user added to parse!");
+                        [self continueInit];
+                    }
+                }];
+            }
+            else {
+                myUserInfo.pfObject = userInfo.pfObject;
+                myUserInfo.pfUser = userInfo.pfUser;
+                [[myUserInfo toPFObject] saveInBackground];
+#if TESTING
+                for (UserInfo * friendUserInfo in allJunctionUserInfos) {
+                    if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+                        //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
+                        //[ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
+                        
+                        [ParseHelper removeRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo];
+                        [ParseHelper removeRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo];
+                        
+                        //[ParseHelper addRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo withBlock:nil];
+                        //[ParseHelper addRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo withBlock:nil];
+                    }
+                }
+#endif
+            }
+        }
+    }];
 }
 
 -(void)saveCachedRecentChats {
@@ -341,7 +381,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [myUserInfo setPfUser:user];
     [myUserInfo setPfUserID:user.objectId];
     
-    [self saveUserInfo];
+    [self saveUserInfoToDefaults];
     
     //[nav popToRootViewControllerAnimated:YES];
     [nav dismissModalViewControllerAnimated:YES];
@@ -424,47 +464,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 //    if (isNewUser) {
 //    }
 //    else
-    {
-        [UserInfo FindUserInfoFromParse:myUserInfo withBlock:^(UserInfo * userInfo, NSError * error) {
-            if (error) {
-                NSLog(@"DidLogin->FindUserInfoFromParse Error: %@", error);
-            }
-            else {
-                if (userInfo == nil) {
-                    // no userInfo found
-                    // user not found, create
-                    PFObject * jpPFObject = [myUserInfo toPFObject];
-                    [ParseHelper addParseObjectToParse:jpPFObject withBlock:^(BOOL success, NSError * error) {
-                        if (success) {
-                            NSLog(@"New user added to parse!");
-                            [self continueInit];
-                        }
-                    }];
-                }
-                else {
-                    myUserInfo.pfObject = userInfo.pfObject;
-                    myUserInfo.pfUser = userInfo.pfUser;
-                    
-#if TESTING
-                    for (UserInfo * friendUserInfo in allJunctionUserInfos) {
-                        if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                            //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
-                            //[ParseHelper addConnectionBetweenUser:friendUserInfo andUser:myUserInfo];
-                            
-                            [ParseHelper removeRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo];
-                            [ParseHelper removeRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo];
-                            
-                            //[ParseHelper addRelation:@"connectionsSent" betweenUser:myUserInfo andUser:friendUserInfo withBlock:nil];
-                            //[ParseHelper addRelation:@"connectionsReceived" betweenUser:friendUserInfo andUser:myUserInfo withBlock:nil];
-                        }
-                    }
-#endif
-                    [self continueInit];
-                }
-            }
-        }];
-
-    }
+    [self saveUserInfoToParse];
+    [self continueInit];
 }
 
 -(void)continueInit {

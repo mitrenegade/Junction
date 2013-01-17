@@ -281,11 +281,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "378794213.403658"
+         timestampString = "380087130.540704"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "350"
-         endingLineNumber = "350"
+         startingLineNumber = "390"
+         endingLineNumber = "390"
          landmarkName = "-didLoginWithUsername:andEmail:andPhoto:andPfUser:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -345,26 +345,39 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "UserChatViewController.m"
-         timestampString = "378851186.376526"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "380097782.656786"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "444"
-         endingLineNumber = "444"
-         landmarkName = "-loadLocalChat"
+         startingLineNumber = "231"
+         endingLineNumber = "231"
+         landmarkName = "-saveUserInfoToParse"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "UserChatViewController.m"
-         timestampString = "378851218.538107"
+         filePath = "Junction/UserInfo.m"
+         timestampString = "380097788.827698"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "424"
-         endingLineNumber = "424"
-         landmarkName = "-loadLocalChat"
+         startingLineNumber = "177"
+         endingLineNumber = "177"
+         landmarkName = "+FindUserInfoFromParse:withBlock:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "380098381.277861"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "75"
+         endingLineNumber = "75"
+         landmarkName = "-application:didFinishLaunchingWithOptions:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

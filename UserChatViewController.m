@@ -530,7 +530,7 @@
             NSLog(@"Parse: sending notification to channel <%@> with message: %@", channel, message);
             
             NSMutableDictionary *data = [NSMutableDictionary dictionary];
-            [data setObject:[NSString stringWithFormat:@"%@: %@", userInfo.username, message] forKey:@"alert"];
+            [data setObject:[NSString stringWithFormat:@"%@: %@", appDelegate.myUserInfo.username, message] forKey:@"alert"];
             [data setObject:appDelegate.myUserInfo.pfUserID forKey:@"sender"];
             [data setObject:jpChatMessage forKey:@"type"];
             [data setObject:message forKey:@"message"];

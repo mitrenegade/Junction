@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "OAuthConsumer.h"
 #import "OAuthLoginView.h"
+#import "LinkedInHelperRequest.h"
 
 @protocol LinkedInHelperDelegate <NSObject>
 -(void)linkedInDidLoginWithID:(NSString*)userID;
@@ -25,7 +26,7 @@
 @property (nonatomic, strong) NSString * userID;
 @property (nonatomic, strong) OAConsumer * storedOAuthConsumer;
 @property (nonatomic, strong) OAToken * storedOAuthAccessToken;
-
+@property (nonatomic, strong) LinkedInHelperRequest * lhRequest;
 -(BOOL)isLoggedIn;
 -(OAuthLoginView*)loginView;
 -(void)requestAllProfileInfoForID:(NSString*)userID;
@@ -34,4 +35,6 @@
 
 -(void)profileApiCall;
 -(BOOL) loadCachedOAuth;
+-(void)requestOriginalPhotoWithBlock:(void(^)(NSString*))gotURL;
+
 @end

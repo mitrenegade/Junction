@@ -13,7 +13,7 @@
 
 @protocol ViewControllerDelegate <NSObject>
 
--(void)saveUserInfo;
+-(void)saveUserInfoToDefaults;
 -(BOOL)loadUserInfo;
 -(void)didLogin:(BOOL)isNewUser;
 -(void)didGetLinkedInFriends:(NSArray*)friendResults;

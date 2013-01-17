@@ -84,4 +84,5 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 -(void)sendConnectionRequestToUser:(UserInfo*)user;
 -(void)acceptConnectionRequestFromUser:(UserInfo*)user;
 -(void)updateChatBrowserWithChat:(Chat*)mostRecentChatReceived;
+-(void)saveUserInfoToParse;
 @end

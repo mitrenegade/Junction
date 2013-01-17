@@ -91,6 +91,7 @@
 		9E99545A16804E11001E034A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99545916804E11001E034A /* main.m */; };
 		9E9D1DA71686EC830008E68B /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E9D1DA61686EC830008E68B /* Constants.m */; };
 		9EA2F2AB168A98F200054FB2 /* UIImage+GaussianBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */; };
+		9EC23C1116A67F3600270AF1 /* LinkedInHelperRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
 		9EC27748161043160069F6E5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27747161043160069F6E5 /* MobileCoreServices.framework */; };
@@ -250,6 +251,8 @@
 		9E9D1DA61686EC830008E68B /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = SOURCE_ROOT; };
 		9EA2F2A8168A987100054FB2 /* UIImage+GaussianBlur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+GaussianBlur.h"; sourceTree = SOURCE_ROOT; };
 		9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+GaussianBlur.m"; sourceTree = SOURCE_ROOT; };
+		9EC23C0F16A67F3600270AF1 /* LinkedInHelperRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInHelperRequest.h; sourceTree = SOURCE_ROOT; };
+		9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInHelperRequest.m; sourceTree = SOURCE_ROOT; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9EC277451610430A0069F6E5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9EC27747161043160069F6E5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -572,6 +575,8 @@
 				9E99543316804D8A001E034A /* ViewController.xib */,
 				9E1911F11680542600C50361 /* LinkedInHelper.h */,
 				9E1911F21680542600C50361 /* LinkedInHelper.m */,
+				9EC23C0F16A67F3600270AF1 /* LinkedInHelperRequest.h */,
+				9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */,
 				9E99543516804D9B001E034A /* AppDelegate.h */,
 				9E99543616804D9B001E034A /* AppDelegate.m */,
 				9E9D1DA51686EC830008E68B /* Constants.h */,
@@ -799,6 +804,7 @@
 				9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */,
 				9EEE9B9B168D7FA500977C86 /* JunctionNotification.m in Sources */,
 				9EEB211F1693C45200A40770 /* Chat.m in Sources */,
+				9EC23C1116A67F3600270AF1 /* LinkedInHelperRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

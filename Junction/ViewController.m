@@ -167,8 +167,11 @@
     if (email)
         [myUserInfo setEmail:email];
     if (pictureUrl) {
-        [myUserInfo setPhoto:[[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]]];
-        [myUserInfo setPhotoURL:pictureUrl];
+        NSLog(@"PictureURL: %@", pictureUrl);
+        [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {
+            [myUserInfo setPhoto:[[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]]];
+            [myUserInfo setPhotoURL:originalURL];
+        }];
     }
     if (location)
         [myUserInfo setLocation:location];
@@ -176,8 +179,14 @@
         [myUserInfo setSpecialties:specialties];
     if (currentPositions)
         [myUserInfo setCurrentPositions:currentPositions];
-    [delegate saveUserInfo];
+    [delegate saveUserInfoToDefaults];
     
+    // also save userinfo
+    PFUser * currentUser = [PFUser currentUser];
+    AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate saveUserInfoToParse];
+    
+    // force profile to update
     [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
 }
 

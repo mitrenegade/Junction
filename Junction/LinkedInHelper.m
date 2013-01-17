@@ -8,6 +8,7 @@
 
 #import "LinkedInHelper.h"
 #import "AppDelegate.h"
+#import "LinkedInHelperRequest.h"
 
 static OAuthLoginView * sharedOAuthLoginView;
 
@@ -18,6 +19,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 @synthesize userID;
 @synthesize storedOAuthConsumer;
 @synthesize storedOAuthAccessToken;
+@synthesize lhRequest;
 
 -(id)init {
     self = [super init];
@@ -217,7 +219,20 @@ static OAuthLoginView * sharedOAuthLoginView;
     [delegate linkedInParseFriends:friends];
 }
 
-
+-(void)requestOriginalPhotoWithBlock:(void (^)(NSString *))gotURL {
+    NSString * endpoint = @"http://api.linkedin.com/v1/people/~/picture-urls::(original)";
+    self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
+        if (success) {
+            NSMutableDictionary * dict = [data objectFromJSONData];
+            NSLog(@"URL: %@", [[dict objectForKey:@"values"] objectAtIndex:0]);
+            gotURL([[dict objectForKey:@"values"] objectAtIndex:0]);
+        }
+    } failure:^(BOOL success, NSError * error) {
+        NSLog(@"No photo found! error: %@", error);
+        gotURL(nil);
+    }];
+}
 
 - (IBAction)postButton_TouchUp:(UIButton *)sender
 {    

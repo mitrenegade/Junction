@@ -33,5 +33,6 @@
 @property (strong, nonatomic) NSString * pfUserID;
 
 +(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
++(void)UpdateUserInfoToParse:(UserInfo*)userInfo;
 
 @end
