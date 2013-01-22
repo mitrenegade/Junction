@@ -192,7 +192,7 @@
 
     Chat * chat = [recentChatsArray objectAtIndex:indexPath.row];
     NSString * sender = chat.sender;
-    UserInfo * userInfo = [appDelegate getUserInfoForPfUserID:sender];
+    UserInfo * userInfo = [appDelegate getUserInfoWithID:sender];
     [appDelegate displayUserWithUserInfo:userInfo forChat:YES];
 }
 

@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
+#import "AsyncImageView.h"
 
 @interface UserProfileViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UIImageView * photoView;
+@property (weak, nonatomic) IBOutlet AsyncImageView * photoView;
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) UserInfo * userInfo;
 @property (nonatomic, weak) IBOutlet UILabel * titleLabel;

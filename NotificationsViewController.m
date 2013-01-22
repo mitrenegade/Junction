@@ -142,7 +142,7 @@
         NSString * type = notification.type;
         NSString * senderPfUserID = notification.senderPfUserID;
         NSDate * timestamp = notification.pfObject.createdAt;
-        UserInfo * sender = [appDelegate getUserInfoForPfUserID:senderPfUserID];
+        UserInfo * sender = [appDelegate getUserInfoWithID:senderPfUserID];
         
         [photoView setImage:sender.photo];
         if ([type isEqualToString:jnConnectionRequestNotification])
@@ -170,9 +170,11 @@
     NSString * type = notification.type;
     NSString * senderPfUserID = notification.senderPfUserID;
     NSDate * timestamp = notification.pfObject.createdAt;
-    UserInfo * sender = [appDelegate getUserInfoForPfUserID:senderPfUserID];
+    UserInfo * sender = [appDelegate getUserInfoWithID:senderPfUserID];
     
     if ([type isEqualToString:jnConnectionRequestNotification]) {
+        // todo: need to make sure connections are updated
+        //[appDelegate getMyConnectionsReceived];
         // jump to user
         [appDelegate displayUserWithUserInfo:sender forChat:NO];
     }
@@ -256,11 +258,13 @@
     }];
 }
 
--(JunctionNotification*) findNotificationOfType:(NSString*)notificationType fromSender:(UserInfo*)sender {
+-(NSMutableArray*) findNotificationsOfType:(NSString*)notificationType fromSender:(UserInfo*)sender {
+    NSMutableArray * returnArray = [[NSMutableArray alloc] init];
     for (JunctionNotification * notif in notifications) {
         if ([notif.type isEqualToString:notificationType] && [notif.senderPfUserID isEqualToString:sender.pfUserID])
-            return notif;
+//            return notif;
+            [returnArray addObject:notif];
     }
-    return nil;
+    return returnArray;
 }
 @end

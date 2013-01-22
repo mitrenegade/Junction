@@ -8,6 +8,7 @@
 
 #import "RightTabController.h"
 #import "AppDelegate.h"
+#import "MBProgressHUD.h"
 
 @interface RightTabController ()
 

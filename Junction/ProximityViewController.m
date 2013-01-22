@@ -63,6 +63,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     userInfos = [[NSMutableDictionary alloc] init];
     distanceGroups = [[NSMutableArray alloc] init];
     portraitViews = [[NSMutableDictionary alloc] init];
+    portraitLoaded = [[NSMutableDictionary alloc] init];
     headerViews = [[NSMutableDictionary alloc] init];
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
         [distanceGroups addObject:[[NSMutableArray alloc] init]];
@@ -126,7 +127,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [super viewWillAppear:animated];
     [self updateMyUserInfo];
 //    [self.tableView reloadData];
-    [self reloadAll];
+    [self reloadAllDistances];
 }
 
 -(void)updateMyUserInfo {
@@ -302,7 +303,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [appDelegate displayUserWithUserInfo:tappedUserInfo forChat:NO];
 }
 
--(void)reloadAll {
+-(void)reloadAllDistances {
     //NSLog(@"***Reloading all in proximityView!***");
     //[userInfos removeAllObjects];
     //for (NSMutableArray * group in distanceGroups) {
@@ -372,6 +373,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         }
     }
      */
+}
+
+-(void)reloadAll {
+    [self.portraitLoaded removeAllObjects];
+    [self reloadAllDistances];
 }
 
 -(IBAction)didClickSearch:(id)sender {

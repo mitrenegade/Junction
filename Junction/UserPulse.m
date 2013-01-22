@@ -101,8 +101,9 @@ static NSMutableDictionary * allUserPulses;
         UserPulse * userPulse = myUserInfo.userPulse;
         PFObject * pfObject = userPulse.pfObject;
         [pfObject setObject:currentPoint forKey:@"pfGeopoint"];
-        [pfObject save];
-        pulseCompleted(YES);
+        [pfObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            pulseCompleted(succeeded);
+        }];
         return;
     }
     else {
@@ -136,16 +137,18 @@ static NSMutableDictionary * allUserPulses;
                     [pulse setPfObject:pulseObject];
                     [myUserInfo setUserPulse:pulse];
                     
-                    [pulseObject save];
-                    pulseCompleted(YES);
+                    [pulseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        pulseCompleted(succeeded);
+                    }];
                 }
                 else {
                     id key = @"pfGeopoint";
                     PFObject * oldObject = [objects objectAtIndex:0];
                     NSLog(@"Replacing new value %@ for key %@", currentPoint, key);
                     [oldObject setObject:currentPoint forKey:@"pfGeopoint"];
-                    [oldObject save];
-                    pulseCompleted(YES);
+                    [oldObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        pulseCompleted(succeeded);
+                    }];
                 }
             }
         }];

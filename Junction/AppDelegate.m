@@ -14,6 +14,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "JunctionNotification.h"
 #import "Chat.h"
+#import "MBProgressHUD.h"
 
 @implementation AppDelegate
 
@@ -40,56 +41,75 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    myUserInfo = [[UserInfo alloc] init];
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    [self.viewController setMyUserInfo:myUserInfo];
-    [self.viewController setDelegate:self];
-    
-    //self.viewController = viewController;
     [Parse setApplicationId:@"DZQGQhktsXFRFj4yXEeePFcdLc5VjuLkvTq9dY4c" clientKey:@"aV2QzGLjAfRSceAcQuoSf3NWRW5ge0VNmMvU1Ws4"];
     [Crashlytics startWithAPIKey:@"747b4305662b69b595ac36f88f9c2abe54885ba3"];
     
     // register for apple notifications
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
-    self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
-    
-    //    lhHelper = [[LinkedInHelper alloc] init];
-    //    [lhHelper setDelegate:self];
-    
     self.locationManager = [[CLLocationManager alloc] init];
     [self.locationManager setDelegate:self];
     [self locationSetHighAccuracy];
-    
-    // get junction users
-    [self getJunctionUsers];
 
     allPulses = [[NSMutableDictionary alloc] init];
     connected = [[NSMutableSet alloc] init];
     connectRequestsSent = [[NSMutableSet alloc] init];
     connectRequestsReceived = [[NSMutableSet alloc] init];
     allRecentChats = [[NSMutableDictionary alloc] init];
+
+    // initialize root view controller which is also login controller
+    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
+    [self.viewController setMyUserInfo:myUserInfo];
+    [self.viewController setDelegate:self];
     
-    // check linkedIn first
-    if (![self.viewController loadCachedOauth]) {
-        // need to log in to LinkedIn
-        //[self doLogin];
-        // do nothing; show login
-        NSLog(@"No cached oauth");
+    self.window.rootViewController = self.viewController;
+    [self.window makeKeyAndVisible];
+
+    PFUser * currentUser = [PFUser currentUser];
+    if (0 && currentUser) {
+        NSLog(@"Current PFUser exists.");
+        MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.viewController.view animated:YES];
+        progress.labelText = @"Welcome back..";
+        [progress show:YES];
+
+        // after login with a valid user, always get myUserInfo from parse
+        [UserInfo GetUserInfoForPFUser:currentUser withBlock:^(UserInfo * parseUserInfo, NSError * error) {
+            if (error) {
+                NSLog(@"GetUserInfo for PFUser received error: %@", error);
+                progress.labelText = @"Could not login!";
+                [progress hide:YES afterDelay:2];
+            }
+            else {
+                if (!parseUserInfo) {
+                    // userInfo doesn't exist, must create by doing a cached login
+                    [self.viewController tryCachedLogin];
+                }
+                else {
+                    [self didLoginPFUser:currentUser withUserInfo:parseUserInfo];
+                }
+                [progress hide:YES];
+            }
+        }];
     }
-    else
-    {
-        // linkedIn credentials exist; compare with saved info
-        //        PFUser *currentUser = [PFUser currentUser];
-        //        if (currentUser) {
-        // load current user info
-        //        }
-        NSLog(@"Logged in with cached oauth!");
-        [self.viewController tryCachedLogin];
+    else {
+        // check linkedIn first
+        if (![self.viewController loadCachedOauth]) {
+            // need to log in to LinkedIn
+            //[self doLogin];
+            // do nothing; show login
+            NSLog(@"No cached oauth");
+        }
+        else
+        {
+            // linkedIn credentials exist; compare with saved info
+            //        PFUser *currentUser = [PFUser currentUser];
+            //        if (currentUser) {
+            // load current user info
+            //        }
+            NSLog(@"Logged in with cached oauth!");
+            [self.viewController tryCachedLogin];
+        }
     }
-    
-    [self loadCachedRecentChats];
     
     return YES;
 }
@@ -372,40 +392,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }];
 }
 
-#pragma mark LoginViewDelegate
--(void)didLoginWithUsername:(NSString *)username andEmail:(NSString *)email andPhoto:(UIImage *)photo andPfUser:(PFUser *)user {
-    NSLog(@"Did login with username %@ and PFUser id %@", username, [user objectId]);
-    [myUserInfo setUsername:username];
-    [myUserInfo setEmail:email];
-    [myUserInfo setPhoto:photo];
-    [myUserInfo setPfUser:user];
-    [myUserInfo setPfUserID:user.objectId];
-    
-    [self saveUserInfoToDefaults];
-    
-    //[nav popToRootViewControllerAnimated:YES];
-    [nav dismissModalViewControllerAnimated:YES];
-    
-    // update profiles
-    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-    
-    // try linkedIn
-    if ([lhHelper isLoggedIn]) {
-        [lhHelper requestFriends];
-    }
-    else {
-        [[[UIAlertView alloc] initWithTitle:@"You're not LinkedIn!" message:@"You haven't added your LinkedIn account. Without your LinkedIn, you can't find friends and network! Would you like to add one?" delegate:self cancelButtonTitle:@"Not now" otherButtonTitles:@"Add LinkedIn", nil] show];
-    }
-    
-}
-
 #pragma mark ProximityDelegate and ProfileDelegate
 
 -(UserInfo*)getMyUserInfo {
     return myUserInfo;
 }
 
--(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID {
+-(UserInfo*)getUserInfoWithID:(NSString*)pfUserID {
     for (UserInfo* userInfo in allJunctionUserInfos) {
         if ([userInfo.pfUserID isEqualToString:pfUserID])
             return userInfo;
@@ -414,7 +407,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 #pragma mark ViewControllerDelegate - new login process
--(void)didLogin:(BOOL)isNewUser {
+-(void)didLoginPFUser:(PFUser*)pfUser withUserInfo:(UserInfo*)parseUserInfo {
+    myUserInfo = parseUserInfo;
+
     NSLog(@"Login successful! Adding tabs!");
     UITabBarController * tabBarController = [[UITabBarController alloc] init];
     [tabBarController setDelegate:self];
@@ -461,14 +456,12 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 #endif
     NSLog(@"MyUserInfo pfUser: %@", myUserInfo.pfUser);
     
-//    if (isNewUser) {
-//    }
-//    else
-    [self saveUserInfoToParse];
     [self continueInit];
 }
 
 -(void)continueInit {
+    [self loadCachedRecentChats];
+    [self getJunctionUsers];
     [self startPulsing];
     [self getMyConnections];
     [self getMyConnectionsReceived];
@@ -680,6 +673,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)acceptConnectionRequestFromUser:(UserInfo*)user {
+    MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.nav.topViewController.view animated:YES];
+
     [ParseHelper removeRelation:@"connectionsReceived" betweenUser:myUserInfo andUser:user];
     [ParseHelper removeRelation:@"connectionsSent" betweenUser:user andUser:myUserInfo];
     [ParseHelper addRelation:@"connections" betweenUser:myUserInfo andUser:user withBlock:^(BOOL succeeded, NSError * error) {
@@ -691,6 +686,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [self getMyConnectionsReceived];
             [self getMyConnections];
         }
+        [progress hide:YES];
     }];
     [ParseHelper addRelation:@"connections" betweenUser:user andUser:myUserInfo withBlock:^(BOOL succeeded, NSError * error) {
         if (error) {
@@ -701,24 +697,27 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [self getMyConnectionsReceived];
             [self getMyConnections];
         }
+        [progress hide:YES];
     }];
     
-    JunctionNotification * notificationForDeletion = [self.notificationsController findNotificationOfType:jnConnectionRequestNotification fromSender:user];
+    NSMutableArray * notificationsForDeletion = [self.notificationsController findNotificationsOfType:jnConnectionRequestNotification fromSender:user];
     
-    if (!notificationForDeletion) {
+    if ([notificationsForDeletion count] == 0) {
         //[notificationsController refreshNotifications];
         return;
     }
     
-    [notificationForDeletion.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (error) {
-            NSLog(@"Could not delete notification with objectID %@", notificationForDeletion.pfObject.objectId);
-        }
-        else {
-            NSLog(@"Deleted junction notification!");
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationsChanged object:self userInfo:nil];
-        }
-    }];
+    for (JunctionNotification * notificationForDeletion in notificationsForDeletion) {
+        [notificationForDeletion.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                NSLog(@"Could not delete notification with objectID %@", notificationForDeletion.pfObject.objectId);
+            }
+            else {
+                NSLog(@"Deleted junction notification!");
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationsChanged object:self userInfo:nil];
+            }
+        }];
+    }
 }
 
 -(void)updateChatBrowserWithChat:(Chat *)mostRecentChatReceived {

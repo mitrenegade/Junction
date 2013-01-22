@@ -57,10 +57,16 @@
     AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self setMyUserInfo:[appDelegate myUserInfo]];
     if (isViewForConnections) {
-        [photoView setImage:myUserInfo.photo];
+        [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoURL]]];
+        NSLog(@"Profile photo url: %@", [myUserInfo photoURL]);
+        if (myUserInfo.photo)
+            [photoView setImage:myUserInfo.photo];
     }
     else {
-        [photoView setImage:[myUserInfo.photo imageWithGaussianBlur]];
+        [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoBlurURL]]];
+        NSLog(@"Profile photo url: %@", [myUserInfo photoBlurURL]);
+        if (myUserInfo.photoBlur)
+            [photoView setImage:myUserInfo.photoBlur];
     }
     [nameLabel setText:myUserInfo.username];
     [self.titleLabel setText:myUserInfo.headline];

@@ -58,11 +58,17 @@
     NSLog(@"UserProfile UpdateUserInfo");
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo]) {
-        [photoView setImage:userInfo.photo];
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoURL]);
+        if (userInfo.photo)
+            [photoView setImage:userInfo.photo];
         [nameLabel setText:userInfo.username];
     }
     else {
-        [photoView setImage:[userInfo.photo imageWithGaussianBlur]];
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoBlurURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoBlurURL]);
+        if (userInfo.photoBlur)
+            [photoView setImage:userInfo.photoBlur];
         [nameLabel setText:@"Name Hidden"];
     }
     [self.titleLabel setText:userInfo.headline];

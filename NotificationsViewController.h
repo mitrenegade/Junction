@@ -24,7 +24,7 @@
 @property (nonatomic, strong) NSMutableArray * notifications;
 @property (nonatomic, strong) NSMutableArray * connectRequestUserInfos;
 
--(JunctionNotification*) findNotificationOfType:(NSString*)notificationType fromSender:(UserInfo*)sender;
+-(NSMutableArray*) findNotificationsOfType:(NSString*)notificationType fromSender:(UserInfo*)sender;
 -(void)refreshNotifications;
 
 @end

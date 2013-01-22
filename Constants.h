@@ -13,5 +13,8 @@
 #define TESTING 0
 #define PARSE_HELPER_JUNCTION // parseHelper can use junction specific calls
 
+#define PHOTO_BUCKET @"missionmade.junction.profile.photo"
+#define PHOTO_BLUR_BUCKET @"missionmade.junction.profile.photoblur"
+
 #define SIDEBAR_WIDTH 40
 @end

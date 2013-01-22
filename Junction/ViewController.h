@@ -10,14 +10,14 @@
 #import "UserInfo.h"
 #import "AppDelegate.h"
 #import "ParseHelper.h"
+#import "MBProgressHUD.h"
 
 @protocol ViewControllerDelegate <NSObject>
 
 -(void)saveUserInfoToDefaults;
 -(BOOL)loadUserInfo;
--(void)didLogin:(BOOL)isNewUser;
+-(void)didLoginPFUser:(PFUser*)pfUser withUserInfo:(UserInfo*)parseUserInfo;
 -(void)didGetLinkedInFriends:(NSArray*)friendResults;
--(UserInfo*)getMyUserInfo;
 
 @end
 
@@ -32,6 +32,7 @@
 @property (nonatomic, strong) UserInfo * myUserInfo;
 @property (weak, nonatomic) IBOutlet UIButton * buttonLinkedIn;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
+@property (nonatomic, strong) MBProgressHUD * progress;
 
 //- (void)signInToCustomService;
 -(IBAction)didClickLinkedIn:(id)sender;

@@ -7,6 +7,9 @@
 //
 
 #import "UserInfo.h"
+#import "AWSHelper.h"
+#import "Constants.h"
+#import "UIImage+GaussianBlur.h"
 
 @implementation UserInfo
 @synthesize username, password, email;
@@ -14,6 +17,8 @@
 @synthesize friends;
 @synthesize photo;
 @synthesize photoURL;
+@synthesize photoBlur;
+@synthesize photoBlurURL;
 @synthesize headline;
 @synthesize position;
 @synthesize location;
@@ -69,7 +74,9 @@
     [aCoder encodeObject: linkedInString forKey:@"linkedInString"];
     [aCoder encodeObject: friends forKey:@"friends"];
     [aCoder encodeObject: UIImagePNGRepresentation(photo) forKey:@"photoData"];
-    [aCoder encodeObject: photoURL forKey:@"photoURL"];
+//    [aCoder encodeObject: photoURL forKey:@"photoURL"];
+    [aCoder encodeObject: UIImagePNGRepresentation(photo) forKey:@"photoBlurData"];
+//    [aCoder encodeObject: photoURL forKey:@"photoBlurURL"];
     [aCoder encodeObject: headline forKey:@"headline"];
     [aCoder encodeObject: position forKey:@"position"];
     [aCoder encodeObject: location forKey:@"location"];
@@ -91,7 +98,9 @@
         [self setLinkedInString:[aDecoder decodeObjectForKey:@"linkedInString"]];
         [self setFriends:[aDecoder decodeObjectForKey:@"friends"]];
         [self setPhoto:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoData"]]];
-        [self setPhotoURL:[aDecoder decodeObjectForKey:@"photoURL"]];
+//        [self setPhotoURL:[aDecoder decodeObjectForKey:@"photoURL"]];
+        [self setPhoto:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoBlurData"]]];
+//        [self setPhotoURL:[aDecoder decodeObjectForKey:@"photoBlurURL"]];
         [self setHeadline:[aDecoder decodeObjectForKey:@"headline"]];
         [self setPosition:[aDecoder decodeObjectForKey:@"position"]];
         [self setLocation:[aDecoder decodeObjectForKey:@"location"]];
@@ -118,10 +127,13 @@
             [self.pfObject setObject:linkedInString forKey:@"linkedInString"];
         if (headline)
             [self.pfObject setObject:headline forKey:@"headline"];
-        if (photo)
-            [self.pfObject setObject:UIImagePNGRepresentation(photo) forKey:@"photoData"];
-        if (photoURL)
-            [self.pfObject setObject:photoURL forKey:@"photoURL"];
+        // don't save photo data, and don't save url because amazon urls expire
+//        if (photo)
+//            [self.pfObject setObject:UIImagePNGRepresentation(photo) forKey:@"photoData"];
+//        if (photoURL)
+//            [self.pfObject setObject:photoURL forKey:@"photoURL"];
+//        if (photoBlurURL)
+//            [self.pfObject setObject:photoURL forKey:@"photoBlurURL"];
         if (position)
             [self.pfObject setObject:position forKey:@"position"];
         if (industry)
@@ -153,12 +165,23 @@
     email = [obj objectForKey:@"email"];
     linkedInString = [obj objectForKey:@"linkedInString"];
     headline = [obj objectForKey:@"headline"];
-    UIImage * image = [UIImage imageWithData:[obj objectForKey:@"photoData"]];
+    //photoURL = [obj objectForKey:@"photoURL"];
+    /*
+    UIImage * image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:photoURL]]];
     if (image)
         photo = image;
     else
         photo = [UIImage imageNamed:@"graphic_nopic"];
-    photoURL = [obj objectForKey:@"photoData"];
+     */
+    //photoBlurURL = [obj objectForKey:@"photoBlurURL"];
+    //NSLog(@"Photo: %@ blur: %@", photoURL, photoBlurURL);
+    /*
+    UIImage * imageBlur = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:photoBlurURL]]];
+    if (imageBlur)
+        photoBlur = imageBlur;
+    else
+        photoBlur = [UIImage imageNamed:@"graphic_nopic"];
+     */
     position = [obj objectForKey:@"position"];
     industry = [obj objectForKey:@"industry"];
     summary = [obj objectForKey:@"summary"];
@@ -231,6 +254,68 @@
             NSLog(@"UpdateUserInfoToParse Error finding userInfo on Parse!");
         }
     }];
+}
+
+// new login
++(void)GetUserInfoForPFUser:(PFUser*)pfUser withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults{
+    PFCachePolicy policy = kPFCachePolicyNetworkOnly;
+    PFQuery * query = [PFQuery queryWithClassName:CLASSNAME];
+    [query setCachePolicy:policy];
+    [query whereKey:@"pfUser" equalTo:pfUser];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"FindUserInfoFromParse: Query resulted in error!");
+            queryCompletedWithResults(nil, error);
+        }
+        else {
+            if ([objects count] == 0) {
+                NSLog(@"FindUserInfoFromParse: 0 results");
+                queryCompletedWithResults(nil, nil);
+            }
+            else {
+                PFObject * object = [objects objectAtIndex:0];
+                UserInfo * userInfo = [[UserInfo alloc] initWithPFObject:object];
+                queryCompletedWithResults(userInfo, error);
+            }
+        }
+    }];
+    
+}
+
+-(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved withBlock:(void (^)(BOOL))blurSaved {
+    // AWSHelper uploadImage must always be on main thread!
+    NSString * name =[NSString stringWithFormat:@"%@", self.linkedInString];
+    NSLog(@"SavePhotoToAWS: name %@ photo %x", name, newPhoto);
+    [AWSHelper uploadImage:newPhoto withName:name toBucket:PHOTO_BUCKET withCallback:^(NSString *url) {
+        NSLog(@"New URL for photo: %@", url);
+        photoURL = url;
+        photo = newPhoto;
+        photoSaved(YES);
+    }];
+    UIImage * newBlur = [[newPhoto imageWithGaussianBlur] imageWithGaussianBlur];
+    [AWSHelper uploadImage:newBlur withName:name toBucket:PHOTO_BLUR_BUCKET withCallback:^(NSString *url) {
+        NSLog(@"New URL for photo blur: %@", url);
+        photoBlurURL = url;
+        photoBlur = newBlur;
+        blurSaved(YES);
+    }];
+}
+
+-(NSString*)photoURL {
+    if (photoURL == nil) {
+        // generate new link from amazon
+        photoURL = [AWSHelper getURLForKey:self.linkedInString inBucket:PHOTO_BUCKET];
+        NSLog(@"New photoURL generated from AWS: %@", photoURL);
+    }
+    return photoURL;
+}
+-(NSString*)photoBlurURL {
+    if (photoURL == nil) {
+        // generate new link from amazon
+        photoBlurURL = [AWSHelper getURLForKey:self.linkedInString inBucket:PHOTO_BLUR_BUCKET];
+        NSLog(@"New photoBlurURL generated from AWS: %@", photoBlurURL);
+    }
+    return photoBlurURL;
 }
 
 @end

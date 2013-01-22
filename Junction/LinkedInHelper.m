@@ -59,7 +59,8 @@ static OAuthLoginView * sharedOAuthLoginView;
     
     NSLog(@"stored auth: %@ %@", storedOAuthAccessToken, storedOAuthConsumer);    
     
-    [self profileApiCall];
+//    [self profileApiCall];
+    [self getId];
 }
 
 -(void)closeLoginView {
@@ -163,7 +164,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void)requestAllProfileInfoForID:(NSString*)_userID {
 //    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,location:(name),industry,summary,picture-url,email-address,specialties,three-current-positions)", _userID];
-    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
+    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,headline,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
     NSLog(@"All profile request: %@", requestString);
     NSURL *url = [NSURL URLWithString:requestString];
     OAMutableURLRequest *request = 

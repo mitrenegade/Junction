@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
 #import "Constants.h"
+#import "AsyncImageView.h"
 
 @interface ProfileViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIImageView * photoView;
+@property (weak, nonatomic) IBOutlet AsyncImageView * photoView;
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) UserInfo * myUserInfo;
 //@property (weak, nonatomic) id delegate;

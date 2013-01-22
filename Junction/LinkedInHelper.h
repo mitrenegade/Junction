@@ -33,6 +33,9 @@
 -(void)requestFriends;
 -(void)closeLoginView;
 
+// first request is to get id
+-(void)getId;
+
 -(void)profileApiCall;
 -(BOOL) loadCachedOAuth;
 -(void)requestOriginalPhotoWithBlock:(void(^)(NSString*))gotURL;

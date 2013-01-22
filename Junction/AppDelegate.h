@@ -19,6 +19,7 @@
 #import "RightTabController.h"
 #import "JunctionNotification.h"
 #import "Chat.h"
+#import "MBProgressHUD.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -76,7 +77,7 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 @property (nonatomic) NSMutableDictionary * allRecentChats;
 
 -(void)getJunctionUsers;
--(UserInfo*)getUserInfoForPfUserID:(NSString*)pfUserID;
+-(UserInfo*)getUserInfoWithID:(NSString*)pfUserID;
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat;
 -(BOOL)isConnectedWithUser:(UserInfo*)user;
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user;

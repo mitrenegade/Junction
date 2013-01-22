@@ -39,6 +39,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [self.navigationController setNavigationBarHidden:YES];
+    myUserInfo = [[UserInfo alloc] init]; // create a shell myUserInfo to store any linkedIn that is received
 }
 
 - (void)viewDidUnload
@@ -97,7 +98,10 @@
         [lhHelper setDelegate:self];
     }
     [self.buttonLinkedIn setHidden:YES];
-    [lhHelper profileApiCall];
+//    [lhHelper profileApiCall];
+    [lhHelper getId];
+    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.progress.labelText = @"Loading your LinkedIn information";
 }
 
 -(IBAction)didClickLinkedIn:(id)sender {
@@ -105,24 +109,25 @@
         lhHelper  = [[LinkedInHelper alloc] init];
         [lhHelper setDelegate:self];
     }
-    [self.activityIndicator startAnimating];
+//    [self.activityIndicator startAnimating];
+    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.progress.labelText = @"Loading your LinkedIn information";
     OAuthLoginView * lhView = [lhHelper loginView];
     [self.view addSubview:lhView.view];
 }
 
 #pragma mark LinkedInHelperDelegate
 -(void)linkedInDidLoginWithID:(NSString *)userID {
+    // if we logged in to linkedIn, we probably need to store the info in myUserInfo
     [myUserInfo setLinkedInString:userID];
-    NSLog(@"LinkedIn ID received: %@", myUserInfo.linkedInString);
-    
-    // Parse user will be created using LinkedIn string
-    [self tryLogin:NO];
+    NSLog(@"LinkedIn ID received: %@", userID);
     
     // request profile info
     [lhHelper requestAllProfileInfoForID:userID];
+    [lhHelper closeLoginView];
     
     // request friends
-    [lhHelper requestFriends];
+    //[lhHelper requestFriends];
 }
 
 -(void)linkedInParseSimpleProfile:(NSDictionary*)profile {
@@ -168,10 +173,44 @@
         [myUserInfo setEmail:email];
     if (pictureUrl) {
         NSLog(@"PictureURL: %@", pictureUrl);
+#if 1
         [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {
-            [myUserInfo setPhoto:[[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]]];
-            [myUserInfo setPhotoURL:originalURL];
+            NSLog(@"Picture OriginalURL: %@", originalURL);
+            // first save original urls
+            //[myUserInfo setPhotoURL:originalURL];
+            //[myUserInfo setPhotoBlurURL:originalURL];
+
+            // upload images to AWS and generate new URLs
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
+                        // force profile to update regular image
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+                    } withBlock:^(BOOL saved) {
+                        // force profile to update blurred image
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+                    }];
+                });
+            });
         }];
+#else
+        // upload images to AWS and generate new URLs
+        myUserInfo.photoURL = pictureUrl;
+        myUserInfo.photoBlurURL = pictureUrl;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
+                    // force profile to update regular image
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+                } withBlock:^(BOOL saved) {
+                    // force profile to update blurred image
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+                }];
+            });
+        });
+#endif
     }
     if (location)
         [myUserInfo setLocation:location];
@@ -180,12 +219,9 @@
     if (currentPositions)
         [myUserInfo setCurrentPositions:currentPositions];
     [delegate saveUserInfoToDefaults];
-    
-    // also save userinfo
-    PFUser * currentUser = [PFUser currentUser];
-    AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate saveUserInfoToParse];
-    
+
+    [self tryLogin];
+
     // force profile to update
     [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
 }
@@ -207,7 +243,6 @@
         if (pictureUrl) {
             photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]];
         }
- //       [proxController addUser:userID withName:name withHeadline:headline withPhoto:photo atDistance:dist++];
     }
 #else
     [delegate didGetLinkedInFriends:friends];
@@ -221,43 +256,88 @@
 }
 
 #pragma mark ParseHelper login
--(void)tryLogin:(BOOL)isNewUser {
-    [ParseHelper ParseHelper_loginUsername:myUserInfo.linkedInString withBlock:^(PFUser * user, NSError * error) {
+-(void)tryLogin {
+    NSString * loginID = myUserInfo?myUserInfo.linkedInString:lhHelper.userID;
+    self.progress.labelText = @"Logging in...";
+    [ParseHelper ParseHelper_loginUsingID:loginID withBlock:^(PFUser * user, NSError * error) {
         if (user) {
             NSLog(@"User LinkedIn %@ exists with PFUser id %@", myUserInfo.linkedInString, [user objectId]);
-            //[delegate didLoginWithUsername:username andEmail:email andPhoto:[[buttonPhoto imageView] image] andPfUser:user];
+            /*
             [myUserInfo setPfUser:user];
             [myUserInfo setPfUserID:user.objectId];
-            [delegate didLogin:isNewUser];
+             */
+            
+            // after login with a valid user, always get myUserInfo from parse
+            [UserInfo GetUserInfoForPFUser:user withBlock:^(UserInfo * parseUserInfo, NSError * error) {
+                if (error) {
+                    NSLog(@"GetUserInfo for PFUser received error: %@", error);
+                }
+                else {
+                    if (!parseUserInfo) {
+                        // userInfo doesn't exist, must create
+                        myUserInfo.pfUser = user;
+                        myUserInfo.pfUserID = user.objectId;
+                        [[myUserInfo toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                            if (succeeded) {
+                                [self.progress hide:YES];
+                                [delegate didLoginPFUser:user withUserInfo:myUserInfo];
+                            }
+                            else {
+                                self.progress.labelText = @"Could not save your User info!";
+                                [self.progress hide:YES afterDelay:2];
+                                [[UIAlertView alertViewWithTitle:@"Error:" message:error.description] show];
+                            }
+                        }];
+                    }
+                    else {
+                        [self.progress hide:YES];
+                        [delegate didLoginPFUser:user withUserInfo:parseUserInfo];
+                    }
+                }
+            }];
         }
         else {
-            NSLog(@"Error: %@", error.userInfo);
+            int errorCode = [[error.userInfo objectForKey:@"code"] intValue];
+            NSLog(@"Error: %@ code %d", error.userInfo, errorCode);
             // todo: check whether login failed due to missing user, or wrong user
-            if ([[error.userInfo objectForKey:@"code"] intValue] == 101) {
+            if (errorCode == 101) {
                 // invalid credentials
                 [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"Current LinkedIn profile for %@ is not registered with Junction! Would you like to sign up?", myUserInfo.username] delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Sign Up", nil] show];
             }
+            else if (errorCode == 100) {
+                // invalid credentials
+                self.progress.labelText = @"Could not connect to our server!";
+                self.progress.detailsLabelText = @"Please try again later!";
+                [self enableLoginButton];
+            }
             else {
-                [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"There was an unknown issue with login. Please try again later!"] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+                self.progress.labelText = @"Login Failed";
+                self.progress.detailsLabelText = @"There was an unknown issue with login. Please try again later!";
+                [self enableLoginButton];
             }
         }
     }];
 }
 
 -(void)trySignup {
-    [ParseHelper ParseHelper_signupUsername:myUserInfo.linkedInString withBlock:^(BOOL bDidSignupUser, NSError * error) {
+    NSString * loginID = myUserInfo?myUserInfo.linkedInString:lhHelper.userID;
+    self.progress.labelText = @"Signing up";
+    [ParseHelper ParseHelper_signupUsingID:loginID withBlock:^(BOOL bDidSignupUser, NSError * error) {
         if (bDidSignupUser) {
-            NSLog(@"User %@ created", myUserInfo.username);
-            [self tryLogin:YES];
+            NSLog(@"User %@ created", lhHelper.userID);
+            [self tryLogin];
         }
         else {
-            NSLog(@"Error: %@", error.userInfo);
-            if ([[error.userInfo objectForKey:@"code"] intValue] == 125) { // invalid email
-                [[[UIAlertView alloc] initWithTitle:@"Signup Failed" message:@"Please enter a valid email!" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+            int errorCode = [[error.userInfo objectForKey:@"code"] intValue];
+            NSLog(@"Error: %@ code %d", error.userInfo, errorCode);
+            if (errorCode == 125) { // invalid email
+                self.progress.labelText = @"Signup Failed";
+                self.progress.detailsLabelText = @"Please enter a valid email!";
                 [self enableLoginButton];
             }
             else {
-                [[[UIAlertView alloc] initWithTitle:@"Signup Failed" message:[NSString stringWithFormat:@"Could not sign up user %@!", myUserInfo.username] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+                self.progress.labelText = @"Signup Failed";
+                self.progress.detailsLabelText = [NSString stringWithFormat:@"Could not sign up user %@!", myUserInfo.username];
                 [self enableLoginButton];
             }
         }
@@ -276,11 +356,8 @@
 }
 
 -(void)enableLoginButton {
+    [self.progress hide:YES afterDelay:3];
     [buttonLinkedIn setHidden:NO];
-}
-
--(UserInfo*)getMyUserInfo {
-    return [delegate getMyUserInfo];
 }
 
 @end

@@ -9,6 +9,7 @@
 #import "PortraitScrollViewController.h"
 #import "AppDelegate.h"
 #import "UIImage+GaussianBlur.h"
+#import "AsyncImageView.h"
 
 @interface PortraitScrollViewController ()
 
@@ -44,15 +45,22 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)addPhoto:(UIImage*)userPhoto {
+-(void)addPhoto:(UIImage*)userPhoto withURL:(NSString*)urlString {
     self.photo = userPhoto;
     int border = 2;
     int size = self.view.frame.size.width;
     CGRect portraitframe = CGRectMake(border,border,size-border,size-border);
 
+#if 0
     UIImageView * photoBG = [[UIImageView alloc] initWithImage:self.photo];
     [photoBG setFrame:portraitframe];
     [self.view addSubview:photoBG];
+#else
+    AsyncImageView * photoBG = [[AsyncImageView alloc] initWithImage:self.photo];
+    [photoBG setImageURL:[NSURL URLWithString:urlString]];
+    [photoBG setFrame:portraitframe];
+    [self.view addSubview:photoBG];
+#endif
 }
 
 -(void)addUserInfo:(UserInfo *)userInfo {
@@ -66,9 +74,9 @@
     // background photo
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo])
-        [self addPhoto:userInfo.photo];
+        [self addPhoto:userInfo.photo withURL:userInfo.photoURL];
     else
-        [self addPhoto:[userInfo.photo imageWithGaussianBlur]];
+        [self addPhoto:userInfo.photoBlur withURL:userInfo.photoBlurURL];//[userInfo.photo imageWithGaussianBlur]];
     
     int fontSizeName = 20;
     int fontSize = 15;

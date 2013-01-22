@@ -11,7 +11,10 @@
 
 @class UserPulse;
 
-@interface UserInfo : ParseUserInfo
+@interface UserInfo : ParseUserInfo {
+    NSString * photoURL;
+    NSString * photoBlurURL;
+}
 
 @property (strong, nonatomic) NSString * className;
 @property (strong, nonatomic) NSString * username;
@@ -21,8 +24,12 @@
 @property (strong, nonatomic) NSString * headline;
 @property (strong, nonatomic) NSString * position;
 @property (strong, nonatomic) NSMutableSet * friends;
+
 @property (strong, nonatomic) UIImage * photo;
 @property (strong, nonatomic) NSString * photoURL;
+@property (strong, nonatomic) UIImage * photoBlur;
+@property (strong, nonatomic) NSString * photoBlurURL;
+
 @property (strong, nonatomic) NSString * industry;
 @property (strong, nonatomic) NSString * summary;
 @property (strong, nonatomic) NSString * location;
@@ -34,5 +41,10 @@
 
 +(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
 +(void)UpdateUserInfoToParse:(UserInfo*)userInfo;
+
+// new login
++(void)GetUserInfoForPFUser:(PFUser*)pfUser withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
+
+-(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved withBlock:(void(^)(BOOL))blurSaved;
 
 @end
