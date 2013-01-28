@@ -9,6 +9,7 @@
 #import "ProfileViewController.h"
 #import "AppDelegate.h" // for notification constants
 #import "UIImage+GaussianBlur.h"
+#import "UIImage+Resize.h"
 
 @interface ProfileViewController ()
 
@@ -27,6 +28,8 @@
 @synthesize isViewForConnections;
 @synthesize viewForConnections;
 @synthesize viewForStrangers;
+
+@synthesize slider;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -61,12 +64,14 @@
         NSLog(@"Profile photo url: %@", [myUserInfo photoURL]);
         if (myUserInfo.photo)
             [photoView setImage:myUserInfo.photo];
+        [slider setHidden:YES];
     }
     else {
         [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoBlurURL]]];
         NSLog(@"Profile photo url: %@", [myUserInfo photoBlurURL]);
         if (myUserInfo.photoBlur)
             [photoView setImage:myUserInfo.photoBlur];
+        [slider setHidden:NO];
     }
     [nameLabel setText:myUserInfo.username];
     [self.titleLabel setText:myUserInfo.headline];
@@ -132,4 +137,63 @@
     [self updateMyUserInfo];
 }
 
+-(void)sliderDidChange:(id)sender {
+    UISlider * slider = (UISlider*)sender;
+    int newPrivacyLevel = (int) (slider.value);
+    if (newPrivacyLevel == myUserInfo.privacyLevel)
+        return;
+    
+    UIImage * newImage;
+    
+    switch (newPrivacyLevel) {
+        case 0:
+            // do nothing!
+            newImage = myUserInfo.photo;
+            break;
+        case 1:
+            // one blur
+            newImage = [myUserInfo.photo imageWithGaussianBlur];
+            break;
+        case 2:
+            newImage = [[self resizeImage:myUserInfo.photo byScale:.5] imageWithGaussianBlur];
+            break;
+        case 3:
+            newImage = [[[self resizeImage:myUserInfo.photo byScale:.5] imageWithGaussianBlur] imageWithGaussianBlur];
+            break;
+        case 4:
+            newImage = [[self resizeImage:myUserInfo.photo byScale:.25] imageWithGaussianBlur];
+            break;
+        case 5:
+            newImage = [[[self resizeImage:myUserInfo.photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
+            break;
+            
+        default:
+            newImage = myUserInfo.photo;
+            break;
+    }
+    // temporarily set myUserInfo to this stuff before uploading to amazon
+    myUserInfo.photoBlurURL = nil;
+    myUserInfo.photoBlur = newImage;
+    
+    NSLog(@"Privacy changed to level %d", newPrivacyLevel);
+    myUserInfo.privacyLevel = newPrivacyLevel;
+
+    [myUserInfo savePhotoToAWS:nil withBlock:^(BOOL saved) {} andBlur:newImage withBlock:^(BOOL saved) {
+        // force profile to update blurred image
+        [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+    }];
+    
+//    [photoView setImage:newImage];
+//    [photoView setImageURL:nil];
+    [self updateMyUserInfo];
+}
+
+-(UIImage*)resizeImage:(UIImage*)image byScale:(float)scale {
+    CGSize frame = image.size;
+    CGSize target = frame;
+    target.width *= scale;
+    target.height *= scale;
+    UIImage * newImage = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
+    return newImage;
+}
 @end

@@ -26,5 +26,8 @@
 @property (nonatomic, weak) IBOutlet UIButton * viewForStrangers;
 @property (nonatomic, weak) IBOutlet UIButton * viewForConnections;
 @property (nonatomic) BOOL isViewForConnections;
+
+@property (nonatomic) IBOutlet UISlider * slider;
 -(IBAction)toggleViewForConnections:(id)sender;
+-(IBAction)sliderDidChange:(id)sender;
 @end

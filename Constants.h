@@ -16,5 +16,8 @@
 #define PHOTO_BUCKET @"missionmade.junction.profile.photo"
 #define PHOTO_BLUR_BUCKET @"missionmade.junction.profile.photoblur"
 
+#define PROFILE_WIDTH 280
+#define PROFILE_HEIGHT 280
+
 #define SIDEBAR_WIDTH 40
 @end

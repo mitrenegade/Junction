@@ -99,7 +99,7 @@
         [self setFriends:[aDecoder decodeObjectForKey:@"friends"]];
         [self setPhoto:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoData"]]];
 //        [self setPhotoURL:[aDecoder decodeObjectForKey:@"photoURL"]];
-        [self setPhoto:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoBlurData"]]];
+        [self setPhotoBlur:[UIImage imageWithData:[aDecoder decodeObjectForKey:@"photoBlurData"]]];
 //        [self setPhotoURL:[aDecoder decodeObjectForKey:@"photoBlurURL"]];
         [self setHeadline:[aDecoder decodeObjectForKey:@"headline"]];
         [self setPosition:[aDecoder decodeObjectForKey:@"position"]];
@@ -282,23 +282,27 @@
     
 }
 
--(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved withBlock:(void (^)(BOOL))blurSaved {
+-(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))blurSaved {
     // AWSHelper uploadImage must always be on main thread!
     NSString * name =[NSString stringWithFormat:@"%@", self.linkedInString];
-    NSLog(@"SavePhotoToAWS: name %@ photo %x", name, newPhoto);
-    [AWSHelper uploadImage:newPhoto withName:name toBucket:PHOTO_BUCKET withCallback:^(NSString *url) {
-        NSLog(@"New URL for photo: %@", url);
-        photoURL = url;
-        photo = newPhoto;
-        photoSaved(YES);
-    }];
-    UIImage * newBlur = [[newPhoto imageWithGaussianBlur] imageWithGaussianBlur];
-    [AWSHelper uploadImage:newBlur withName:name toBucket:PHOTO_BLUR_BUCKET withCallback:^(NSString *url) {
-        NSLog(@"New URL for photo blur: %@", url);
-        photoBlurURL = url;
-        photoBlur = newBlur;
-        blurSaved(YES);
-    }];
+    if (newPhoto) {
+        NSLog(@"SavePhotoToAWS: name %@ photo %x", name, newPhoto);
+        [AWSHelper uploadImage:newPhoto withName:name toBucket:PHOTO_BUCKET withCallback:^(NSString *url) {
+            NSLog(@"New URL for photo: %@", url);
+            self.photoURL = url;
+            self.photo = newPhoto;
+            photoSaved(YES);
+        }];
+    }
+    
+    if (blurPhoto) {
+        [AWSHelper uploadImage:blurPhoto withName:name toBucket:PHOTO_BLUR_BUCKET withCallback:^(NSString *url) {
+            NSLog(@"New URL for photo blur: %@", url);
+            self.photoBlurURL = url;
+            self.photoBlur = blurPhoto;
+            blurSaved(YES);
+        }];
+    }
 }
 
 -(NSString*)photoURL {

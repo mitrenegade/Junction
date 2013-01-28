@@ -12,8 +12,8 @@
 @class UserPulse;
 
 @interface UserInfo : ParseUserInfo {
-    NSString * photoURL;
-    NSString * photoBlurURL;
+//    NSString * photoURL;
+//    NSString * photoBlurURL;
 }
 
 @property (strong, nonatomic) NSString * className;
@@ -39,12 +39,14 @@
 @property (strong, nonatomic) UserPulse * userPulse;
 @property (strong, nonatomic) NSString * pfUserID;
 
+@property (nonatomic) int privacyLevel; // 0 to 5
+
 +(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
 +(void)UpdateUserInfoToParse:(UserInfo*)userInfo;
 
 // new login
 +(void)GetUserInfoForPFUser:(PFUser*)pfUser withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
 
--(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved withBlock:(void(^)(BOOL))blurSaved;
+-(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))blurSaved;
 
 @end

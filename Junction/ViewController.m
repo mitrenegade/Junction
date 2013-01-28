@@ -9,6 +9,8 @@
 
 #import "ViewController.h"
 #import "LinkedInHelper.h"
+#import "Constants.h"
+#import "UIImage+Resize.h"
 
 @implementation ViewController
 
@@ -183,12 +185,28 @@
             // upload images to AWS and generate new URLs
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]];
+                // resize
+                CGSize frame = image.size;
+                float scale = 1;
+                if (frame.width < frame.height)
+                    scale = PROFILE_WIDTH / frame.width;
+                else
+                    scale = PROFILE_HEIGHT / frame.height;
+                CGSize target = frame;
+                target.width *= scale;
+                target.height *= scale;
+                image = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
                 dispatch_sync(dispatch_get_main_queue(), ^{
+                    AppDelegate * appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
                     [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
                         // force profile to update regular image
+                        appDelegate.myUserInfo.photo = myUserInfo.photo;
+                        appDelegate.myUserInfo.photoURL = myUserInfo.photoURL;
                         [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-                    } withBlock:^(BOOL saved) {
+                    } andBlur:image withBlock:^(BOOL saved) {
                         // force profile to update blurred image
+                        appDelegate.myUserInfo.photoBlur = myUserInfo.photoBlur;
+                        appDelegate.myUserInfo.photoBlurURL = myUserInfo.photoBlurURL;
                         [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
                     }];
                 });
