@@ -68,8 +68,6 @@
 		9E4FA3651689538300B9A336 /* tab_open_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA3641689538300B9A336 /* tab_open_icon.png */; };
 		9E4FA367168953C600B9A336 /* speechbubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA366168953C600B9A336 /* speechbubble.png */; };
 		9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */; };
-		9E5E7A7A16B7B50D00EBEEFF /* ProfilePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5E7A7716B7B50D00EBEEFF /* ProfilePreviewController.m */; };
-		9E5E7A7B16B7B50D00EBEEFF /* ProfilePreviewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E5E7A7816B7B50D00EBEEFF /* ProfilePreviewController.xib */; };
 		9E65865016AA239900FFE877 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E65864F16AA239900FFE877 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E99536E16804CE3001E034A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99536C16804CE3001E034A /* ProfileViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		9E99536F16804CE3001E034A /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99536D16804CE3001E034A /* ProfileViewController.xib */; };
@@ -230,9 +228,6 @@
 		9E4FA366168953C600B9A336 /* speechbubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speechbubble.png; sourceTree = "<group>"; };
 		9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitScrollViewController.h; sourceTree = SOURCE_ROOT; };
 		9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitScrollViewController.m; sourceTree = SOURCE_ROOT; };
-		9E5E7A7716B7B50D00EBEEFF /* ProfilePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfilePreviewController.m; path = Junction/ProfilePreviewController.m; sourceTree = SOURCE_ROOT; };
-		9E5E7A7816B7B50D00EBEEFF /* ProfilePreviewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfilePreviewController.xib; path = Junction/ProfilePreviewController.xib; sourceTree = SOURCE_ROOT; };
-		9E5E7A7916B7B50D00EBEEFF /* ProfilePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfilePreviewController.h; path = Junction/ProfilePreviewController.h; sourceTree = SOURCE_ROOT; };
 		9E65864E16AA239800FFE877 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = SOURCE_ROOT; };
 		9E65864F16AA239900FFE877 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = SOURCE_ROOT; };
 		9E99536B16804CE3001E034A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileViewController.h; path = Junction/ProfileViewController.h; sourceTree = SOURCE_ROOT; };
@@ -358,9 +353,6 @@
 				9E0D28C216B641870036792B /* CreateProfilePhotoViewController.h */,
 				9E0D28C316B641870036792B /* CreateProfilePhotoViewController.m */,
 				9E0D28C416B641870036792B /* CreateProfilePhotoViewController.xib */,
-				9E5E7A7916B7B50D00EBEEFF /* ProfilePreviewController.h */,
-				9E5E7A7716B7B50D00EBEEFF /* ProfilePreviewController.m */,
-				9E5E7A7816B7B50D00EBEEFF /* ProfilePreviewController.xib */,
 			);
 			name = "SignUp Process";
 			sourceTree = "<group>";
@@ -809,7 +801,6 @@
 				9E0D28B716B635A60036792B /* linkedin_icon@2x.png in Resources */,
 				9E0D28C116B641790036792B /* CreateProfileInfoViewController.xib in Resources */,
 				9E0D28C616B641870036792B /* CreateProfilePhotoViewController.xib in Resources */,
-				9E5E7A7B16B7B50D00EBEEFF /* ProfilePreviewController.xib in Resources */,
 				9EB78CAE16B8450400096DE8 /* ProfileViewControllerWide.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -897,7 +888,6 @@
 				9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */,
 				9E0D28C016B641790036792B /* CreateProfileInfoViewController.m in Sources */,
 				9E0D28C516B641870036792B /* CreateProfilePhotoViewController.m in Sources */,
-				9E5E7A7A16B7B50D00EBEEFF /* ProfilePreviewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

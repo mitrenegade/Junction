@@ -410,15 +410,10 @@
 #pragma mark CreateProfilePhotoDelegate
 -(void)didSaveProfilePhoto {
     // display profile as a preview
-#if 0
-    ProfilePreviewController * controller = [[ProfilePreviewController alloc] initWithUserInfo:myUserInfo];
-    [controller setDelegate:self];
-#else
     ProfileViewController * controller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewControllerWide" bundle:nil];
     [controller setMyUserInfo:myUserInfo];
     [controller setIsPreview:YES];
     [controller setDelegate:self];
-#endif
     [self.nav pushViewController:controller animated:YES];
 }
 
