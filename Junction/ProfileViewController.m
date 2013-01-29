@@ -10,6 +10,7 @@
 #import "AppDelegate.h" // for notification constants
 #import "UIImage+GaussianBlur.h"
 #import "UIImage+Resize.h"
+#import "Constants.h"
 
 @interface ProfileViewController ()
 
@@ -19,7 +20,6 @@
 
 @synthesize photoView;
 @synthesize myUserInfo;
-//@synthesize delegate;
 @synthesize scrollView;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionFrame;
@@ -28,8 +28,10 @@
 @synthesize isViewForConnections;
 @synthesize viewForConnections;
 @synthesize viewForStrangers;
-
 @synthesize slider;
+
+@synthesize isPreview;
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -51,29 +53,51 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [self setMyUserInfo:[appDelegate myUserInfo]];
-    //[self updateMyUserInfo];
+    if (!isPreview) {
+        AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+        [self setMyUserInfo:[appDelegate myUserInfo]];
+    }
+    else {
+        self.navigationItem.title = @"Preview";
+        
+        UIBarButtonItem * rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(didClickNext:)];
+        rightButton.tintColor = [UIColor orangeColor];
+        self.navigationItem.rightBarButtonItem = rightButton;
+        
+        self.navigationItem.backBarButtonItem.tintColor = [UIColor blueColor];
+    }
+    [self.viewForStrangers setSelected:YES];
 }
 
 -(void)updateMyUserInfo {
     AppDelegate * appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [self setMyUserInfo:[appDelegate myUserInfo]];
+    if (!isPreview)
+        [self setMyUserInfo:[appDelegate myUserInfo]];
+    
+    [slider setHidden:YES];
     if (isViewForConnections) {
-        [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoURL]]];
+        [nameLabel setText:myUserInfo.username];
+        if (!isPreview)
+            [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoURL]]];
         NSLog(@"Profile photo url: %@", [myUserInfo photoURL]);
         if (myUserInfo.photo)
             [photoView setImage:myUserInfo.photo];
-        [slider setHidden:YES];
     }
     else {
-        [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoBlurURL]]];
+        [nameLabel setText:@"Name hidden"];
+        if (!isPreview)
+            [photoView setImageURL:[NSURL URLWithString:[myUserInfo photoBlurURL]]];
         NSLog(@"Profile photo url: %@", [myUserInfo photoBlurURL]);
         if (myUserInfo.photoBlur)
             [photoView setImage:myUserInfo.photoBlur];
-        [slider setHidden:NO];
+#if USE_SLIDER_IN_PROFILE
+        if (!isPreview) {
+            [slider setHidden:NO];
+            [slider setValue:myUserInfo.privacyLevel];
+        }
+#endif
     }
-    [nameLabel setText:myUserInfo.username];
+    
     [self.titleLabel setText:myUserInfo.headline];
     [self.industryLabel setText:myUserInfo.industry];
     
@@ -129,15 +153,20 @@
 
 -(IBAction)toggleViewForConnections:(id)sender {
     if ((UIButton*)sender == viewForConnections) {
+        [viewForConnections setSelected:YES];
+        [viewForStrangers setSelected:NO];
         isViewForConnections = YES;
     }
     else if ((UIButton*)sender == viewForStrangers) {
+        [viewForConnections setSelected:NO];
+        [viewForStrangers setSelected:YES];
         isViewForConnections = NO;
     }
     [self updateMyUserInfo];
 }
 
 -(void)sliderDidChange:(id)sender {
+#if USE_SLIDER_IN_PROFILE
     UISlider * slider = (UISlider*)sender;
     int newPrivacyLevel = (int) (slider.value);
     if (newPrivacyLevel == myUserInfo.privacyLevel)
@@ -183,9 +212,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
     }];
     
-//    [photoView setImage:newImage];
-//    [photoView setImageURL:nil];
     [self updateMyUserInfo];
+#endif
 }
 
 -(UIImage*)resizeImage:(UIImage*)image byScale:(float)scale {
@@ -196,4 +224,21 @@
     UIImage * newImage = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
     return newImage;
 }
+
+#pragma mark navigator for preview mode
+#pragma mark navigation
+
+-(IBAction)didClickNext:(id)sender {
+    NSLog(@"Next!");
+    UIImage * newImage = myUserInfo.photo;
+    UIImage * newBlur = myUserInfo.photoBlur;
+    
+    [myUserInfo savePhotoToAWS:newImage withBlock:^(BOOL saved) {
+        NSLog(@"Saved image!");
+    } andBlur:newBlur withBlock:^(BOOL saved) {
+        NSLog(@"Saved blur image!");
+        [delegate didFinishPreview];
+    }];
+}
+
 @end

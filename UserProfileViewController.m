@@ -69,7 +69,7 @@
         NSLog(@"Profile photo url: %@", [userInfo photoBlurURL]);
         if (userInfo.photoBlur)
             [photoView setImage:userInfo.photoBlur];
-        [nameLabel setText:@"Name Hidden"];
+        [nameLabel setText:@"Name hidden"];
     }
     [self.titleLabel setText:userInfo.headline];
     [self.industryLabel setText:userInfo.industry];

@@ -20,4 +20,8 @@
 #define PROFILE_HEIGHT 280
 
 #define SIDEBAR_WIDTH 40
+
+// whether slider to change blurriness exists in profile
+#define USE_SLIDER_IN_PROFILE 0
+
 @end

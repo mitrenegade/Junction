@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSString * linkedInString;
 @property (strong, nonatomic) NSString * headline;
 @property (strong, nonatomic) NSString * position;
+@property (strong, nonatomic) NSString * company;
 @property (strong, nonatomic) NSMutableSet * friends;
 
 @property (strong, nonatomic) UIImage * photo;

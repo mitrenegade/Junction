@@ -8,7 +8,6 @@
 
 #import "LinkedInHelper.h"
 #import "AppDelegate.h"
-#import "LinkedInHelperRequest.h"
 
 static OAuthLoginView * sharedOAuthLoginView;
 
@@ -19,7 +18,6 @@ static OAuthLoginView * sharedOAuthLoginView;
 @synthesize userID;
 @synthesize storedOAuthConsumer;
 @synthesize storedOAuthAccessToken;
-@synthesize lhRequest;
 
 -(id)init {
     self = [super init];
@@ -59,8 +57,7 @@ static OAuthLoginView * sharedOAuthLoginView;
     
     NSLog(@"stored auth: %@ %@", storedOAuthAccessToken, storedOAuthConsumer);    
     
-//    [self profileApiCall];
-    [self getId];
+    [self profileApiCall];
 }
 
 -(void)closeLoginView {
@@ -100,11 +97,6 @@ static OAuthLoginView * sharedOAuthLoginView;
     {
         return;
     }
-    if ( [[profile objectForKey:@"status"] intValue] == 401 ) {
-        NSLog(@"LinkedIn request received 401! Invalid token, must reauthenticate.");
-        [delegate linkedInCredentialsNeedRefresh];
-        return;
-    }
     if (!userID) {
         [delegate linkedInParseSimpleProfile:profile];
         [self getId];
@@ -115,6 +107,11 @@ static OAuthLoginView * sharedOAuthLoginView;
 }
 
 -(void)profileApiCallResult:(OAServiceTicket*)ticket didFail:(NSError*)error {
+<<<<<<< HEAD
+    NSLog(@"LinkedIn Profile call failed: error %@", error.userInfo);
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:[NSString stringWithFormat:@"LinkedIn profile request failed with error: %@. Please close the app and try again!", [error.userInfo objectForKey:@"NSLocalizedDescription"]] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alertView show];
+=======
     NSLog(@"LinkedIn Profile call failed: error code %d %@", error.code, error.userInfo);
     if (error.code == -1001) {
         [[[UIAlertView alloc] initWithTitle:@"Time out" message:@"LinkedIn timed out! Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
@@ -122,15 +119,23 @@ static OAuthLoginView * sharedOAuthLoginView;
     else {
         [[[UIAlertView alloc] initWithTitle:@"Time out" message:@"LinkedIn server could not be reached! Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
     }
+>>>>>>> arc
 }
 
 - (void)linkedInRequest:(OAServiceTicket *)ticket didFail:(NSError *)error
 {
+<<<<<<< HEAD
+    NSLog(@"LinkedIn request error: %@",[error userInfo]);
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:[NSString stringWithFormat:@"LinkedIn request failed with error: %@", [error.userInfo objectForKey:@"NSLocalizedDescription"]] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alertView show];
+=======
     NSLog(@"LinkedIn request error: %@ code: %d ticket: %@",[error description], error.code, ticket.response.description);
     
-    if ([delegate respondsToSelector:@selector(linkedInDidFail:)]) {
-        [delegate linkedInDidFail:error];
+    if (error.code == -1001) {
+        // timeout
+        NSLog(@"Request timed out!");
     }
+>>>>>>> arc
 }
 
 -(void)getId {
@@ -163,7 +168,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void)requestAllProfileInfoForID:(NSString*)_userID {
 //    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,location:(name),industry,summary,picture-url,email-address,specialties,three-current-positions)", _userID];
-    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,headline,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
+    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,industry,positions,picture-url,public-profile-url,email-address,three-current-positions)", _userID];
     NSLog(@"All profile request: %@", requestString);
     NSURL *url = [NSURL URLWithString:requestString];
     OAMutableURLRequest *request = 
@@ -219,20 +224,7 @@ static OAuthLoginView * sharedOAuthLoginView;
     [delegate linkedInParseFriends:friends];
 }
 
--(void)requestOriginalPhotoWithBlock:(void (^)(NSString *))gotURL {
-    NSString * endpoint = @"http://api.linkedin.com/v1/people/~/picture-urls::(original)";
-    self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
-    [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
-        if (success) {
-            NSMutableDictionary * dict = [data objectFromJSONData];
-            NSLog(@"URL: %@", [[dict objectForKey:@"values"] objectAtIndex:0]);
-            gotURL([[dict objectForKey:@"values"] objectAtIndex:0]);
-        }
-    } failure:^(BOOL success, NSError * error) {
-        NSLog(@"No photo found! error: %@", error);
-        gotURL(nil);
-    }];
-}
+
 
 - (IBAction)postButton_TouchUp:(UIButton *)sender
 {    

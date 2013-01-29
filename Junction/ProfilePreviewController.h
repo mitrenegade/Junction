@@ -17,12 +17,13 @@
 
 @end
 
-@interface ProfileViewController : UIViewController
+@interface ProfilePreviewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet AsyncImageView * photoView;
+@property (nonatomic, weak) id delegate;
+
+@property (weak, nonatomic) IBOutlet UIImageView * photoView;
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) UserInfo * myUserInfo;
-//@property (weak, nonatomic) id delegate;
 @property (nonatomic, weak) IBOutlet UILabel * titleLabel;
 @property (nonatomic, weak) IBOutlet UILabel * industryLabel;
 @property (nonatomic, weak) IBOutlet UIView * descriptionFrame;
@@ -33,11 +34,6 @@
 @property (nonatomic, weak) IBOutlet UIButton * viewForConnections;
 @property (nonatomic) BOOL isViewForConnections;
 
-// used in preview
-@property (nonatomic, weak) id delegate;
-@property (nonatomic) BOOL isPreview;
-
-@property (nonatomic) IBOutlet UISlider * slider;
 -(IBAction)toggleViewForConnections:(id)sender;
--(IBAction)sliderDidChange:(id)sender;
+-(id)initWithUserInfo:(UserInfo*)userInfo;
 @end

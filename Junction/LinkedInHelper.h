@@ -17,6 +17,7 @@
 -(void)linkedInParseSimpleProfile:(NSDictionary*)profile;
 -(void)linkedInParseFriends:(id)friendsResults;
 -(void)linkedInCredentialsNeedRefresh;
+-(void)linkedInDidFail:(NSError*)error;
 @end
 
 @interface LinkedInHelper : NSObject

@@ -61,9 +61,9 @@
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     [self.viewController setMyUserInfo:myUserInfo];
     [self.viewController setDelegate:self];
-    
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
 
     PFUser * currentUser = [PFUser currentUser];
     if (0 && currentUser) {
@@ -95,8 +95,7 @@
         // check linkedIn first
         if (![self.viewController loadCachedOauth]) {
             // need to log in to LinkedIn
-            //[self doLogin];
-            // do nothing; show login
+            // do nothing; show login viewController
             NSLog(@"No cached oauth");
         }
         else
@@ -428,15 +427,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
     notificationsController = [[NotificationsViewController alloc] init];
     
-#if 0
-	NSArray * viewControllers = [NSArray arrayWithObjects: proxController, mapViewController, profileController, nil];
-    [tabBarController setViewControllers:viewControllers];
-    nav = [[UINavigationController alloc] initWithRootViewController:tabBarController];
-    nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    
-    [tabBarController.navigationItem setTitle:@"Junction"];
-    [self.viewController presentModalViewController:nav animated:YES];
-#else
     SideTabController * sideTabController = [[SideTabController alloc] init];
     [sideTabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
     [sideTabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
@@ -445,15 +435,32 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [sideTabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
     [sideTabController addController:connectionsController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Connections"];
     
-//    [self.viewController presentModalViewController:sideTabController animated:YES];
-    
-     self.nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
-    [self.viewController presentModalViewController:nav animated:YES];
-    
+    self.nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
+//    [self.viewController presentModalViewController:nav animated:YES];
     //[self.nav pushViewController:sideTabController animated:YES];
+
+    // this set of animations works correctly. first, dismiss with animation. while animating, the rootView becomes the other one.
+
+    self.nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    if ([[UIDevice currentDevice].systemVersion floatValue] < 6.0){
+        [self.viewController presentViewController:self.nav animated:YES completion:^{
+            [self.viewController dismissViewControllerAnimated:NO completion:nil]; // dismiss this controller
+            self.window.rootViewController = nav;
+        }];
+    }
+    else {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:.5];
+        [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp
+                               forView:self.nav.view
+                                 cache:YES];
+        [UIView setAnimationDelegate:self];
+        self.window.rootViewController = nav;
+        [UIView commitAnimations];
+    }
     
+
     [sideTabController didSelectViewController:0];
-#endif
     NSLog(@"MyUserInfo pfUser: %@", myUserInfo.pfUser);
     
     [self continueInit];

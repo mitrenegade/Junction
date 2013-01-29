@@ -23,6 +23,7 @@
 @synthesize position;
 @synthesize location;
 @synthesize industry;
+@synthesize company;
 @synthesize summary;
 @synthesize currentPositions;
 //@synthesize educations;
@@ -80,6 +81,7 @@
     [aCoder encodeObject: headline forKey:@"headline"];
     [aCoder encodeObject: position forKey:@"position"];
     [aCoder encodeObject: location forKey:@"location"];
+    [aCoder encodeObject: company forKey:@"company"];
     [aCoder encodeObject: industry forKey:@"industry"];
     [aCoder encodeObject: summary forKey:@"summary"];
     [aCoder encodeObject: currentPositions forKey:@"currentPositions"];
@@ -104,6 +106,7 @@
         [self setHeadline:[aDecoder decodeObjectForKey:@"headline"]];
         [self setPosition:[aDecoder decodeObjectForKey:@"position"]];
         [self setLocation:[aDecoder decodeObjectForKey:@"location"]];
+        [self setCompany:[aDecoder decodeObjectForKey:@"company"]];
         [self setIndustry:[aDecoder decodeObjectForKey:@"industry"]];
         [self setSummary:[aDecoder decodeObjectForKey:@"summary"]];
         [self setCurrentPositions:[aDecoder decodeObjectForKey:@"currentPositions"]];
@@ -136,6 +139,8 @@
 //            [self.pfObject setObject:photoURL forKey:@"photoBlurURL"];
         if (position)
             [self.pfObject setObject:position forKey:@"position"];
+        if (company)
+            [self.pfObject setObject:company forKey:@"company"];
         if (industry)
             [self.pfObject setObject:industry forKey:@"industry"];
         if (summary)
@@ -184,6 +189,7 @@
      */
     position = [obj objectForKey:@"position"];
     industry = [obj objectForKey:@"industry"];
+    company = [obj objectForKey:@"company"];
     summary = [obj objectForKey:@"summary"];
     location = [obj objectForKey:@"location"];
     pfUserID = [obj objectForKey:@"pfUserID"];

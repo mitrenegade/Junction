@@ -12,6 +12,10 @@
 #import "ParseHelper.h"
 #import "MBProgressHUD.h"
 
+#import "CreateProfilePhotoViewController.h"
+#import "CreateProfileInfoViewController.h"
+#import "ProfilePreviewController.h"
+
 @protocol ViewControllerDelegate <NSObject>
 
 -(void)saveUserInfoToDefaults;
@@ -21,19 +25,21 @@
 
 @end
 
-@interface ViewController : UIViewController <UIAlertViewDelegate> //<MapViewDelegate, LocationViewDelegate, UINavigationControllerDelegate, UITabBarControllerDelegate>
+@interface ViewController : UIViewController <UIAlertViewDelegate, CreateProfileInfoDelegate, CreateProfilePhotoDelegate, ProfilePreviewDelegate, LinkedInHelperDelegate>
 {
 //    IBOutlet UILabel *locationLabel;
 //    UITabBarController * tabBarController;
+    BOOL doSignup;
 }
 
 @property (nonatomic, unsafe_unretained) id delegate;
 @property (nonatomic, strong) LinkedInHelper * lhHelper;
 @property (nonatomic, strong) UserInfo * myUserInfo;
-@property (weak, nonatomic) IBOutlet UIButton * buttonLinkedIn;
+@property (weak, nonatomic) IBOutlet UIButton * buttonLogIn;
+@property (weak, nonatomic) IBOutlet UIButton * buttonSignUp;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
 @property (nonatomic, strong) MBProgressHUD * progress;
-
+@property (nonatomic, strong) UINavigationController * nav;
 //- (void)signInToCustomService;
 -(IBAction)didClickLinkedIn:(id)sender;
 -(BOOL)loadCachedOauth;

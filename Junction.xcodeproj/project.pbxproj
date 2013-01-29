@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E0D28B416B634970036792B /* linkedin_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E0D28B316B634970036792B /* linkedin_icon.png */; };
+		9E0D28B716B635A60036792B /* linkedin_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E0D28B616B635A60036792B /* linkedin_icon@2x.png */; };
+		9E0D28C016B641790036792B /* CreateProfileInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E0D28BE16B641790036792B /* CreateProfileInfoViewController.m */; };
+		9E0D28C116B641790036792B /* CreateProfileInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E0D28BF16B641790036792B /* CreateProfileInfoViewController.xib */; };
+		9E0D28C516B641870036792B /* CreateProfilePhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E0D28C316B641870036792B /* CreateProfilePhotoViewController.m */; };
+		9E0D28C616B641870036792B /* CreateProfilePhotoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E0D28C416B641870036792B /* CreateProfilePhotoViewController.xib */; };
 		9E1911EB1680504900C50361 /* ParseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1911E51680504900C50361 /* ParseHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E1911EC1680504900C50361 /* ParseLocationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1911E71680504900C50361 /* ParseLocationAnnotation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E1911ED1680504900C50361 /* ParseUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1911E91680504900C50361 /* ParseUserInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -62,6 +68,8 @@
 		9E4FA3651689538300B9A336 /* tab_open_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA3641689538300B9A336 /* tab_open_icon.png */; };
 		9E4FA367168953C600B9A336 /* speechbubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E4FA366168953C600B9A336 /* speechbubble.png */; };
 		9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */; };
+		9E5E7A7A16B7B50D00EBEEFF /* ProfilePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5E7A7716B7B50D00EBEEFF /* ProfilePreviewController.m */; };
+		9E5E7A7B16B7B50D00EBEEFF /* ProfilePreviewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E5E7A7816B7B50D00EBEEFF /* ProfilePreviewController.xib */; };
 		9E65865016AA239900FFE877 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E65864F16AA239900FFE877 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E99536E16804CE3001E034A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99536C16804CE3001E034A /* ProfileViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		9E99536F16804CE3001E034A /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99536D16804CE3001E034A /* ProfileViewController.xib */; };
@@ -97,6 +105,7 @@
 		9EA4FBD716AB315400A447F2 /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD216AB315400A447F2 /* AsyncImageView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD416AB315400A447F2 /* AWSHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EA4FBD916AB315400A447F2 /* AWSiOSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EA4FBD516AB315400A447F2 /* AWSiOSSDK.framework */; };
+		9EB78CAE16B8450400096DE8 /* ProfileViewControllerWide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CAD16B8450400096DE8 /* ProfileViewControllerWide.xib */; };
 		9EC23C1116A67F3600270AF1 /* LinkedInHelperRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
@@ -120,6 +129,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9E0D28B316B634970036792B /* linkedin_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = linkedin_icon.png; sourceTree = "<group>"; };
+		9E0D28B616B635A60036792B /* linkedin_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "linkedin_icon@2x.png"; sourceTree = "<group>"; };
+		9E0D28BD16B641790036792B /* CreateProfileInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateProfileInfoViewController.h; sourceTree = SOURCE_ROOT; };
+		9E0D28BE16B641790036792B /* CreateProfileInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateProfileInfoViewController.m; sourceTree = SOURCE_ROOT; };
+		9E0D28BF16B641790036792B /* CreateProfileInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateProfileInfoViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E0D28C216B641870036792B /* CreateProfilePhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateProfilePhotoViewController.h; sourceTree = SOURCE_ROOT; };
+		9E0D28C316B641870036792B /* CreateProfilePhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateProfilePhotoViewController.m; sourceTree = SOURCE_ROOT; };
+		9E0D28C416B641870036792B /* CreateProfilePhotoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateProfilePhotoViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E1911E41680504900C50361 /* ParseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseHelper.h; sourceTree = "<group>"; };
 		9E1911E51680504900C50361 /* ParseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseHelper.m; sourceTree = "<group>"; };
 		9E1911E61680504900C50361 /* ParseLocationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseLocationAnnotation.h; sourceTree = "<group>"; };
@@ -213,6 +230,9 @@
 		9E4FA366168953C600B9A336 /* speechbubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speechbubble.png; sourceTree = "<group>"; };
 		9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitScrollViewController.h; sourceTree = SOURCE_ROOT; };
 		9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitScrollViewController.m; sourceTree = SOURCE_ROOT; };
+		9E5E7A7716B7B50D00EBEEFF /* ProfilePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfilePreviewController.m; path = Junction/ProfilePreviewController.m; sourceTree = SOURCE_ROOT; };
+		9E5E7A7816B7B50D00EBEEFF /* ProfilePreviewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfilePreviewController.xib; path = Junction/ProfilePreviewController.xib; sourceTree = SOURCE_ROOT; };
+		9E5E7A7916B7B50D00EBEEFF /* ProfilePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfilePreviewController.h; path = Junction/ProfilePreviewController.h; sourceTree = SOURCE_ROOT; };
 		9E65864E16AA239800FFE877 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = SOURCE_ROOT; };
 		9E65864F16AA239900FFE877 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = SOURCE_ROOT; };
 		9E99536B16804CE3001E034A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileViewController.h; path = Junction/ProfileViewController.h; sourceTree = SOURCE_ROOT; };
@@ -268,6 +288,7 @@
 		9EA4FBD316AB315400A447F2 /* AWSHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSHelper.h; sourceTree = "<group>"; };
 		9EA4FBD416AB315400A447F2 /* AWSHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSHelper.m; sourceTree = "<group>"; };
 		9EA4FBD516AB315400A447F2 /* AWSiOSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSiOSSDK.framework; sourceTree = "<group>"; };
+		9EB78CAD16B8450400096DE8 /* ProfileViewControllerWide.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfileViewControllerWide.xib; path = Junction/ProfileViewControllerWide.xib; sourceTree = SOURCE_ROOT; };
 		9EC23C0F16A67F3600270AF1 /* LinkedInHelperRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInHelperRequest.h; sourceTree = SOURCE_ROOT; };
 		9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInHelperRequest.m; sourceTree = SOURCE_ROOT; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -325,6 +346,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9E0D28BC16B641560036792B /* SignUp Process */ = {
+			isa = PBXGroup;
+			children = (
+				9E99543016804D7B001E034A /* ViewController.h */,
+				9E99543116804D7B001E034A /* ViewController.m */,
+				9E99543316804D8A001E034A /* ViewController.xib */,
+				9E0D28BD16B641790036792B /* CreateProfileInfoViewController.h */,
+				9E0D28BE16B641790036792B /* CreateProfileInfoViewController.m */,
+				9E0D28BF16B641790036792B /* CreateProfileInfoViewController.xib */,
+				9E0D28C216B641870036792B /* CreateProfilePhotoViewController.h */,
+				9E0D28C316B641870036792B /* CreateProfilePhotoViewController.m */,
+				9E0D28C416B641870036792B /* CreateProfilePhotoViewController.xib */,
+				9E5E7A7916B7B50D00EBEEFF /* ProfilePreviewController.h */,
+				9E5E7A7716B7B50D00EBEEFF /* ProfilePreviewController.m */,
+				9E5E7A7816B7B50D00EBEEFF /* ProfilePreviewController.xib */,
+			);
+			name = "SignUp Process";
+			sourceTree = "<group>";
+		};
 		9E1911E31680504900C50361 /* ParseHelperLibrary */ = {
 			isa = PBXGroup;
 			children = (
@@ -500,6 +540,8 @@
 		9E99544116804DD2001E034A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9E0D28B316B634970036792B /* linkedin_icon.png */,
+				9E0D28B616B635A60036792B /* linkedin_icon@2x.png */,
 				9E4FA366168953C600B9A336 /* speechbubble.png */,
 				9E4FA3641689538300B9A336 /* tab_open_icon.png */,
 				9E4FA3601689534B00B9A336 /* btn_close.png */,
@@ -551,6 +593,7 @@
 				9E99536B16804CE3001E034A /* ProfileViewController.h */,
 				9E99536C16804CE3001E034A /* ProfileViewController.m */,
 				9E99536D16804CE3001E034A /* ProfileViewController.xib */,
+				9EB78CAD16B8450400096DE8 /* ProfileViewControllerWide.xib */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -604,9 +647,7 @@
 				9E1EA6121681C4A5005B7165 /* Notifications */,
 				9EECDF8E15EB2D5600AD89D8 /* Location */,
 				9E4FA35016894D9E00B9A336 /* Other users */,
-				9E99543016804D7B001E034A /* ViewController.h */,
-				9E99543116804D7B001E034A /* ViewController.m */,
-				9E99543316804D8A001E034A /* ViewController.xib */,
+				9E0D28BC16B641560036792B /* SignUp Process */,
 				9E1911F11680542600C50361 /* LinkedInHelper.h */,
 				9E1911F21680542600C50361 /* LinkedInHelper.m */,
 				9EC23C0F16A67F3600270AF1 /* LinkedInHelperRequest.h */,
@@ -764,6 +805,12 @@
 				9E4FA3631689534B00B9A336 /* red_x.png in Resources */,
 				9E4FA3651689538300B9A336 /* tab_open_icon.png in Resources */,
 				9E4FA367168953C600B9A336 /* speechbubble.png in Resources */,
+				9E0D28B416B634970036792B /* linkedin_icon.png in Resources */,
+				9E0D28B716B635A60036792B /* linkedin_icon@2x.png in Resources */,
+				9E0D28C116B641790036792B /* CreateProfileInfoViewController.xib in Resources */,
+				9E0D28C616B641870036792B /* CreateProfilePhotoViewController.xib in Resources */,
+				9E5E7A7B16B7B50D00EBEEFF /* ProfilePreviewController.xib in Resources */,
+				9EB78CAE16B8450400096DE8 /* ProfileViewControllerWide.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -848,6 +895,9 @@
 				9EA4FBD616AB315400A447F2 /* AsyncImageUploader.m in Sources */,
 				9EA4FBD716AB315400A447F2 /* AsyncImageView.m in Sources */,
 				9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */,
+				9E0D28C016B641790036792B /* CreateProfileInfoViewController.m in Sources */,
+				9E0D28C516B641870036792B /* CreateProfilePhotoViewController.m in Sources */,
+				9E5E7A7A16B7B50D00EBEEFF /* ProfilePreviewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,6 +11,9 @@
 #import "LinkedInHelper.h"
 #import "Constants.h"
 #import "UIImage+Resize.h"
+#import <QuartzCore/QuartzCore.h>
+#import "CreateProfileInfoViewController.h"
+#import "ProfileViewController.h"
 
 @implementation ViewController
 
@@ -18,7 +21,8 @@
 @synthesize lhHelper;
 @synthesize myUserInfo;
 @synthesize activityIndicator;
-@synthesize buttonLinkedIn;
+@synthesize buttonLogIn, buttonSignUp;
+@synthesize nav;
 
 -(id)init {
     self = [super init];
@@ -40,14 +44,15 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    [self.navigationController setNavigationBarHidden:YES];
     myUserInfo = [[UserInfo alloc] init]; // create a shell myUserInfo to store any linkedIn that is received
-}
+    
+    [self.buttonLogIn.layer setCornerRadius:5];
+    [self.buttonSignUp.layer setCornerRadius:5];
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
+    if (!lhHelper) {
+        lhHelper  = [[LinkedInHelper alloc] init];
+        [lhHelper setDelegate:self];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -59,37 +64,8 @@
     [super viewDidAppear:animated];
 }
 
-/*
-#pragma mark LocationViewDelegate functions
-- (void)locationUpdate:(CLLocation *)location {
-    locationLabel.text = [location description];
-    
-    CLLocationCoordinate2D zoomLocation;
-    //zoomLocation.latitude = 39.281516;
-    //zoomLocation.longitude= -76.580806;
-    zoomLocation = [location coordinate];
-}
-
-- (void)locationError:(NSError *)error {
-    locationLabel.text = [error description];
-}
-
-#pragma mark navigationControllerDelegate
--(void)didClickSettings:(id)sender {
-    [delegate showUserSettings];
-}
-
--(void)showUserSettings {
-    // passed on by MapViewController
-    [delegate showUserSettings];
-}
-*/
 -(BOOL)loadCachedOauth {
     // must exist on init so can test cached oauth
-    if (!lhHelper) {
-        lhHelper  = [[LinkedInHelper alloc] init];
-        [lhHelper setDelegate:self];
-    }
     return [lhHelper loadCachedOAuth];
 }
 
@@ -99,9 +75,10 @@
         lhHelper  = [[LinkedInHelper alloc] init];
         [lhHelper setDelegate:self];
     }
-    [self.buttonLinkedIn setHidden:YES];
-//    [lhHelper profileApiCall];
+    [self.buttonLogIn setHidden:YES];
+    [self.buttonSignUp setHidden:YES];
     [lhHelper getId];
+    
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Loading your LinkedIn information";
 }
@@ -111,11 +88,26 @@
         lhHelper  = [[LinkedInHelper alloc] init];
         [lhHelper setDelegate:self];
     }
-//    [self.activityIndicator startAnimating];
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Loading your LinkedIn information";
-    OAuthLoginView * lhView = [lhHelper loginView];
-    [self.view addSubview:lhView.view];
+    
+    UIButton * button = (UIButton*)sender;
+    if (button == buttonLogIn) {
+        doSignup = NO;
+        if ([self loadCachedOauth]) {
+            [self tryCachedLogin];
+        }
+        else {
+            NSLog(@"No cached oauth! Just present login view");
+            OAuthLoginView * lhView = [lhHelper loginView];
+            [self.view addSubview:lhView.view];
+        }
+    }
+    else if (button == buttonSignUp) {
+        doSignup = YES;
+        self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        self.progress.labelText = @"Loading your LinkedIn information";
+        OAuthLoginView * lhView = [lhHelper loginView];
+        [self.view addSubview:lhView.view];
+    }
 }
 
 #pragma mark LinkedInHelperDelegate
@@ -238,7 +230,10 @@
         [myUserInfo setCurrentPositions:currentPositions];
     [delegate saveUserInfoToDefaults];
 
-    [self tryLogin];
+    if (doSignup)
+        [self trySignup];
+    else
+        [self tryLogin];
 
     // force profile to update
     [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
@@ -270,7 +265,18 @@
 -(void)linkedInCredentialsNeedRefresh {
     // received 401 error, manually open linkedIn
     //[self didClickLinkedIn:nil];
-    [self.buttonLinkedIn setHidden:NO];
+    [self.buttonLogIn setHidden:NO];
+    [self.buttonSignUp setHidden:NO];
+}
+
+-(void)linkedInDidFail:(NSError *)error {
+    if (error.code == -1001) {
+        // timeout
+        NSLog(@"Request timed out!");
+        self.progress.labelText = @"Could not connect to LinkedIn!";
+        self.progress.detailsLabelText = @"Please try again later!";
+    }
+    [self enableLoginButton];
 }
 
 #pragma mark ParseHelper login
@@ -293,19 +299,13 @@
                 else {
                     if (!parseUserInfo) {
                         // userInfo doesn't exist, must create
+                        
+                        self.progress.labelText = @"Please create a profile!";
+                        
                         myUserInfo.pfUser = user;
                         myUserInfo.pfUserID = user.objectId;
-                        [[myUserInfo toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                            if (succeeded) {
-                                [self.progress hide:YES];
-                                [delegate didLoginPFUser:user withUserInfo:myUserInfo];
-                            }
-                            else {
-                                self.progress.labelText = @"Could not save your User info!";
-                                [self.progress hide:YES afterDelay:2];
-                                [[UIAlertView alertViewWithTitle:@"Error:" message:error.description] show];
-                            }
-                        }];
+
+                        [self createNewUserProfileWithUser:user];
                     }
                     else {
                         [self.progress hide:YES];
@@ -353,9 +353,16 @@
                 self.progress.detailsLabelText = @"Please enter a valid email!";
                 [self enableLoginButton];
             }
+            else if (errorCode == 202) { // already exists
+                self.progress.labelText = @"Signup Failed";
+                self.progress.detailsLabelText = [NSString stringWithFormat:@"A user with that LinkedIn account already exists! Try logging in."];
+                
+                [self enableLoginButton];
+            }
             else {
                 self.progress.labelText = @"Signup Failed";
                 self.progress.detailsLabelText = [NSString stringWithFormat:@"Could not sign up user %@!", myUserInfo.username];
+                
                 [self enableLoginButton];
             }
         }
@@ -375,7 +382,62 @@
 
 -(void)enableLoginButton {
     [self.progress hide:YES afterDelay:3];
-    [buttonLinkedIn setHidden:NO];
+    [self.buttonLogIn setHidden:NO];
+    [self.buttonSignUp setHidden:NO];
 }
 
+#pragma mark creating a new profile for a new user
+
+-(void)createNewUserProfileWithUser:(PFUser*)newUser {
+    CreateProfileInfoViewController * controller = [[CreateProfileInfoViewController alloc] init];
+    [controller setDelegate:self];
+    self.nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    self.nav.navigationBar.tintColor = [UIColor colorWithRed:23.0/255 green:153.0/255 blue:228.0/255 alpha:1];
+    self.nav.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    [self presentModalViewController:self.nav animated:YES];
+    
+    [controller populateWithUserInfo:myUserInfo];
+}
+
+#pragma mark CreateProfileInfoDelegate
+-(void)didSaveProfileInfo {
+    CreateProfilePhotoViewController * controller = [[CreateProfilePhotoViewController alloc] init];
+    [controller setDelegate:self];
+    [self.nav pushViewController:controller animated:YES];
+    [controller populateWithUserInfo:myUserInfo];
+}
+
+#pragma mark CreateProfilePhotoDelegate
+-(void)didSaveProfilePhoto {
+    // display profile as a preview
+#if 0
+    ProfilePreviewController * controller = [[ProfilePreviewController alloc] initWithUserInfo:myUserInfo];
+    [controller setDelegate:self];
+#else
+    ProfileViewController * controller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewControllerWide" bundle:nil];
+    [controller setMyUserInfo:myUserInfo];
+    [controller setIsPreview:YES];
+    [controller setDelegate:self];
+#endif
+    [self.nav pushViewController:controller animated:YES];
+}
+
+-(void)didFinishPreview {
+    [self dismissModalViewControllerAnimated:YES];
+    self.progress.labelText = @"Success!";
+    // save finally created user
+    [[myUserInfo toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            [self.progress hide:YES];
+            [delegate didLoginPFUser:myUserInfo.pfUser withUserInfo:myUserInfo];
+        }
+        else {
+            self.progress.labelText = @"Could not save your User info!";
+            [self.progress hide:YES afterDelay:2];
+#if TESTING
+            [[UIAlertView alertViewWithTitle:@"Error:" message:error.description] show];
+#endif
+        }
+    }];
+}
 @end
