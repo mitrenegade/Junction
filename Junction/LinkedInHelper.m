@@ -59,7 +59,6 @@ static OAuthLoginView * sharedOAuthLoginView;
     
     NSLog(@"stored auth: %@ %@", storedOAuthAccessToken, storedOAuthConsumer);    
     
-//    [self profileApiCall];
     [self getId];
 }
 
@@ -68,89 +67,107 @@ static OAuthLoginView * sharedOAuthLoginView;
         [sharedOAuthLoginView.view removeFromSuperview];
 }
 
+-(void)getId {
+    NSString * endpoint = @"http://api.linkedin.com/v1/people/~/id";
+    self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
+        NSString *responseBody = [[NSString alloc] initWithData:data
+                                                       encoding:NSUTF8StringEncoding];
+        
+        NSLog(@"idRequest response: %@", responseBody);
+        [self setUserID:[responseBody stringByReplacingOccurrencesOfString:@"\"" withString:@""]];
+        [delegate linkedInDidLoginWithID:userID];
+    } failure:^(BOOL success, NSError * error) {
+        [self linkedInRequest:nil didFail:error];
+    }];
+}
+
 - (void)profileApiCall
 {
-    NSLog(@"Making linkedIn request: profileAPICall");
-    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~"];
-    OAMutableURLRequest *request = 
-    [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:storedOAuthConsumer
-                                       token:storedOAuthAccessToken
-                                    callback:nil
-                           signatureProvider:nil];
-    
-    [request setValue:@"json" forHTTPHeaderField:@"x-li-format"];
-    
-    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
-    [fetcher fetchDataWithRequest:request
-                         delegate:self
-                didFinishSelector:@selector(profileApiCallResult:didFinish:)
-                  didFailSelector:@selector(profileApiCallResult:didFail:)];    
+    // NOT USED
+    NSString * endpoint = @"http://api.linkedin.com/v1/people/~";
+    self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
+        if (success) {
+            NSString *responseBody = [[NSString alloc] initWithData:data
+                                                           encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"ProfileAPICall response: %@", responseBody);
+            NSDictionary *profile = [responseBody objectFromJSONString];
+            
+            if ( !profile )
+            {
+                return;
+            }
+            if ( [[profile objectForKey:@"status"] intValue] == 401 ) {
+                NSLog(@"LinkedIn request received 401! Invalid token, must reauthenticate.");
+                [delegate linkedInCredentialsNeedRefresh];
+                return;
+            }
+            if (!userID) {
+                [delegate linkedInParseSimpleProfile:profile];
+                [self getId];
+            }
+            else {
+                [delegate linkedInParseProfileInformation:profile];
+            }
+        }
+    } failure:^(BOOL success, NSError * error) {
+        NSLog(@"LinkedIn Profile call failed: error code %d %@", error.code, error.userInfo);
+        if (error.code == -1001) {
+            [[[UIAlertView alloc] initWithTitle:@"Time out" message:@"LinkedIn timed out! Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        }
+        else {
+            [[[UIAlertView alloc] initWithTitle:@"Time out" message:@"LinkedIn server could not be reached! Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        }
+    }];
+
 }
 
-- (void)profileApiCallResult:(OAServiceTicket *)ticket didFinish:(NSData *)data 
-{
-    NSString *responseBody = [[NSString alloc] initWithData:data
-                                                   encoding:NSUTF8StringEncoding];
-    
-    NSLog(@"ProfileAPICall response: %@", responseBody);
-    NSDictionary *profile = [responseBody objectFromJSONString];
-    
-    if ( !profile )
-    {
-        return;
-    }
-    if ( [[profile objectForKey:@"status"] intValue] == 401 ) {
-        NSLog(@"LinkedIn request received 401! Invalid token, must reauthenticate.");
-        [delegate linkedInCredentialsNeedRefresh];
-        return;
-    }
-    if (!userID) {
-        [delegate linkedInParseSimpleProfile:profile];
-        [self getId];
-    }
-    else {
-        [delegate linkedInParseProfileInformation:profile];
-    }
-}
-
--(void)profileApiCallResult:(OAServiceTicket*)ticket didFail:(NSError*)error {
-    NSLog(@"LinkedIn Profile call failed: error code %d %@", error.code, error.userInfo);
-    if (error.code == -1001) {
-        [[[UIAlertView alloc] initWithTitle:@"Time out" message:@"LinkedIn timed out! Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-    }
-    else {
-        [[[UIAlertView alloc] initWithTitle:@"Time out" message:@"LinkedIn server could not be reached! Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-    }
+-(void)requestAllProfileInfoForID:(NSString*)_userID {
+    NSString * endpoint = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,headline,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
+    NSLog(@"All profile request: %@", endpoint);
+    self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
+        if (success) {
+            NSString *responseBody = [[NSString alloc] initWithData:data
+                                                           encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"ProfileAPICall response: %@", responseBody);
+            NSDictionary *profile = [responseBody objectFromJSONString];
+            
+            if ( !profile )
+            {
+                return;
+            }
+            if ( [[profile objectForKey:@"status"] intValue] == 401 ) {
+                NSLog(@"LinkedIn request received 401! Invalid token, must reauthenticate.");
+                [delegate linkedInCredentialsNeedRefresh];
+                return;
+            }
+            if (!userID) {
+                [delegate linkedInParseSimpleProfile:profile];
+                [self getId];
+            }
+            else {
+                [delegate linkedInParseProfileInformation:profile];
+            }
+        }
+    } failure:^(BOOL success, NSError * error) {
+        [self linkedInRequest:nil didFail:error];
+    }];
 }
 
 - (void)linkedInRequest:(OAServiceTicket *)ticket didFail:(NSError *)error
 {
-    NSLog(@"LinkedIn request error: %@ code: %d ticket: %@",[error description], error.code, ticket.response.description);
+    NSLog(@"LinkedIn request error: %@ code: %d",[error description], error.code);
     
     if ([delegate respondsToSelector:@selector(linkedInDidFail:)]) {
         [delegate linkedInDidFail:error];
     }
 }
 
--(void)getId {
-    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/id"];
-    OAMutableURLRequest *request = 
-    [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:storedOAuthConsumer
-                                       token:storedOAuthAccessToken
-                                    callback:nil
-                           signatureProvider:nil];
-    
-    [request setValue:@"json" forHTTPHeaderField:@"x-li-format"];
-    
-    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
-    [fetcher fetchDataWithRequest:request
-                         delegate:self
-                didFinishSelector:@selector(idRequest:didFinish:)
-                  didFailSelector:@selector(linkedInRequest:didFail:)];  
-}
-
+/*
 -(void) idRequest:(OAServiceTicket *)ticket didFinish:(NSData *)data {
     NSString *responseBody = [[NSString alloc] initWithData:data
                                                    encoding:NSUTF8StringEncoding];
@@ -160,28 +177,7 @@ static OAuthLoginView * sharedOAuthLoginView;
     [delegate linkedInDidLoginWithID:userID];
     return;
 }
-
--(void)requestAllProfileInfoForID:(NSString*)_userID {
-//    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,location:(name),industry,summary,picture-url,email-address,specialties,three-current-positions)", _userID];
-    NSString * requestString = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,headline,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
-    NSLog(@"All profile request: %@", requestString);
-    NSURL *url = [NSURL URLWithString:requestString];
-    OAMutableURLRequest *request = 
-    [[OAMutableURLRequest alloc] initWithURL:url
-                                    consumer:storedOAuthConsumer
-                                       token:storedOAuthAccessToken
-                                    callback:nil
-                           signatureProvider:nil];
-    
-    [request setValue:@"json" forHTTPHeaderField:@"x-li-format"];
-    
-    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
-    [fetcher fetchDataWithRequest:request
-                         delegate:self
-                didFinishSelector:@selector(profileApiCallResult:didFinish:)
-                  didFailSelector:@selector(linkedInRequest:didFail:)];  
-}
-
+*/
 -(void)requestFriends {
     
     // send notification to start activity indicator

@@ -327,6 +327,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0) {
         NSLog(@"Button 0 - cancel");
+        [self.progress hide:YES];
         [self enableLoginButton];
     }
     else if (buttonIndex == 1) {
