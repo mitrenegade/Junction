@@ -149,7 +149,7 @@
     NSString * location = [[profile objectForKey:@"location"] objectForKey:@"name"]; // format: "location": {"name": loc}
     id _specialties = [profile objectForKey:@"specialties"];
     //id _educations = [profile objectForKey:@"educations"];
-    id _currentPositions = [profile objectForKey:@"threeCurrentPositions"];
+    id _currentPositions = [profile objectForKey:@"positions"];
     NSArray * specialties = nil;
     //NSArray * educations = nil;
     NSArray * currentPositions = nil;
@@ -180,8 +180,17 @@
         [myUserInfo setLocation:location];
     if (specialties)
         [myUserInfo setSpecialties:specialties];
-    if (currentPositions)
+    if (currentPositions) {
         [myUserInfo setCurrentPositions:currentPositions];
+        id mostRecentPosition = [currentPositions objectAtIndex:0];
+        id company = [mostRecentPosition objectForKey:@"company"];
+        if ([company objectForKey:@"name"])
+            [myUserInfo setCompany:[company objectForKey:@"name"]];
+        if ([company objectForKey:@"industry"]) // select current company's industry over personal industry
+            [myUserInfo setIndustry:[company objectForKey:@"industry"]];
+        if ([mostRecentPosition objectForKey:@"title"])
+            [myUserInfo setPosition:[mostRecentPosition objectForKey:@"title"]];
+    }
     [delegate saveUserInfoToDefaults];
 
     if (doSignup)

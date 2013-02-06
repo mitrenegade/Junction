@@ -33,6 +33,7 @@
 
 @property (strong, nonatomic) NSString * industry;
 @property (strong, nonatomic) NSString * summary;
+@property (strong, nonatomic) NSString * lookingFor; // description entered at profile
 @property (strong, nonatomic) NSString * location;
 @property (strong, nonatomic) NSArray * specialties;
 //@property (nonatomic) NSArray * educations;

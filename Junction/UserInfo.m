@@ -25,6 +25,7 @@
 @synthesize industry;
 @synthesize company;
 @synthesize summary;
+@synthesize lookingFor;
 @synthesize currentPositions;
 //@synthesize educations;
 @synthesize specialties;
@@ -84,6 +85,7 @@
     [aCoder encodeObject: company forKey:@"company"];
     [aCoder encodeObject: industry forKey:@"industry"];
     [aCoder encodeObject: summary forKey:@"summary"];
+    [aCoder encodeObject: lookingFor forKey:@"lookingFor"];
     [aCoder encodeObject: currentPositions forKey:@"currentPositions"];
     [aCoder encodeObject: specialties forKey:@"specialties"];
     //[aCoder encodeObject: pfUser forKey:@"pfUser"];
@@ -109,6 +111,7 @@
         [self setCompany:[aDecoder decodeObjectForKey:@"company"]];
         [self setIndustry:[aDecoder decodeObjectForKey:@"industry"]];
         [self setSummary:[aDecoder decodeObjectForKey:@"summary"]];
+        [self setLookingFor:[aDecoder decodeObjectForKey:@"lookingFor"]];
         [self setCurrentPositions:[aDecoder decodeObjectForKey:@"currentPositions"]];
         [self setSpecialties:[aDecoder decodeObjectForKey:@"specialties"]];
         //[self setPfUser:[aDecoder decodeObjectForKey:@"pfUser"]];
@@ -145,6 +148,8 @@
             [self.pfObject setObject:industry forKey:@"industry"];
         if (summary)
             [self.pfObject setObject:summary forKey:@"summary"];
+        if (lookingFor)
+            [self.pfObject setObject:lookingFor forKey:@"lookingFor"];
         if (location)
             [self.pfObject setObject:location forKey:@"location"];
         if (pfUserID)
@@ -191,6 +196,7 @@
     industry = [obj objectForKey:@"industry"];
     company = [obj objectForKey:@"company"];
     summary = [obj objectForKey:@"summary"];
+    lookingFor = [obj objectForKey:@"lookingFor"];
     location = [obj objectForKey:@"location"];
     pfUserID = [obj objectForKey:@"pfUserID"];
     pfUser = [obj objectForKey:@"pfUser"];

@@ -133,7 +133,7 @@ static OAuthLoginView * sharedOAuthLoginView;
             NSString *responseBody = [[NSString alloc] initWithData:data
                                                            encoding:NSUTF8StringEncoding];
             
-            NSLog(@"ProfileAPICall response: %@", responseBody);
+            NSLog(@"RequestProfileForID response: %@", responseBody);
             NSDictionary *profile = [responseBody objectFromJSONString];
             
             if ( !profile )
@@ -145,13 +145,7 @@ static OAuthLoginView * sharedOAuthLoginView;
                 [delegate linkedInCredentialsNeedRefresh];
                 return;
             }
-            if (!userID) {
-                [delegate linkedInParseSimpleProfile:profile];
-                [self getId];
-            }
-            else {
-                [delegate linkedInParseProfileInformation:profile];
-            }
+            [delegate linkedInParseProfileInformation:profile];
         }
     } failure:^(BOOL success, NSError * error) {
         [self linkedInRequest:nil didFail:error];
