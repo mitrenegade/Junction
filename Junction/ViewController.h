@@ -14,7 +14,7 @@
 
 #import "CreateProfilePhotoViewController.h"
 #import "CreateProfileInfoViewController.h"
-#import "ProfilePreviewController.h"
+#import "ProfileViewController.h"
 
 @protocol ViewControllerDelegate <NSObject>
 
@@ -35,13 +35,17 @@
 @property (nonatomic, unsafe_unretained) id delegate;
 @property (nonatomic, strong) LinkedInHelper * lhHelper;
 @property (nonatomic, strong) UserInfo * myUserInfo;
+@property (weak, nonatomic) IBOutlet UIButton * buttonTour;
 @property (weak, nonatomic) IBOutlet UIButton * buttonLogIn;
 @property (weak, nonatomic) IBOutlet UIButton * buttonSignUp;
+@property (weak, nonatomic) IBOutlet UIView * buttonView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView * activityIndicator;
+@property (nonatomic, weak) IBOutlet UILabel * descriptionLabel;
 @property (nonatomic, strong) MBProgressHUD * progress;
 @property (nonatomic, strong) UINavigationController * nav;
 //- (void)signInToCustomService;
 -(IBAction)didClickLinkedIn:(id)sender;
+-(IBAction)didClickTour:(id)sender;
 -(BOOL)loadCachedOauth;
 -(void)tryCachedLogin;
 -(void)linkedInDidLoginWithID:(NSString *)userID;

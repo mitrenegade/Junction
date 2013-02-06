@@ -22,8 +22,9 @@
 @synthesize myUserInfo;
 @synthesize activityIndicator;
 @synthesize buttonLogIn, buttonSignUp;
+@synthesize buttonTour, buttonView;
 @synthesize nav;
-
+@synthesize descriptionLabel;
 -(id)init {
     self = [super init];
     if (self) {
@@ -46,13 +47,13 @@
 	// Do any additional setup after loading the view, typically from a nib.
     myUserInfo = [[UserInfo alloc] init]; // create a shell myUserInfo to store any linkedIn that is received
     
-    [self.buttonLogIn.layer setCornerRadius:5];
-    [self.buttonSignUp.layer setCornerRadius:5];
-
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"img-wall.jpg"]];
+    
     if (!lhHelper) {
         lhHelper  = [[LinkedInHelper alloc] init];
         [lhHelper setDelegate:self];
     }
+    [self.descriptionLabel setFont:[UIFont fontWithName:@"Bree Serif" size:12]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -75,8 +76,7 @@
         lhHelper  = [[LinkedInHelper alloc] init];
         [lhHelper setDelegate:self];
     }
-    [self.buttonLogIn setHidden:YES];
-    [self.buttonSignUp setHidden:YES];
+    [self hideLoginButton];
     [lhHelper getId];
     
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -108,6 +108,11 @@
         OAuthLoginView * lhView = [lhHelper loginView];
         [self.view addSubview:lhView.view];
     }
+}
+
+-(IBAction)didClickTour:(id)sender {
+    NSLog(@"Tour!");
+    [[UIAlertView alertViewWithTitle:@"Tour!" message:@"Tour tour tour..."] show];
 }
 
 #pragma mark LinkedInHelperDelegate
@@ -167,60 +172,9 @@
         [myUserInfo setEmail:email];
     if (pictureUrl) {
         NSLog(@"PictureURL: %@", pictureUrl);
-#if 1
-        [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {
-            NSLog(@"Picture OriginalURL: %@", originalURL);
-            // first save original urls
-            //[myUserInfo setPhotoURL:originalURL];
-            //[myUserInfo setPhotoBlurURL:originalURL];
-
-            // upload images to AWS and generate new URLs
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]];
-                // resize
-                CGSize frame = image.size;
-                float scale = 1;
-                if (frame.width < frame.height)
-                    scale = PROFILE_WIDTH / frame.width;
-                else
-                    scale = PROFILE_HEIGHT / frame.height;
-                CGSize target = frame;
-                target.width *= scale;
-                target.height *= scale;
-                image = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    AppDelegate * appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-                    [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
-                        // force profile to update regular image
-                        appDelegate.myUserInfo.photo = myUserInfo.photo;
-                        appDelegate.myUserInfo.photoURL = myUserInfo.photoURL;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-                    } andBlur:image withBlock:^(BOOL saved) {
-                        // force profile to update blurred image
-                        appDelegate.myUserInfo.photoBlur = myUserInfo.photoBlur;
-                        appDelegate.myUserInfo.photoBlurURL = myUserInfo.photoBlurURL;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-                    }];
-                });
-            });
-        }];
-#else
-        // upload images to AWS and generate new URLs
-        myUserInfo.photoURL = pictureUrl;
-        myUserInfo.photoBlurURL = pictureUrl;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:pictureUrl]]];
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
-                    // force profile to update regular image
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-                } withBlock:^(BOOL saved) {
-                    // force profile to update blurred image
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
-                }];
-            });
-        });
-#endif
+        // if creating a new user and will go through profile process, must request photo
+        [self requestOriginalLinkedInPhoto];
+        // if logging in, request this photo but must get AWS photo later
     }
     if (location)
         [myUserInfo setLocation:location];
@@ -265,8 +219,7 @@
 -(void)linkedInCredentialsNeedRefresh {
     // received 401 error, manually open linkedIn
     //[self didClickLinkedIn:nil];
-    [self.buttonLogIn setHidden:NO];
-    [self.buttonSignUp setHidden:NO];
+    [self enableLoginButton];
 }
 
 -(void)linkedInDidFail:(NSError *)error {
@@ -282,6 +235,8 @@
 #pragma mark ParseHelper login
 -(void)tryLogin {
     NSString * loginID = myUserInfo?myUserInfo.linkedInString:lhHelper.userID;
+    if (!self.progress)
+        self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Logging in...";
     [ParseHelper ParseHelper_loginUsingID:loginID withBlock:^(PFUser * user, NSError * error) {
         if (user) {
@@ -382,8 +337,62 @@
 
 -(void)enableLoginButton {
     [self.progress hide:YES afterDelay:3];
+    /*
+    [self.buttonTour setHidden:NO];
     [self.buttonLogIn setHidden:NO];
     [self.buttonSignUp setHidden:NO];
+     */
+    [self.buttonView setHidden:NO];
+}
+-(void)hideLoginButton {
+    /*
+    [self.buttonTour setHidden:YES];
+    [self.buttonLogIn setHidden:YES];
+    [self.buttonSignUp setHidden:YES];
+     */
+    [self.buttonView setHidden:YES];
+}
+-(void)requestOriginalLinkedInPhoto {
+    // load photo in background
+    [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {
+        NSLog(@"Picture OriginalURL: %@", originalURL);
+        myUserInfo.photo = nil;
+        myUserInfo.photoBlur = nil;
+        
+        // upload unblurred photo to aws
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]];
+            // resize
+            CGSize frame = image.size;
+            float scale = 1;
+            if (frame.width < frame.height)
+                scale = PROFILE_WIDTH / frame.width;
+            else
+                scale = PROFILE_HEIGHT / frame.height;
+            CGSize target = frame;
+            target.width *= scale;
+            target.height *= scale;
+            image = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                // if we are creating a profile, first save this photo as unblurred
+                myUserInfo.photo = image;
+#if 0
+                AppDelegate * appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+                [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
+                    // force profile to update regular image
+                    appDelegate.myUserInfo.photo = myUserInfo.photo;
+                    appDelegate.myUserInfo.photoURL = myUserInfo.photoURL;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+                } andBlur:nil withBlock:^(BOOL saved) {
+                    // force profile to update blurred image
+                    appDelegate.myUserInfo.photoBlur = myUserInfo.photoBlur;
+                    appDelegate.myUserInfo.photoBlurURL = myUserInfo.photoBlurURL;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
+                }];
+#endif
+            });
+        });
+    }];
 }
 
 #pragma mark creating a new profile for a new user
@@ -397,6 +406,9 @@
     [self presentModalViewController:self.nav animated:YES];
     
     [controller populateWithUserInfo:myUserInfo];
+    
+    // request original photo here
+    //[self requestOriginalLinkedInPhoto];
 }
 
 #pragma mark CreateProfileInfoDelegate
@@ -420,6 +432,12 @@
 -(void)didFinishPreview {
     [self dismissModalViewControllerAnimated:YES];
     self.progress.labelText = @"Success!";
+    
+    // save profile after a delay so dismissModalViewController animation can complete
+    [self performSelector:@selector(continueLogin) withObject:nil afterDelay:.5];
+}
+
+-(void)continueLogin {
     // save finally created user
     [[myUserInfo toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {

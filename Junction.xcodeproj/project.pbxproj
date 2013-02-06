@@ -104,6 +104,16 @@
 		9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD416AB315400A447F2 /* AWSHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EA4FBD916AB315400A447F2 /* AWSiOSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EA4FBD516AB315400A447F2 /* AWSiOSSDK.framework */; };
 		9EB78CAE16B8450400096DE8 /* ProfileViewControllerWide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CAD16B8450400096DE8 /* ProfileViewControllerWide.xib */; };
+		9EB78CB616B849D100096DE8 /* btn-primary-press.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB016B849D100096DE8 /* btn-primary-press.png */; };
+		9EB78CB716B849D100096DE8 /* btn-primary-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB116B849D100096DE8 /* btn-primary-up.png */; };
+		9EB78CB816B849D100096DE8 /* btn-secondary-press.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB216B849D100096DE8 /* btn-secondary-press.png */; };
+		9EB78CB916B849D100096DE8 /* btn-secondary-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB316B849D100096DE8 /* btn-secondary-up.png */; };
+		9EB78CBA16B849D100096DE8 /* img-wall.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB416B849D100096DE8 /* img-wall.jpg */; };
+		9EB78CBB16B849D100096DE8 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB516B849D100096DE8 /* logo.png */; };
+		9EB78CC016B84AAB00096DE8 /* BreeSerif_Reg.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CBD16B84AAB00096DE8 /* BreeSerif_Reg.otf */; };
+		9EB78CC116B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CBE16B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf */; };
+		9EB78CC216B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CBF16B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf */; };
+		9EB78CC816B8625700096DE8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CC716B8625700096DE8 /* Default-568h@2x.png */; };
 		9EC23C1116A67F3600270AF1 /* LinkedInHelperRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
@@ -284,6 +294,16 @@
 		9EA4FBD416AB315400A447F2 /* AWSHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSHelper.m; sourceTree = "<group>"; };
 		9EA4FBD516AB315400A447F2 /* AWSiOSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSiOSSDK.framework; sourceTree = "<group>"; };
 		9EB78CAD16B8450400096DE8 /* ProfileViewControllerWide.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfileViewControllerWide.xib; path = Junction/ProfileViewControllerWide.xib; sourceTree = SOURCE_ROOT; };
+		9EB78CB016B849D100096DE8 /* btn-primary-press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-primary-press.png"; sourceTree = "<group>"; };
+		9EB78CB116B849D100096DE8 /* btn-primary-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-primary-up.png"; sourceTree = "<group>"; };
+		9EB78CB216B849D100096DE8 /* btn-secondary-press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-secondary-press.png"; sourceTree = "<group>"; };
+		9EB78CB316B849D100096DE8 /* btn-secondary-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-secondary-up.png"; sourceTree = "<group>"; };
+		9EB78CB416B849D100096DE8 /* img-wall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "img-wall.jpg"; sourceTree = "<group>"; };
+		9EB78CB516B849D100096DE8 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		9EB78CBD16B84AAB00096DE8 /* BreeSerif_Reg.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BreeSerif_Reg.otf; sourceTree = "<group>"; };
+		9EB78CBE16B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sansus-Webissimo-Italic.ttf"; sourceTree = "<group>"; };
+		9EB78CBF16B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sansus-Webissimo-Regular.ttf"; sourceTree = "<group>"; };
+		9EB78CC716B8625700096DE8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		9EC23C0F16A67F3600270AF1 /* LinkedInHelperRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInHelperRequest.h; sourceTree = SOURCE_ROOT; };
 		9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInHelperRequest.m; sourceTree = SOURCE_ROOT; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -532,6 +552,12 @@
 		9E99544116804DD2001E034A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9EB78CB016B849D100096DE8 /* btn-primary-press.png */,
+				9EB78CB116B849D100096DE8 /* btn-primary-up.png */,
+				9EB78CB216B849D100096DE8 /* btn-secondary-press.png */,
+				9EB78CB316B849D100096DE8 /* btn-secondary-up.png */,
+				9EB78CB416B849D100096DE8 /* img-wall.jpg */,
+				9EB78CB516B849D100096DE8 /* logo.png */,
 				9E0D28B316B634970036792B /* linkedin_icon.png */,
 				9E0D28B616B635A60036792B /* linkedin_icon@2x.png */,
 				9E4FA366168953C600B9A336 /* speechbubble.png */,
@@ -579,6 +605,16 @@
 			name = Browse;
 			sourceTree = "<group>";
 		};
+		9EB78CBC16B84AAB00096DE8 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				9EB78CBD16B84AAB00096DE8 /* BreeSerif_Reg.otf */,
+				9EB78CBE16B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf */,
+				9EB78CBF16B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = SOURCE_ROOT;
+		};
 		9EC0BA5915F59AF800B8553F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -607,6 +643,7 @@
 		9EECDF4F15EACB3900AD89D8 = {
 			isa = PBXGroup;
 			children = (
+				9EB78CC716B8625700096DE8 /* Default-568h@2x.png */,
 				9EA4FBCE16AB315400A447F2 /* AWSLibs */,
 				9E1911E31680504900C50361 /* ParseHelperLibrary */,
 				9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */,
@@ -659,6 +696,7 @@
 		9EECDF6515EACB3A00AD89D8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9EB78CBC16B84AAB00096DE8 /* Fonts */,
 				9E99545616804DEA001E034A /* InfoPlist.strings */,
 				9E99545916804E11001E034A /* main.m */,
 				9E99545B16804E18001E034A /* Junction-Info.plist */,
@@ -802,6 +840,16 @@
 				9E0D28C116B641790036792B /* CreateProfileInfoViewController.xib in Resources */,
 				9E0D28C616B641870036792B /* CreateProfilePhotoViewController.xib in Resources */,
 				9EB78CAE16B8450400096DE8 /* ProfileViewControllerWide.xib in Resources */,
+				9EB78CB616B849D100096DE8 /* btn-primary-press.png in Resources */,
+				9EB78CB716B849D100096DE8 /* btn-primary-up.png in Resources */,
+				9EB78CB816B849D100096DE8 /* btn-secondary-press.png in Resources */,
+				9EB78CB916B849D100096DE8 /* btn-secondary-up.png in Resources */,
+				9EB78CBA16B849D100096DE8 /* img-wall.jpg in Resources */,
+				9EB78CBB16B849D100096DE8 /* logo.png in Resources */,
+				9EB78CC016B84AAB00096DE8 /* BreeSerif_Reg.otf in Resources */,
+				9EB78CC116B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf in Resources */,
+				9EB78CC216B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf in Resources */,
+				9EB78CC816B8625700096DE8 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
