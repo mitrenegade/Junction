@@ -36,6 +36,10 @@ enum PROFILE_INPUT_FIELDS {
 @property (nonatomic, weak) UserInfo * userInfo;
 @property (nonatomic, weak) id delegate;
 @property (nonatomic, weak) IBOutlet UIButton * stepButton;
+
+@property (nonatomic, strong) UILabel * privateLabel;
+@property (nonatomic, strong) UISlider * privateSlider;
+
 -(void)populateWithUserInfo:(UserInfo*)newUserInfo;
 -(IBAction)didClickNext:(id)sender;
 @end

@@ -125,6 +125,12 @@
 		9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9EE927DA16C70BA6005B4CCC /* icon-57.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EE927D916C70BA6005B4CCC /* icon-57.png */; };
+		9EE927DD16C70BC4005B4CCC /* icon-114.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EE927DC16C70BC4005B4CCC /* icon-114.png */; };
+		9EE927DF16C70BD6005B4CCC /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EE927DE16C70BD6005B4CCC /* Default.png */; };
+		9EE927E116C70BDD005B4CCC /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EE927E016C70BDD005B4CCC /* Default@2x.png */; };
+		9EE927E416C86CFB005B4CCC /* OutlineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EE927E316C86CFB005B4CCC /* OutlineLabel.m */; };
+		9EE927E816C871B8005B4CCC /* bg-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EE927E716C871B8005B4CCC /* bg-blue.png */; };
 		9EEB211F1693C45200A40770 /* Chat.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EEB211E1693C45200A40770 /* Chat.m */; };
 		9EECDF5F15EACB3A00AD89D8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */; };
 		9EECDF6115EACB3A00AD89D8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EECDF6015EACB3A00AD89D8 /* Foundation.framework */; };
@@ -320,6 +326,13 @@
 		9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+MKBlockAdditions.m"; sourceTree = "<group>"; };
 		9ED3D094168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKBlockAdditions.h"; sourceTree = "<group>"; };
 		9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKBlockAdditions.m"; sourceTree = "<group>"; };
+		9EE927D916C70BA6005B4CCC /* icon-57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-57.png"; sourceTree = "<group>"; };
+		9EE927DC16C70BC4005B4CCC /* icon-114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-114.png"; sourceTree = "<group>"; };
+		9EE927DE16C70BD6005B4CCC /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		9EE927E016C70BDD005B4CCC /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		9EE927E216C86CFB005B4CCC /* OutlineLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlineLabel.h; sourceTree = SOURCE_ROOT; };
+		9EE927E316C86CFB005B4CCC /* OutlineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineLabel.m; sourceTree = SOURCE_ROOT; };
+		9EE927E716C871B8005B4CCC /* bg-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg-blue.png"; sourceTree = "<group>"; };
 		9EEB211D1693C45200A40770 /* Chat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chat.h; sourceTree = SOURCE_ROOT; };
 		9EEB211E1693C45200A40770 /* Chat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Chat.m; sourceTree = SOURCE_ROOT; };
 		9EECDF5E15EACB3A00AD89D8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -556,6 +569,7 @@
 				9EB78CB116B849D100096DE8 /* btn-primary-up.png */,
 				9EB78CB216B849D100096DE8 /* btn-secondary-press.png */,
 				9EB78CB316B849D100096DE8 /* btn-secondary-up.png */,
+				9EE927E716C871B8005B4CCC /* bg-blue.png */,
 				9EB78CB416B849D100096DE8 /* img-wall.jpg */,
 				9EB78CB516B849D100096DE8 /* logo.png */,
 				9E0D28B316B634970036792B /* linkedin_icon.png */,
@@ -643,6 +657,10 @@
 		9EECDF4F15EACB3900AD89D8 = {
 			isa = PBXGroup;
 			children = (
+				9EE927E016C70BDD005B4CCC /* Default@2x.png */,
+				9EE927DE16C70BD6005B4CCC /* Default.png */,
+				9EE927DC16C70BC4005B4CCC /* icon-114.png */,
+				9EE927D916C70BA6005B4CCC /* icon-57.png */,
 				9EB78CC716B8625700096DE8 /* Default-568h@2x.png */,
 				9EA4FBCE16AB315400A447F2 /* AWSLibs */,
 				9E1911E31680504900C50361 /* ParseHelperLibrary */,
@@ -745,6 +763,8 @@
 				9E99543B16804DA5001E034A /* UIImage+Resize.m */,
 				9E99543C16804DA5001E034A /* UIImage+RoundedCorner.h */,
 				9E99543D16804DA5001E034A /* UIImage+RoundedCorner.m */,
+				9EE927E216C86CFB005B4CCC /* OutlineLabel.h */,
+				9EE927E316C86CFB005B4CCC /* OutlineLabel.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -850,6 +870,11 @@
 				9EB78CC116B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf in Resources */,
 				9EB78CC216B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf in Resources */,
 				9EB78CC816B8625700096DE8 /* Default-568h@2x.png in Resources */,
+				9EE927DA16C70BA6005B4CCC /* icon-57.png in Resources */,
+				9EE927DD16C70BC4005B4CCC /* icon-114.png in Resources */,
+				9EE927DF16C70BD6005B4CCC /* Default.png in Resources */,
+				9EE927E116C70BDD005B4CCC /* Default@2x.png in Resources */,
+				9EE927E816C871B8005B4CCC /* bg-blue.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -936,6 +961,7 @@
 				9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */,
 				9E0D28C016B641790036792B /* CreateProfileInfoViewController.m in Sources */,
 				9E0D28C516B641870036792B /* CreateProfilePhotoViewController.m in Sources */,
+				9EE927E416C86CFB005B4CCC /* OutlineLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

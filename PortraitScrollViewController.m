@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "UIImage+GaussianBlur.h"
 #import "AsyncImageView.h"
+#import "OutlineLabel.h"
 
 @interface PortraitScrollViewController ()
 
@@ -78,23 +79,25 @@
     else
         [self addPhoto:userInfo.photoBlur withURL:userInfo.photoBlurURL];//[userInfo.photo imageWithGaussianBlur]];
     
-    int fontSizeName = 20;
-    int fontSize = 15;
+    int fontSize = 12;
     int offset = 6;
-    int border = 2;
     int size = self.view.frame.size.width;
-    CGRect portraitframe = CGRectMake(border,border,size-border,size-border);
+    CGRect portraitframe = CGRectMake(0,0,size,size);
     
     // page 1: username, headline
     //pageCt++;
     UIView * page1 = [[UIView alloc] initWithFrame:portraitframe];
-    UILabel * nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
+    [page1 setBackgroundColor:[UIColor clearColor]];
+    
+    CGRect labelFrame = CGRectMake(offset, height/2, width-offset*2, height/2);
+    OutlineLabel * nameLabel = [[OutlineLabel alloc] initWithFrame:labelFrame];
     [nameLabel setText:userInfo.username];
     [nameLabel setNumberOfLines:3];
-    [nameLabel setFont:[UIFont boldSystemFontOfSize:fontSizeName]];
-    [nameLabel setCenter:CGPointMake((width+offset)/2, height/4*3)];
+    [nameLabel setFontSize:fontSize];
     [nameLabel setBackgroundColor:[UIColor clearColor]];
     [nameLabel setTextColor:[UIColor whiteColor]];
+    [nameLabel setOutlineColor:[UIColor blackColor]];
+    [nameLabel setTextAlignment:NSTextAlignmentLeft];
     [page1 addSubview:nameLabel];
     if ([appDelegate isConnectedWithUser:userInfo]) {
         if (userInfo.username)
@@ -102,13 +105,16 @@
     }
     //pageCt++;
     UIView * page2 = [[UIView alloc] initWithFrame:portraitframe];
-    UILabel * headlineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
-    [headlineLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
+    [page2 setBackgroundColor:[UIColor clearColor]];
+    
+    OutlineLabel * headlineLabel = [[OutlineLabel alloc] initWithFrame:labelFrame];
+    [headlineLabel setFontSize:fontSize];
     [headlineLabel setText:userInfo.headline];
     [headlineLabel setNumberOfLines:3];
-    [headlineLabel setCenter:CGPointMake((width+offset)/2, height/4*3)];
     [headlineLabel setBackgroundColor:[UIColor clearColor]];
     [headlineLabel setTextColor:[UIColor whiteColor]];
+    [headlineLabel setOutlineColor:[UIColor blackColor]];
+    [headlineLabel setTextAlignment:NSTextAlignmentLeft];
     [page2 addSubview:headlineLabel];
     if (userInfo.headline)
         [pages addObject:page2];
@@ -116,26 +122,32 @@
     // page 2: username, headline
     //pageCt++;
     UIView * page3 = [[UIView alloc] initWithFrame:portraitframe];
-    UILabel * emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
+    [page3 setBackgroundColor:[UIColor clearColor]];
+    
+    OutlineLabel * emailLabel = [[OutlineLabel alloc] initWithFrame:labelFrame];
     [emailLabel setText:userInfo.email];
     [emailLabel setNumberOfLines:3];
-    [emailLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
-    [emailLabel setCenter:CGPointMake((width+offset)/2, height/4*3)];
+    [emailLabel setFontSize:fontSize];
     [emailLabel setBackgroundColor:[UIColor clearColor]];
     [emailLabel setTextColor:[UIColor whiteColor]];
+    [emailLabel setOutlineColor:[UIColor blackColor]];
+    [emailLabel setTextAlignment:NSTextAlignmentLeft];
     [page3 addSubview:emailLabel];
     if (userInfo.email)
         [pages addObject:page3];
 
     //pageCt++;
     UIView * page4 = [[UIView alloc] initWithFrame:portraitframe];
-    UILabel * industryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width-offset, height/2)];
+    [page4 setBackgroundColor:[UIColor clearColor]];
+    
+    OutlineLabel * industryLabel = [[OutlineLabel alloc] initWithFrame:labelFrame];
     [industryLabel setText:userInfo.industry];
     [industryLabel setNumberOfLines:3];
-    [industryLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
-    [industryLabel setCenter:CGPointMake((width+offset)/2, height/4*3)];
+    [industryLabel setFontSize:fontSize];
     [industryLabel setBackgroundColor:[UIColor clearColor]];
     [industryLabel setTextColor:[UIColor whiteColor]];
+    [industryLabel setOutlineColor:[UIColor blackColor]];
+    [industryLabel setTextAlignment:NSTextAlignmentLeft];
     [page4 addSubview:industryLabel];
     if (userInfo.industry)
         [pages addObject:page4];
@@ -165,8 +177,6 @@
     [pageControl setFrame:CGRectMake(0, 0, pcsize.width, pcsize.height)];
     CGPoint center = CGPointMake(width/2, height-10);//self.view.center;
     [pageControl setCenter:center];
-    
-    //[pageControl setBackgroundColor:[UIColor redColor]];
     
     [self.view addSubview:pageControl];
 

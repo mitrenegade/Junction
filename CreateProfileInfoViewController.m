@@ -23,6 +23,8 @@
 @synthesize scrollView;
 @synthesize viewsForCell;
 
+@synthesize privateLabel, privateSlider;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -129,7 +131,9 @@
         
         UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, ROW_HEIGHT)];
         [label setFont:[UIFont boldSystemFontOfSize:15]];
-        [label setBackgroundColor:[UIColor colorWithRed:165.0/255 green:211.0/255 blue:228.0/255 alpha:1]];
+        [label setTextColor:[UIColor colorWithRed:105.0/255 green:200.0/255 blue:255.0/255 alpha:1]];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextAlignment:NSTextAlignmentRight];
         UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 200, ROW_HEIGHT)];
         [inputField setTextAlignment:NSTextAlignmentLeft];
         [inputField setFont:[UIFont boldSystemFontOfSize:15]];
@@ -171,12 +175,16 @@
         }
         UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, ROW_HEIGHT)];
         [label setFont:[UIFont boldSystemFontOfSize:15]];
-        [label setBackgroundColor:[UIColor colorWithRed:165.0/255 green:211.0/255 blue:228.0/255 alpha:1]];
+        [label setTextColor:[UIColor colorWithRed:105.0/255 green:200.0/255 blue:255.0/255 alpha:1]];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextAlignment:NSTextAlignmentRight];
         UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 200, ROW_HEIGHT)];
         [inputField setTextAlignment:NSTextAlignmentLeft];
         [inputField setFont:[UIFont boldSystemFontOfSize:15]];
         inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         [inputField setDelegate:self];
+
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, ROW_HEIGHT)];
         if (row == 0) {
             index = INPUT_ROLE;
             [label setText:@"ROLE"];
@@ -194,6 +202,19 @@
             if (self.userInfo.company)
                 [inputField setText:self.userInfo.company];
             [inputField setKeyboardType:UIKeyboardTypeAlphabet];
+            inputField.frame = CGRectMake(85, 0, 150, ROW_HEIGHT);
+            self.privateSlider = [[UISlider alloc] initWithFrame:CGRectMake(235, 5, 50, ROW_HEIGHT/2.5)];
+            [privateSlider setMinimumValue:0];
+            [privateSlider setMaximumValue:1];
+            [self.privateSlider addTarget:self action:@selector(sliderDidChange:) forControlEvents:UIControlEventValueChanged];
+            [self.privateSlider addTarget:self action:@selector(sliderDidClick:) forControlEvents:UIControlEventTouchUpInside];
+            self.privateLabel = [[UILabel alloc] initWithFrame:CGRectMake(235, ROW_HEIGHT/2+5, 50, ROW_HEIGHT/2-5)];
+            [self.privateLabel setBackgroundColor:[UIColor clearColor]];
+            [self.privateLabel setFont:[UIFont boldSystemFontOfSize:10]];
+            [self.privateLabel setTextAlignment:NSTextAlignmentCenter];
+            [self.privateLabel setText:@"Private"];
+            [view addSubview:self.privateLabel];
+            [view addSubview:self.privateSlider];
         }
         else if (row == 2) {
             index = INPUT_INDUSTRY;
@@ -204,7 +225,6 @@
             [inputField setKeyboardType:UIKeyboardTypeAlphabet];
         }
         
-        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, ROW_HEIGHT)];
         [view addSubview:label];
         [view addSubview:inputField];
         [self.viewsForCell replaceObjectAtIndex:index withObject:view];
@@ -256,8 +276,8 @@
     }
     
     // Configure the cell...
-    for (UIView * subview in cell.subviews)
-        [subview removeFromSuperview];
+//    for (UIView * subview in cell.subviews)
+//        [subview removeFromSuperview];
     [cell addSubview:[self viewForItemAtIndexPath:indexPath]];
     return cell;
 }
@@ -326,6 +346,25 @@
 -(IBAction)didClickProfilePhoto:(id)sender {
     [self.stepButton setSelected:NO];
     [self didClickNext:sender];
+}
+
+#pragma mark slider change
+-(void)sliderDidChange:(id)sender {
+    if ([self.privateSlider value] < .5) {
+        [self.privateLabel setText:@"Private"];
+    }
+    else
+        [self.privateLabel setText:@"Public"];
+}
+
+-(void)sliderDidClick:(id)sender {
+    if ([self.privateSlider value] <= .5) {
+        [self.privateSlider setValue:1];
+    }
+    else {
+        [self.privateSlider setValue:0];
+    }
+    [self sliderDidChange:sender];
 }
 
 @end

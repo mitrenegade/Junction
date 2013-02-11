@@ -238,6 +238,12 @@
         self.progress.labelText = @"Could not connect to LinkedIn!";
         self.progress.detailsLabelText = @"Please try again later!";
     }
+    else if (error.code == -1009) {
+        // no internet
+        NSLog(@"No internet connectivity!");
+        self.progress.labelText = @"Could not connect to the Internet!";
+        self.progress.detailsLabelText = @"Please make sure you are online!";
+    }
     [self enableLoginButton];
 }
 
