@@ -10,6 +10,7 @@
 #import "UserInfo.h"
 #import "UserPulse.h"
 #import "PortraitScrollViewController.h"
+#import "OrderedUser.h"
 
 #define HEADER_HEIGHT 30
 #define TOP_LABEL_TAG 1001
@@ -39,7 +40,8 @@ enum DISTANCE_GROUPS {
 @property (weak, nonatomic) IBOutlet UITableView * tableView;
 
 @property (nonatomic, strong) NSMutableDictionary * userInfos;
-@property (nonatomic, strong) NSMutableArray * distanceGroups;
+@property (nonatomic, strong) NSMutableArray * distanceGroupsIDSets;
+@property (nonatomic, strong) NSMutableArray * distanceGroupsOrdered;
 
 @property (nonatomic, strong) NSMutableDictionary * portraitViews;
 @property (nonatomic, strong) NSMutableDictionary * portraitLoaded;
@@ -49,4 +51,5 @@ enum DISTANCE_GROUPS {
 
 -(void)reloadAll;
 -(IBAction)didClickSearch:(id)sender;
+-(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse;
 @end

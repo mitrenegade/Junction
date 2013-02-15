@@ -40,8 +40,8 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIImageView" id="828913627">
 						<reference key="NSNextResponder" ref="774585933"/>
-						<int key="NSvFlags">276</int>
-						<string key="NSFrameSize">{320, 460}</string>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrameSize">{320, 568}</string>
 						<reference key="NSSuperview" ref="774585933"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="440574667"/>
@@ -50,7 +50,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">img-wall.jpg</string>
+							<string key="NSResourceName">img-wall.png</string>
 						</object>
 					</object>
 					<object class="IBUIView" id="440574667">
@@ -60,10 +60,10 @@
 							<object class="IBUIImageView" id="472152756">
 								<reference key="NSNextResponder" ref="440574667"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{10, 13}, {280, 280}}</string>
+								<string key="NSFrame">{{15, 7}, {270, 270}}</string>
 								<reference key="NSSuperview" ref="440574667"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="357469305"/>
+								<reference key="NSNextKeyView" ref="525071735"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -75,10 +75,10 @@
 							<object class="IBUILabel" id="357469305">
 								<reference key="NSNextResponder" ref="440574667"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{57, 105}, {210, 164}}</string>
+								<string key="NSFrame">{{57, 89}, {210, 164}}</string>
 								<reference key="NSSuperview" ref="440574667"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="525071735"/>
+								<reference key="NSNextKeyView" ref="165007580"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -111,7 +111,7 @@
 								<string key="NSFrame">{{50, 63}, {200, 40}}</string>
 								<reference key="NSSuperview" ref="440574667"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="165007580"/>
+								<reference key="NSNextKeyView" ref="357469305"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -271,6 +271,7 @@
 						<string key="NSFrame">{{142, 375}, {37, 37}}</string>
 						<reference key="NSSuperview" ref="774585933"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -410,9 +411,9 @@
 						<int key="objectID">29</int>
 						<reference key="object" ref="440574667"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="472152756"/>
 							<reference ref="525071735"/>
 							<reference ref="357469305"/>
+							<reference ref="472152756"/>
 						</array>
 						<reference key="parent" ref="774585933"/>
 					</object>
@@ -492,7 +493,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">50</int>
+			<int key="maxID">51</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -564,7 +565,7 @@
 			<string key="btn-primary-up.png">{620, 88}</string>
 			<string key="btn-secondary-press.png">{620, 88}</string>
 			<string key="btn-secondary-up.png">{620, 88}</string>
-			<string key="img-wall.jpg">{640, 880}</string>
+			<string key="img-wall.png">{640, 1136}</string>
 			<string key="linkedin_icon.png">{25, 25}</string>
 			<string key="logo.png">{262, 56}</string>
 		</dictionary>

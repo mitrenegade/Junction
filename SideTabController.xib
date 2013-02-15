@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1536</int>
-		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.SystemVersion">11G63b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2844</string>
-		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -42,7 +42,7 @@
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUIButton" id="457434074">
 								<reference key="NSNextResponder" ref="37054237"/>
-								<int key="NSvFlags">292</int>
+								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 400}, {40, 60}}</string>
 								<reference key="NSSuperview" ref="37054237"/>
 								<reference key="NSWindow"/>
@@ -80,7 +80,7 @@
 							</object>
 							<object class="IBUILabel" id="305645424">
 								<reference key="NSNextResponder" ref="37054237"/>
-								<int key="NSvFlags">292</int>
+								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 440}, {40, 20}}</string>
 								<reference key="NSSuperview" ref="37054237"/>
 								<reference key="NSWindow"/>
@@ -180,6 +180,15 @@
 					</object>
 					<int key="connectionID">31</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">didClickSettings:</string>
+						<reference key="source" ref="457434074"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">112</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -253,13 +262,24 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">111</int>
+			<int key="maxID">112</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">SideTabController</string>
 					<string key="superclassName">UIViewController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">didClickSettings:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">didClickSettings:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">didClickSettings:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="contentView">UIView</string>
 						<string key="sidebarView">UIView</string>

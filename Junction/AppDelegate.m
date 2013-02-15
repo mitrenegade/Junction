@@ -391,6 +391,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }];
 }
 
+-(void)forcePulse {
+    [self redoPulseForLastLocation:lastLocation];
+}
+
 #pragma mark ProximityDelegate and ProfileDelegate
 
 -(UserInfo*)getMyUserInfo {
@@ -467,6 +471,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)continueInit {
+//    [UIApplication sharedApplication].statusBarHidden = NO;
+    
     [self loadCachedRecentChats];
     [self getJunctionUsers];
     [self startPulsing];
@@ -476,6 +482,17 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     // register for push
     [ParseHelper Parse_subscribeToChannel:myUserInfo.pfUserID];
+}
+
+-(void)didLogout {
+    myUserInfo = nil;
+    [PFUser logOut];
+    // currently no way to log out of linkedIn
+    self.nav = nil;
+    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
+    [self.viewController setMyUserInfo:myUserInfo];
+    [self.viewController setDelegate:self];
+    self.window.rootViewController = self.viewController;
 }
 
 -(void)didGetLinkedInFriends:(NSArray*)friendResults {
@@ -490,7 +507,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)updateFriendDistances {
-    NSLog(@"Compare junction users with friends!");
+    NSLog(@"Updating distances for %d users", [allJunctionUserInfos count]);
     if ([allJunctionUserInfos count] == 0)
         return;
     //if ([linkedInFriends count] == 0)
@@ -515,10 +532,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             else {
                 //                    PFObject * object = [results objectAtIndex:0];
                 UserPulse * pulse = [results objectAtIndex:0];//[[UserPulse alloc] initWithPFObject:object];
-                NSLog(@"User %@ %@ found at coord %f %f", friendUserInfo.username, friendUserInfo.pfUserID, pulse.coordinate.latitude, pulse.coordinate.longitude);
+                //NSLog(@"User %@ %@ found at coord %f %f", friendUserInfo.username, friendUserInfo.pfUserID, pulse.coordinate.latitude, pulse.coordinate.longitude);
                 
                 [allPulses setObject:pulse forKey:friendUserInfo.pfUserID];
-                [proxController reloadAll];
+                [proxController reloadUserPortrait:friendUserInfo withPulse:pulse];
                 // todo: use that to calculate distance, requires own coordinate from gps
                 
                 float distanceInMeters = 999;

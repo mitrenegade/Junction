@@ -22,6 +22,8 @@
 @synthesize scrollView;
 @synthesize pageControl;
 @synthesize delegate;
+@synthesize lastLoadedPortrait;
+@synthesize photoBG;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,6 +48,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)dealloc {
+    // on dealloc, there may still be pending async calls, which will eventually call on a deallocated delegate unless set to nil
+    [self.photoBG setDelegate:nil];
+}
+
 -(void)addPhoto:(UIImage*)userPhoto withURL:(NSString*)urlString {
     self.photo = userPhoto;
     int border = 2;
@@ -57,9 +64,18 @@
     [photoBG setFrame:portraitframe];
     [self.view addSubview:photoBG];
 #else
-    AsyncImageView * photoBG = [[AsyncImageView alloc] initWithImage:self.photo];
+    self.photoBG = [[AsyncImageView alloc] initWithImage:self.photo];
+    [photoBG setDelegate:self];
     [photoBG setImageURL:[NSURL URLWithString:urlString]];
     [photoBG setFrame:portraitframe];
+    
+    if (userPhoto) {
+        [photoBG setImage:userPhoto];
+    }
+    else {
+        [photoBG setImage:self.lastLoadedPortrait];
+    }
+    
     [self.view addSubview:photoBG];
 #endif
 }
@@ -238,6 +254,12 @@
         NSLog(@"Tap gesture!");
         [delegate didTapPortraitWithUserInfo:self.userInfo];
     }
+}
+
+#pragma mark AsyncImageDelegate {
+
+-(void)didFinishLoadingImage:(UIImage *)result {
+    self.lastLoadedPortrait = result;
 }
 
 @end

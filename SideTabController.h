@@ -20,5 +20,5 @@
 -(void)addController:(UIViewController*)viewController withNormalImage:(UIImage*)normalImage andHighlightedImage:(UIImage*)highlightedImage andTitle:(NSString*)title;
 -(void)selectSidebarItem:(id)sender;
 -(void)didSelectViewController:(int)index;
-
+-(IBAction)didClickSettings:(id)sender;
 @end

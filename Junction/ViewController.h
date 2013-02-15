@@ -25,7 +25,7 @@
 
 @end
 
-@interface ViewController : UIViewController <UIAlertViewDelegate, CreateProfileInfoDelegate, CreateProfilePhotoDelegate, ProfilePreviewDelegate, LinkedInHelperDelegate>
+@interface ViewController : UIViewController <UIAlertViewDelegate, CreateProfileInfoDelegate, CreateProfilePhotoDelegate, ProfilePreviewDelegate, LinkedInHelperDelegate, OAuthLoginDelegate>
 {
 //    IBOutlet UILabel *locationLabel;
 //    UITabBarController * tabBarController;

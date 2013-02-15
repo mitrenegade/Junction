@@ -16,7 +16,7 @@
 
 @end
 
-@interface PortraitScrollViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface PortraitScrollViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate, AsyncImageDelegate>
 {
     BOOL pageControlBeingUsed;
     int currentPage;
@@ -27,6 +27,8 @@
 @property (nonatomic, strong) UIPageControl * pageControl;
 @property (nonatomic, weak) id delegate;
 @property (nonatomic, weak) UserInfo * userInfo;
+@property (nonatomic, strong) UIImage * lastLoadedPortrait;
+@property (nonatomic, strong) AsyncImageView * photoBG;
 
 -(void)addUserInfo:(UserInfo *)userInfo;
 

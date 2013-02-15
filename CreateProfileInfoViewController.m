@@ -60,11 +60,11 @@
     [self.scrollView setContentSize:frame.size];
     [self.scrollView setScrollEnabled:NO];
     //[self.scrollView setBackgroundColor:[UIColor blueColor]];
-    /*
+    
     frame = self.tableView.frame;
     frame.size.height += 200;
     [self.tableView setFrame:frame];
-     */
+     
 }
 
 - (void)didReceiveMemoryWarning
@@ -254,7 +254,6 @@
         [keyboardDoneButtonView1 setItems:[NSArray arrayWithObjects:doneButton1, nil]];
         textView.inputAccessoryView = keyboardDoneButtonView1;
         
-
         [self.viewsForCell replaceObjectAtIndex:index withObject:view];
         [inputFields replaceObjectAtIndex:index withObject:textView];
         return [self.viewsForCell objectAtIndex:index];

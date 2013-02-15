@@ -165,7 +165,10 @@ static NSMutableDictionary * allUserPulses;
     if ([allUserPulses objectForKey:userInfo.pfUserID]) {
         // allUserPulses already contains the pulse, so use the pfObject to directly query Parse
         UserPulse * pulse = [allUserPulses objectForKey:userInfo.pfUserID];
-        PFObject * pfObject = [pulse toPFObject];
+        PFObject * pfObject = pulse.pfObject;
+        if (!pfObject) {
+            pfObject = [pulse toPFObject];
+        }
         if (!pfObject) {
             NSLog(@"Could not create pfObject!");
             queryCompletedWithResults(nil, nil);

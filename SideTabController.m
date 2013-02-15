@@ -7,6 +7,8 @@
 //
 
 #import "SideTabController.h"
+#import "AppDelegate.h"
+#import "UIAlertView+MKBlockAdditions.h"
 
 @interface SideTabController ()
 
@@ -101,4 +103,13 @@
     NSLog(@"ContentView: %f %f controller view: %f %f", contentView.frame.size.width, contentView.frame.size.height, controller.view.frame.size.width, controller.view.frame.size.height);
 }
 
+-(IBAction)didClickSettings:(id)sender {
+    [UIAlertView alertViewWithTitle:@"Log out?" message:@"Do you want to log out?" cancelButtonTitle:@"Cancel" otherButtonTitles:[NSArray arrayWithObject:@"Logout"] onDismiss:^(int buttonIndex) {
+        // for now log out
+        AppDelegate * appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        [appDelegate didLogout];
+    } onCancel:^{
+        return;
+    }];
+}
 @end

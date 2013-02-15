@@ -98,7 +98,8 @@
         else {
             NSLog(@"No cached oauth! Just present login view");
             OAuthLoginView * lhView = [lhHelper loginView];
-            [self.view addSubview:lhView.view];
+            [lhView setDelegate:self];
+            [self presentModalViewController:lhView animated:YES];
         }
     }
     else if (button == buttonSignUp) {
@@ -106,7 +107,8 @@
         self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         self.progress.labelText = @"Loading your LinkedIn information";
         OAuthLoginView * lhView = [lhHelper loginView];
-        [self.view addSubview:lhView.view];
+        [lhView setDelegate:self];
+        [self presentModalViewController:lhView animated:YES];
     }
 }
 
@@ -468,5 +470,11 @@
 #endif
         }
     }];
+}
+
+#pragma mark OAuthLoginDelegate
+-(void)didClickBack {
+    [self dismissModalViewControllerAnimated:YES];
+    [self.progress hide:YES];
 }
 @end
