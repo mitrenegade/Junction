@@ -20,6 +20,7 @@
 #import "JunctionNotification.h"
 #import "Chat.h"
 #import "MBProgressHUD.h"
+#import "SettingsViewController.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -57,7 +58,7 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 @property (nonatomic, strong) MapViewController * mapViewController;
 @property (nonatomic, strong) ChatBrowserViewController * chatsTableController;
 @property (nonatomic, strong) NotificationsViewController * notificationsController;
-
+@property (nonatomic, strong) SettingsViewController * settingsController;
 @property (nonatomic) CLLocationManager * locationManager;
 @property (nonatomic) CLLocation * lastLocation;
 

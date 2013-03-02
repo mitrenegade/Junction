@@ -15,6 +15,7 @@
 #import "JunctionNotification.h"
 #import "Chat.h"
 #import "MBProgressHUD.h"
+#import "Constants.h"
 
 @implementation AppDelegate
 
@@ -35,6 +36,7 @@
 @synthesize connected, connectRequestsReceived, connectRequestsSent;
 @synthesize notificationDeviceToken;
 @synthesize allRecentChats;
+@synthesize settingsController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -418,38 +420,44 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [tabBarController setDelegate:self];
     
     proxController = [[ProximityViewController alloc] init];
-    
-    //mapViewController = [[MapViewController alloc] init];
-    //[mapViewController setDelegate:self];
-    
-    profileController = [[ProfileViewController alloc] init];
-    
     connectionsController = [[ProximityViewController alloc] init];
     [connectionsController setShowConnectionsOnly:YES];
-
-    chatsTableController = [[ChatBrowserViewController alloc] init];
-
+    [connectionsController.tabBarItem setImage:[UIImage imageNamed:@"tabbar-connections"]];
+    [connectionsController.tabBarItem setTitle:@"Connections"];
     notificationsController = [[NotificationsViewController alloc] init];
+    chatsTableController = [[ChatBrowserViewController alloc] init];
+    settingsController = [[SettingsViewController alloc] init];
+    profileController = [[ProfileViewController alloc] init];
     
-    SideTabController * sideTabController = [[SideTabController alloc] init];
-    [sideTabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
-    [sideTabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
-    //[sideTabController addController:mapViewController withNormalImage:[UIImage imageNamed:@"tab_world"] andHighlightedImage:nil andTitle:@"Map"];
-    [sideTabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
-    [sideTabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
-    [sideTabController addController:connectionsController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Connections"];
+#if USING_SIDETAB
+    SideTabController * tabController = [[SideTabController alloc] init];
+    [tabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
+    [tabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
+    [tabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
+    [tabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
+    [tabController addController:connectionsController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Connections"];
+    [sideTabController didSelectViewController:0];
+#else
+    UITabBarController * tabController = [[UITabBarController alloc] init];
+//    UINavigationController * tab0nav = [[UINavigationController alloc] initWithRootViewController:proxController];
+//    UINavigationController * tab1nav = [[UINavigationController alloc] initWithRootViewController:connectionsController];
+//    UINavigationController * tab2nav = [[UINavigationController alloc] initWithRootViewController:notificationsController];
+//    UINavigationController * tab3nav = [[UINavigationController alloc] initWithRootViewController:chatsTableController];
+    //NSArray * viewControllers = [NSArray arrayWithObjects: tab0nav, tab1nav, tab2nav, tab3nav, nil];
+    NSArray * viewControllers = [NSArray arrayWithObjects: proxController, connectionsController, notificationsController, chatsTableController, settingsController, nil];
+    [tabBarController setViewControllers:viewControllers];
+    [tabBarController setDelegate:self];
+    [tabBarController setSelectedIndex:0];
+#endif
+//    self.nav = [[UINavigationController alloc] initWithRootViewController:tabController];
     
-    self.nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
-//    [self.viewController presentModalViewController:nav animated:YES];
-    //[self.nav pushViewController:sideTabController animated:YES];
-
     // this set of animations works correctly. first, dismiss with animation. while animating, the rootView becomes the other one.
-
     self.nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     if ([[UIDevice currentDevice].systemVersion floatValue] < 6.0){
         [self.viewController presentViewController:self.nav animated:YES completion:^{
             [self.viewController dismissViewControllerAnimated:NO completion:nil]; // dismiss this controller
-            self.window.rootViewController = nav;
+            self.window.rootViewController = tabBarController;
+            [self.window makeKeyAndVisible];
         }];
     }
     else {
@@ -459,12 +467,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                forView:self.nav.view
                                  cache:YES];
         [UIView setAnimationDelegate:self];
-        self.window.rootViewController = nav;
+        self.window.rootViewController = tabBarController;
+        [self.window makeKeyAndVisible];
         [UIView commitAnimations];
     }
     
-
-    [sideTabController didSelectViewController:0];
     NSLog(@"MyUserInfo pfUser: %@", myUserInfo.pfUser);
     
     [self continueInit];

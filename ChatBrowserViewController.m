@@ -26,6 +26,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-chat"]];
+        [self.tabBarItem setTitle:@"Chats"];
     }
     return self;
 }

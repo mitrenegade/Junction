@@ -440,7 +440,7 @@
 #pragma mark CreateProfilePhotoDelegate
 -(void)didSaveProfilePhoto {
     // display profile as a preview
-    ProfileViewController * controller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewControllerWide" bundle:nil];
+    ProfileViewController * controller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
     [controller setMyUserInfo:myUserInfo];
     [controller setIsPreview:YES];
     [controller setDelegate:self];

@@ -44,8 +44,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [self.tabBarItem setImage:[UIImage imageNamed:@"tab_friends"]];
-//        [self.tabBarItem setTitle:@"Nearby"];
+        [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-browse"]];
+        [self.tabBarItem setTitle:@"Browse"];
     }
     return self;
 }

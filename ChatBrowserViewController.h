@@ -13,7 +13,7 @@
 #define CB_TAG_TEXTLABEL 1003
 #define CB_TAG_TIMELABEL 1004
 
-@interface ChatBrowserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface ChatBrowserViewController : UIViewController <UINavigationControllerDelegate, UITabBarControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
 #if USE_PULL_TO_REFRESH
     EGORefreshTableHeaderView *refreshHeaderView;

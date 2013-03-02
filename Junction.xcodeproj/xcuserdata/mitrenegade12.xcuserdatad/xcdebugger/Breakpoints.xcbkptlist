@@ -73,7 +73,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/ProximityViewController.m"
-         timestampString = "382402812.887572"
+         timestampString = "383889595.688883"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "393"
@@ -99,11 +99,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "382405772.928236"
+         timestampString = "383889595.688883"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "665"
-         endingLineNumber = "665"
+         startingLineNumber = "672"
+         endingLineNumber = "672"
          landmarkName = "-sendConnectionRequestToUser:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -112,11 +112,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "382405775.218838"
+         timestampString = "383889595.688883"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "673"
-         endingLineNumber = "673"
+         startingLineNumber = "680"
+         endingLineNumber = "680"
          landmarkName = "-sendConnectionRequestToUser:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -125,24 +125,24 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "382405776.956072"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "683"
-         endingLineNumber = "683"
-         landmarkName = "-sendConnectionRequestToUser:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Junction/AppDelegate.m"
-         timestampString = "382405799.310025"
+         timestampString = "383889595.688883"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "690"
          endingLineNumber = "690"
+         landmarkName = "-sendConnectionRequestToUser:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "383889595.688883"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "697"
+         endingLineNumber = "697"
          landmarkName = "-sendConnectionRequestToUser:"
          landmarkType = "5">
       </FileBreakpoint>
