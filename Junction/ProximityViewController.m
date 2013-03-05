@@ -38,6 +38,13 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 @synthesize portraitViews, portraitLoaded;
 @synthesize headerViews;
 @synthesize showConnectionsOnly;
+@synthesize filterViewController;
+
+// pull to refresh
+@synthesize reloading=_reloading;
+@synthesize refreshHeaderView;
+@synthesize hasHeaderRow;
+@synthesize searchButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -54,6 +61,42 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    UIImage * headerbg = [UIImage imageNamed:@"header_bg"];
+    [self.navigationController.navigationBar setBackgroundImage:headerbg forBarMetrics:UIBarMetricsDefault];
+    
+    UILabel * titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    [titleView setFont:[UIFont boldSystemFontOfSize:23]];
+    [titleView setTextColor:[UIColor whiteColor]];
+    [titleView setBackgroundColor:[UIColor colorWithRed:14.0/255.0 green:158.0/255.0 blue:205.0/255.0 alpha:1]];
+    [titleView setTextAlignment:NSTextAlignmentCenter];
+    self.navigationItem.titleView = titleView;
+    
+    if (!showConnectionsOnly) {
+        // browse tab
+        //self.navigationItem.title = @"Junction";
+        titleView.text = @"Junction";
+    }
+    else {
+        // connections tab
+        //self.navigationItem.title = @"Connections";
+        titleView.text = @"Connections";
+    }
+    UIFont * font = titleView.font;
+    CGRect frame = CGRectMake(0, 0, [self.navigationItem.title sizeWithFont:font].width, 44);
+    frame.origin.x = 320 - frame.size.width / 2;
+    [titleView setFrame:frame];
+    
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setFrame:CGRectMake(0, 0, 26, 26)];
+    [button setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(didClickSearch:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem * rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    [self.navigationItem setRightBarButtonItem:rightButtonItem];
+    
+    self.searchButton = button;
+    
     /*
     names = [[NSMutableArray alloc] init];
     titles = [[NSMutableArray alloc] init];
@@ -72,14 +115,19 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     }
     
     if (refreshHeaderView == nil) {
-        
-        PF_EGORefreshTableHeaderView *view = [[PF_EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
-        view.delegate = self;
+        /*
+        EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
+//        view.delegate = self;
+        [view setBackgroundColor:[UIColor blackColor]];
         [tableView addSubview:view];
         refreshHeaderView = view;
+         */
+        refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
+        refreshHeaderView.bottomBorderThickness = 0.0;
+        [self.tableView addSubview:refreshHeaderView];
     }
     //  update the last update date
-    [refreshHeaderView refreshLastUpdatedDate];
+//    [refreshHeaderView refreshLastUpdatedDate];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateMyUserInfo) 
@@ -168,8 +216,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         CGRect frame = CGRectMake(5, 0, self.view.bounds.size.width-10, HEADER_HEIGHT);
         UILabel * label = [[UILabel alloc] initWithFrame:frame];
         [label setTextColor:[UIColor whiteColor]];
-        [label setFont:[UIFont boldSystemFontOfSize:16]];
-        [label setBackgroundColor:[UIColor blackColor]];
+        [label setFont:[UIFont boldSystemFontOfSize:12]];
+        [label setBackgroundColor:[UIColor clearColor]];
         switch (section) {
             case CLOSE:
                 [label setText:@"Really close by"];
@@ -199,9 +247,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                 [label setText:@""];
                 break;
         }
+        frame = CGRectMake(0, 0, self.view.bounds.size.width, HEADER_HEIGHT);
+        UIView * bgView = [[UIView alloc] initWithFrame:frame];
+        [bgView setBackgroundColor:[UIColor colorWithRed:83.0/255.0 green:114.0/255.0 blue:142.0/255.0 alpha:1]];//[UIColor blackColor]];
+        [bgView setAlpha:.75];
         UIView * headerView = [[UIView alloc] initWithFrame:frame];
+        [headerView addSubview:bgView];
         [headerView addSubview:label];
-        [headerView setBackgroundColor:[UIColor blackColor]];
+        [headerView setBackgroundColor:[UIColor clearColor]];
         [headerViews setObject:headerView forKey:[NSNumber numberWithInt:section]];
     }
     return [headerViews objectForKey:[NSNumber numberWithInt:section]];
@@ -309,6 +362,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 -(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    // because each user portrait gets loaded asynchronously, we have to reset the pull to refresh each time. there is no real moment for "finished loading data".
+    [self dataSourceDidFinishLoadingNewData];
 
     NSString * userID = friendUserInfo.pfUserID;
     if ([userID isEqualToString:myUserInfo.pfUserID])
@@ -410,10 +465,17 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [self.portraitViews removeAllObjects];
     [self.portraitLoaded removeAllObjects]; // force reload of all portraits but don't clear portraitViews
     [self reloadAllUserInfo];
+    [self dataSourceDidFinishLoadingNewData];
 }
 
 -(IBAction)didClickSearch:(id)sender {
     NSLog(@"Proximity view clicked search");
+    if (!isFilterShowing) {
+        [self toggleFilterView:YES];
+    }
+    else {
+        [self toggleFilterView:NO];
+    }
 }
 
 -(void)refreshProximity {
@@ -422,6 +484,22 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [appDelegate forcePulse];
 }
 
+-(void)toggleFilterView:(BOOL)show {
+    if (!self.filterViewController) {
+        self.filterViewController = [[FilterViewController alloc] init];
+        [self.view addSubview:self.filterViewController.view];
+    }
+    
+    isFilterShowing = show;
+    if (show) {
+        [self.filterViewController.view setHidden:NO];
+    }
+    else {
+        [self.filterViewController.view setHidden:YES];
+    }
+}
+
+/*
 #pragma mark EGOrefresh
 
 #pragma mark -
@@ -440,7 +518,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     
     //  model should call this when its done loading
     _reloading = NO;
-    [refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:tableView];
+    //[refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:tableView];
+    refreshHeaderView 
 }
 
 #pragma mark -
@@ -480,5 +559,67 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     return [NSDate date]; // should return date data source was last changed
     
 }
+ */
+#pragma mark UIScrollViewDelegate Callbacks for ego refresh
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    //    if (scrollView == self.panelScrollView)
+    //        return;
+    
+    if (scrollView.isDragging) {
+        if (refreshHeaderView.state == EGOOPullRefreshPulling && scrollView.contentOffset.y > -65.0f && scrollView.contentOffset.y < 0.0f && !_reloading) {
+            NSLog(@"ScrollView: EGO refreshHeaderView going to normal");
+            [refreshHeaderView setState:EGOOPullRefreshNormal];
+        } else if (refreshHeaderView.state == EGOOPullRefreshNormal && scrollView.contentOffset.y < -65.0f && !_reloading) {
+            NSLog(@"ScrollView: EGO refreshHeaderView going to pulling");
+            [refreshHeaderView setState:EGOOPullRefreshPulling];
+        }
+    }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    //    if (scrollView == self.panelScrollView)
+    //        return;
+    
+    if (scrollView.contentOffset.y <= - 40.0f && !_reloading) {
+        _reloading = YES;
+        [refreshHeaderView setState:EGOOPullRefreshLoading];
+        
+        [UIView animateWithDuration:.5
+                              delay:0
+                            options: UIViewAnimationCurveLinear
+                         animations:^{
+                             [self.tableView setContentInset:UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0)];
+                         }
+                         completion:^(BOOL finished){
+                             [self reloadTableViewDataSource];
+                         }
+         ];
+    }
+}
+
+#pragma mark -
+#pragma mark refreshHeaderView Methods
+
+- (void)dataSourceDidFinishLoadingNewData{
+    
+    [self.tableView reloadData];
+    if (_reloading) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:.3];
+        [self.tableView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+        [UIView commitAnimations];
+        
+        [refreshHeaderView setState:EGOOPullRefreshNormal];
+    }
+    _reloading = NO;
+}
+
+-(void)reloadTableViewDataSource {
+    NSLog(@"Pull to refresh");
+    _reloading = YES;
+    [self refreshProximity];
+}
+
+
 
 @end

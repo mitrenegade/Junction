@@ -439,12 +439,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [sideTabController didSelectViewController:0];
 #else
     UITabBarController * tabController = [[UITabBarController alloc] init];
-//    UINavigationController * tab0nav = [[UINavigationController alloc] initWithRootViewController:proxController];
-//    UINavigationController * tab1nav = [[UINavigationController alloc] initWithRootViewController:connectionsController];
-//    UINavigationController * tab2nav = [[UINavigationController alloc] initWithRootViewController:notificationsController];
-//    UINavigationController * tab3nav = [[UINavigationController alloc] initWithRootViewController:chatsTableController];
-    //NSArray * viewControllers = [NSArray arrayWithObjects: tab0nav, tab1nav, tab2nav, tab3nav, nil];
-    NSArray * viewControllers = [NSArray arrayWithObjects: proxController, connectionsController, notificationsController, chatsTableController, settingsController, nil];
+    UINavigationController * tab0nav = [[UINavigationController alloc] initWithRootViewController:proxController];
+    UINavigationController * tab1nav = [[UINavigationController alloc] initWithRootViewController:connectionsController];
+    UINavigationController * tab2nav = [[UINavigationController alloc] initWithRootViewController:notificationsController];
+    UINavigationController * tab3nav = [[UINavigationController alloc] initWithRootViewController:chatsTableController];
+    UINavigationController * tab4nav = [[UINavigationController alloc] initWithRootViewController:settingsController];
+    NSArray * viewControllers = [NSArray arrayWithObjects: tab0nav, tab1nav, tab2nav, tab3nav, tab4nav, nil];
+    //NSArray * viewControllers = [NSArray arrayWithObjects: proxController, connectionsController, notificationsController, chatsTableController, settingsController, nil];
     [tabBarController setViewControllers:viewControllers];
     [tabBarController setDelegate:self];
     [tabBarController setSelectedIndex:0];

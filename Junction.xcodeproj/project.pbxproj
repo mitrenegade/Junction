@@ -84,6 +84,16 @@
 		9E85A47116E1AF16001D7C91 /* tabbar-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A46716E1AF16001D7C91 /* tabbar-settings@2x.png */; };
 		9E85A47616E1B044001D7C91 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E85A47416E1B044001D7C91 /* SettingsViewController.m */; };
 		9E85A47716E1B044001D7C91 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A47516E1B044001D7C91 /* SettingsViewController.xib */; };
+		9E85A47916E1B178001D7C91 /* NotificationsViewControllerSide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A47816E1B178001D7C91 /* NotificationsViewControllerSide.xib */; };
+		9E85A47B16E1B180001D7C91 /* ChatBrowserViewControllerSide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A47A16E1B180001D7C91 /* ChatBrowserViewControllerSide.xib */; };
+		9E85A56D16E5D03C001D7C91 /* logo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A56C16E5D03C001D7C91 /* logo2.png */; };
+		9E85A57016E5D17A001D7C91 /* header_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A56F16E5D17A001D7C91 /* header_bg.png */; };
+		9E85A57216E5D79C001D7C91 /* search.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A57116E5D79C001D7C91 /* search.png */; };
+		9E85A58B16E5DB76001D7C91 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E85A58A16E5DB76001D7C91 /* EGORefreshTableHeaderView.m */; };
+		9E85A5A316E5E2AE001D7C91 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A5A216E5E2AE001D7C91 /* blueArrow.png */; };
+		9E85A5A716E5E81E001D7C91 /* FilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E85A5A516E5E81B001D7C91 /* FilterViewController.m */; };
+		9E85A5A816E5E81E001D7C91 /* FilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A5A616E5E81D001D7C91 /* FilterViewController.xib */; };
+		9E85A5AA16E5EBF0001D7C91 /* forward_arrows.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A5A916E5EBF0001D7C91 /* forward_arrows.png */; };
 		9E99536E16804CE3001E034A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99536C16804CE3001E034A /* ProfileViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		9E99536F16804CE3001E034A /* ProfileViewControllerSide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99536D16804CE3001E034A /* ProfileViewControllerSide.xib */; };
 		9E99541216804D36001E034A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E99541116804D36001E034A /* Parse.framework */; };
@@ -274,6 +284,18 @@
 		9E85A47316E1B044001D7C91 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = SOURCE_ROOT; };
 		9E85A47416E1B044001D7C91 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = SOURCE_ROOT; };
 		9E85A47516E1B044001D7C91 /* SettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E85A47816E1B178001D7C91 /* NotificationsViewControllerSide.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationsViewControllerSide.xib; sourceTree = SOURCE_ROOT; };
+		9E85A47A16E1B180001D7C91 /* ChatBrowserViewControllerSide.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatBrowserViewControllerSide.xib; sourceTree = SOURCE_ROOT; };
+		9E85A56C16E5D03C001D7C91 /* logo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo2.png; sourceTree = "<group>"; };
+		9E85A56F16E5D17A001D7C91 /* header_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = header_bg.png; sourceTree = "<group>"; };
+		9E85A57116E5D79C001D7C91 /* search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search.png; sourceTree = "<group>"; };
+		9E85A58916E5DB76001D7C91 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = SOURCE_ROOT; };
+		9E85A58A16E5DB76001D7C91 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = SOURCE_ROOT; };
+		9E85A5A216E5E2AE001D7C91 /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
+		9E85A5A416E5E81A001D7C91 /* FilterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterViewController.h; sourceTree = SOURCE_ROOT; };
+		9E85A5A516E5E81B001D7C91 /* FilterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterViewController.m; sourceTree = SOURCE_ROOT; };
+		9E85A5A616E5E81D001D7C91 /* FilterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E85A5A916E5EBF0001D7C91 /* forward_arrows.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_arrows.png; sourceTree = "<group>"; };
 		9E99536B16804CE3001E034A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileViewController.h; path = Junction/ProfileViewController.h; sourceTree = SOURCE_ROOT; };
 		9E99536C16804CE3001E034A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfileViewController.m; path = Junction/ProfileViewController.m; sourceTree = SOURCE_ROOT; };
 		9E99536D16804CE3001E034A /* ProfileViewControllerSide.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfileViewControllerSide.xib; path = Junction/ProfileViewControllerSide.xib; sourceTree = SOURCE_ROOT; };
@@ -449,6 +471,7 @@
 				9E1EA60D1681C3E0005B7165 /* ChatBrowserViewController.h */,
 				9E1EA60E1681C3E0005B7165 /* ChatBrowserViewController.m */,
 				9E1EA60F1681C3E0005B7165 /* ChatBrowserViewController.xib */,
+				9E85A47A16E1B180001D7C91 /* ChatBrowserViewControllerSide.xib */,
 			);
 			name = Chat;
 			sourceTree = "<group>";
@@ -459,6 +482,7 @@
 				9E1EA6131681C4B7005B7165 /* NotificationsViewController.h */,
 				9E1EA6141681C4B7005B7165 /* NotificationsViewController.m */,
 				9E1EA6151681C4B7005B7165 /* NotificationsViewController.xib */,
+				9E85A47816E1B178001D7C91 /* NotificationsViewControllerSide.xib */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -617,6 +641,11 @@
 		9E99544116804DD2001E034A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9E85A5A216E5E2AE001D7C91 /* blueArrow.png */,
+				9E85A56F16E5D17A001D7C91 /* header_bg.png */,
+				9E85A56C16E5D03C001D7C91 /* logo2.png */,
+				9E85A57116E5D79C001D7C91 /* search.png */,
+				9E85A5A916E5EBF0001D7C91 /* forward_arrows.png */,
 				9E85A44616E1ACB0001D7C91 /* Tab */,
 				9E3767A316CB0398004C680B /* img-wall.png */,
 				9EB78CB016B849D100096DE8 /* btn-primary-press.png */,
@@ -666,6 +695,9 @@
 				9E99542D16804D73001E034A /* ProximityViewControllerSide.xib */,
 				9E5068DB1680EE8C003CA11D /* PortraitScrollViewController.h */,
 				9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */,
+				9E85A5A416E5E81A001D7C91 /* FilterViewController.h */,
+				9E85A5A516E5E81B001D7C91 /* FilterViewController.m */,
+				9E85A5A616E5E81D001D7C91 /* FilterViewController.xib */,
 			);
 			name = Browse;
 			sourceTree = "<group>";
@@ -806,6 +838,8 @@
 		9EECDF9415EB2D8200AD89D8 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				9E85A58916E5DB76001D7C91 /* EGORefreshTableHeaderView.h */,
+				9E85A58A16E5DB76001D7C91 /* EGORefreshTableHeaderView.m */,
 				9EA4FBAB16AB306100A447F2 /* LoadingAnimationView.h */,
 				9EA4FBAC16AB306100A447F2 /* LoadingAnimationView.m */,
 				9E65864E16AA239800FFE877 /* MBProgressHUD.h */,
@@ -939,6 +973,14 @@
 				9E85A47016E1AF16001D7C91 /* tabbar-settings.png in Resources */,
 				9E85A47116E1AF16001D7C91 /* tabbar-settings@2x.png in Resources */,
 				9E85A47716E1B044001D7C91 /* SettingsViewController.xib in Resources */,
+				9E85A47916E1B178001D7C91 /* NotificationsViewControllerSide.xib in Resources */,
+				9E85A47B16E1B180001D7C91 /* ChatBrowserViewControllerSide.xib in Resources */,
+				9E85A56D16E5D03C001D7C91 /* logo2.png in Resources */,
+				9E85A57016E5D17A001D7C91 /* header_bg.png in Resources */,
+				9E85A57216E5D79C001D7C91 /* search.png in Resources */,
+				9E85A5A316E5E2AE001D7C91 /* blueArrow.png in Resources */,
+				9E85A5A816E5E81E001D7C91 /* FilterViewController.xib in Resources */,
+				9E85A5AA16E5EBF0001D7C91 /* forward_arrows.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1028,6 +1070,8 @@
 				9EE927E416C86CFB005B4CCC /* OutlineLabel.m in Sources */,
 				9E37679D16CAF21D004C680B /* OrderedUser.m in Sources */,
 				9E85A47616E1B044001D7C91 /* SettingsViewController.m in Sources */,
+				9E85A58B16E5DB76001D7C91 /* EGORefreshTableHeaderView.m in Sources */,
+				9E85A5A716E5E81E001D7C91 /* FilterViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
