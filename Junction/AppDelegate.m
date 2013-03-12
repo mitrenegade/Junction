@@ -68,10 +68,13 @@
     
 
     PFUser * currentUser = [PFUser currentUser];
-    if (0 && currentUser) {
+#if 1
+    [self didLoginPFUser:currentUser withUserInfo:nil];
+#else
+    if (currentUser) {
         NSLog(@"Current PFUser exists.");
         MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.viewController.view animated:YES];
-        progress.labelText = @"Welcome back..";
+        progress.labelText = @"Welcome back...";
         [progress show:YES];
 
         // after login with a valid user, always get myUserInfo from parse
@@ -111,7 +114,7 @@
             [self.viewController tryCachedLogin];
         }
     }
-    
+#endif
     return YES;
 }
 

@@ -30,7 +30,7 @@ enum DISTANCE_GROUPS {
     MAX_DISTANCE_GROUPS
     };
 
-@interface ProximityViewController : UIViewController <UINavigationControllerDelegate, UITabBarControllerDelegate, UITableViewDelegate, UITableViewDataSource, PortraitScrollDelegate, UIScrollViewDelegate>
+@interface ProximityViewController : UIViewController <UINavigationControllerDelegate, UITabBarControllerDelegate, UITableViewDelegate, UITableViewDataSource, PortraitScrollDelegate, UIScrollViewDelegate, FilterDelegate>
 {
     //PF_EGORefreshTableHeaderView *refreshHeaderView;
     // EGORefresh

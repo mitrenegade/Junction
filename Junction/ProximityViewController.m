@@ -487,6 +487,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(void)toggleFilterView:(BOOL)show {
     if (!self.filterViewController) {
         self.filterViewController = [[FilterViewController alloc] init];
+        [self.filterViewController setDelegate:self];
         [self.view addSubview:self.filterViewController.view];
     }
     
@@ -497,6 +498,16 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     else {
         [self.filterViewController.view setHidden:YES];
     }
+}
+
+#pragma mark FilterDelegate
+
+-(void)closeFilter {
+    [self toggleFilterView:NO];
+}
+
+-(void)doFilter {
+    NSLog(@"Filters: industry %@ company %@ friends %d", self.filterViewController.industryFilter, self.filterViewController.companyFilter, self.filterViewController.friendsFilter);
 }
 
 /*

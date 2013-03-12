@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IndustryFilterTableViewController.h"
 
 enum FILTER_INPUT_FIELDS {
     INPUT_FILTER_INDUSTRY = 0,
@@ -14,7 +15,16 @@ enum FILTER_INPUT_FIELDS {
     INPUT_FILTER_FRIENDS
 };
 
-@interface FilterViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@protocol FilterDelegate <NSObject>
+
+-(void)doFilter;
+-(void)closeFilter;
+
+@end
+
+@interface FilterViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, IndustryFilterDelegate, UITextFieldDelegate>
+
+@property (nonatomic, weak) id delegate;
 
 @property (nonatomic, weak) IBOutlet UITableView * tableView;
 @property (nonatomic, weak) IBOutlet UIButton * buttonFilter;
@@ -22,5 +32,13 @@ enum FILTER_INPUT_FIELDS {
 
 @property (nonatomic, strong) NSMutableArray * viewsForCell;
 
+@property (nonatomic, strong) NSString * industryFilter;
+@property (nonatomic, strong) UITextField * industryField;
+//@property (nonatomic, assign) int industryFilterIndex;
+@property (nonatomic, strong) NSString * companyFilter;
+@property (nonatomic, strong) UITextField * companyField;
+@property (nonatomic, assign) BOOL friendsFilter;
+
 -(IBAction)didClickFilter:(id)sender;
+-(IBAction)didClickClear:(id)sender;
 @end

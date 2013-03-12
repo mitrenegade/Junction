@@ -7,6 +7,7 @@
 //
 
 #import "FilterViewController.h"
+#import "AppDelegate.h"
 
 @interface FilterViewController ()
 
@@ -16,6 +17,9 @@
 
 @synthesize labelTitle, buttonFilter, tableView;
 @synthesize viewsForCell;
+@synthesize companyFilter, industryFilter, friendsFilter;
+@synthesize companyField, industryField;
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -44,6 +48,19 @@
 
 -(IBAction)didClickFilter:(id)sender {
     NSLog(@"Did click filter");
+    
+    [self.delegate doFilter];
+    [self.delegate closeFilter];
+}
+
+-(IBAction)didClickClear:(id)sender {
+    self.industryFilter = nil;
+    self.companyFilter = nil;
+    self.friendsFilter = NO;
+    [self.viewsForCell removeAllObjects];
+    [self.tableView reloadData];
+    
+    [self.delegate doFilter];
 }
 
 #pragma mark - Table view data source
@@ -87,6 +104,18 @@
             UIImageView * forward = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"forward_arrows"]];
             [forward setFrame:CGRectMake(250, 0, 40, 40)];
             [view addSubview:forward];
+            UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(125, 0, 200, 40)];
+            [inputField setTextAlignment:NSTextAlignmentLeft];
+            [inputField setFont:[UIFont boldSystemFontOfSize:15]];
+            inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+            [inputField setKeyboardType:UIKeyboardTypeAlphabet];
+            [inputField setUserInteractionEnabled:NO];
+            if ([self.industryFilter length])
+                inputField.text = self.industryFilter;
+            [view addSubview:inputField];
+            
+            self.industryField = inputField;
+            
             [label setText:@"INDUSTRY"];
             index = INPUT_FILTER_INDUSTRY;
         }
@@ -97,8 +126,14 @@
             inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
             [inputField setKeyboardType:UIKeyboardTypeAlphabet];
             [inputField setPlaceholder:@"Type company name"];
-            [label setText:@"COMPANY"];
+            [inputField setDelegate:self];
+            if ([self.companyFilter length])
+                inputField.text = self.companyFilter;
             [view addSubview:inputField];
+            
+            self.companyField = inputField;
+            
+            [label setText:@"COMPANY"];
             index = INPUT_FILTER_COMPANY;
         }
         [view addSubview:label];
@@ -119,6 +154,10 @@
         
         UISwitch * toggle = [[UISwitch alloc] init];
         [toggle setFrame:CGRectMake(200, 10, 120, 30)];
+        [toggle addTarget:self action:@selector(didToggleFriendsFilter:) forControlEvents:UIControlEventValueChanged];
+        
+        if (self.friendsFilter)
+            [toggle setOn:YES];
         
         index = INPUT_FILTER_FRIENDS;
         UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 40)];
@@ -148,6 +187,40 @@
     //        [subview removeFromSuperview];
     [cell addSubview:[self viewForItemAtIndexPath:indexPath]];
     return cell;
+}
+
+-(void)didToggleFriendsFilter:(id)sender {
+    self.friendsFilter = !self.friendsFilter;
+//    [[NSNotificationCenter defaultCenter] postNotificationName:kFilterChanged object:self userInfo:nil];
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int section = indexPath.section;
+    int row = indexPath.row;
+    if (section == 0) {
+        if (row == 0) {
+            // INDUSTRY filter
+            IndustryFilterTableViewController * industryFilterTable = [[IndustryFilterTableViewController alloc] init];
+            [industryFilterTable setDelegate:self];
+            [self presentModalViewController:industryFilterTable animated:YES];
+        }
+    }
+}
+
+-(void)didSelectIndustryFilter:(NSString *)industry {
+    [self dismissModalViewControllerAnimated:YES];
+    NSLog(@"Filter selected: %@", industry);
+    self.industryFilter = industry;
+    [self.industryField setText:self.industryFilter];
+}
+
+#pragma mark UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    // text field must also have delegate set as file's owner
+	[textField resignFirstResponder];
+    self.companyFilter = self.companyField.text;
+	return YES;
 }
 
 @end

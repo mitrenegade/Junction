@@ -30,6 +30,7 @@ static NSString* const kParseConnectionsSentUpdated = @"kParseConnectionsSentUpd
 static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsReceivedUpdated";
 static NSString* const kNotificationsChanged = @"kNotificationsChanged";
 static NSString* const kNeedChatBrowserUpdate = @"kNeedChatBrowserUpdate";
+static NSString* const kFilterChanged = @"kFilterChanged";
 
 // junction notifications
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";

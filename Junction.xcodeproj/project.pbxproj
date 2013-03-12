@@ -138,6 +138,8 @@
 		9EAEBC3216EEDB470019AB73 /* Tutorial2.gif in Resources */ = {isa = PBXBuildFile; fileRef = 9EAEBC2E16EEDB460019AB73 /* Tutorial2.gif */; };
 		9EAEBC3316EEDB470019AB73 /* Tutorial3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9EAEBC2F16EEDB470019AB73 /* Tutorial3.jpg */; };
 		9EAEBC3416EEDB470019AB73 /* Tutorial4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9EAEBC3016EEDB470019AB73 /* Tutorial4.jpg */; };
+		9EAEBC3816EEE4740019AB73 /* IndustryFilterTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EAEBC3616EEE4740019AB73 /* IndustryFilterTableViewController.m */; };
+		9EAEBC3916EEE4740019AB73 /* IndustryFilterTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EAEBC3716EEE4740019AB73 /* IndustryFilterTableViewController.xib */; };
 		9EB78CAE16B8450400096DE8 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CAD16B8450400096DE8 /* ProfileViewController.xib */; };
 		9EB78CB616B849D100096DE8 /* btn-primary-press.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB016B849D100096DE8 /* btn-primary-press.png */; };
 		9EB78CB716B849D100096DE8 /* btn-primary-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CB116B849D100096DE8 /* btn-primary-up.png */; };
@@ -373,6 +375,9 @@
 		9EAEBC2E16EEDB460019AB73 /* Tutorial2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Tutorial2.gif; sourceTree = "<group>"; };
 		9EAEBC2F16EEDB470019AB73 /* Tutorial3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Tutorial3.jpg; sourceTree = "<group>"; };
 		9EAEBC3016EEDB470019AB73 /* Tutorial4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Tutorial4.jpg; sourceTree = "<group>"; };
+		9EAEBC3516EEE4740019AB73 /* IndustryFilterTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndustryFilterTableViewController.h; sourceTree = SOURCE_ROOT; };
+		9EAEBC3616EEE4740019AB73 /* IndustryFilterTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndustryFilterTableViewController.m; sourceTree = SOURCE_ROOT; };
+		9EAEBC3716EEE4740019AB73 /* IndustryFilterTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IndustryFilterTableViewController.xib; sourceTree = SOURCE_ROOT; };
 		9EB78CAD16B8450400096DE8 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ProfileViewController.xib; path = Junction/ProfileViewController.xib; sourceTree = SOURCE_ROOT; };
 		9EB78CB016B849D100096DE8 /* btn-primary-press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-primary-press.png"; sourceTree = "<group>"; };
 		9EB78CB116B849D100096DE8 /* btn-primary-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-primary-up.png"; sourceTree = "<group>"; };
@@ -737,6 +742,9 @@
 				9E85A5A416E5E81A001D7C91 /* FilterViewController.h */,
 				9E85A5A516E5E81B001D7C91 /* FilterViewController.m */,
 				9E85A5A616E5E81D001D7C91 /* FilterViewController.xib */,
+				9EAEBC3516EEE4740019AB73 /* IndustryFilterTableViewController.h */,
+				9EAEBC3616EEE4740019AB73 /* IndustryFilterTableViewController.m */,
+				9EAEBC3716EEE4740019AB73 /* IndustryFilterTableViewController.xib */,
 			);
 			name = Browse;
 			sourceTree = "<group>";
@@ -1033,6 +1041,7 @@
 				9EAEBC3216EEDB470019AB73 /* Tutorial2.gif in Resources */,
 				9EAEBC3316EEDB470019AB73 /* Tutorial3.jpg in Resources */,
 				9EAEBC3416EEDB470019AB73 /* Tutorial4.jpg in Resources */,
+				9EAEBC3916EEE4740019AB73 /* IndustryFilterTableViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1124,6 +1133,7 @@
 				9E85A47616E1B044001D7C91 /* SettingsViewController.m in Sources */,
 				9E85A58B16E5DB76001D7C91 /* EGORefreshTableHeaderView.m in Sources */,
 				9E85A5A716E5E81E001D7C91 /* FilterViewController.m in Sources */,
+				9EAEBC3816EEE4740019AB73 /* IndustryFilterTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
