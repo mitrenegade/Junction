@@ -34,7 +34,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 //@synthesize names, titles, photos, distances;
 @synthesize myUserInfo;
 @synthesize userInfos;
-@synthesize distanceGroupsIDSets, distanceGroupsOrdered;
+@synthesize distanceGroupsIDSets, distanceGroupsOrdered, distanceGroupsOrderedFiltered;
 @synthesize portraitViews, portraitLoaded;
 @synthesize headerViews;
 @synthesize showConnectionsOnly;
@@ -106,12 +106,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     userInfos = [[NSMutableDictionary alloc] init];
     distanceGroupsIDSets = [[NSMutableArray alloc] init];
     distanceGroupsOrdered = [[NSMutableArray alloc] init];
+    distanceGroupsOrderedFiltered = [[NSMutableArray alloc] init];
     portraitViews = [[NSMutableDictionary alloc] init];
     portraitLoaded = [[NSMutableDictionary alloc] init];
     headerViews = [[NSMutableDictionary alloc] init];
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
         [distanceGroupsIDSets addObject:[[NSMutableArray alloc] init]];
         [distanceGroupsOrdered addObject:[[NSMutableArray alloc] init]];
+        [distanceGroupsOrderedFiltered addObject:[[NSMutableArray alloc] init]];
     }
     
     if (refreshHeaderView == nil) {
@@ -290,6 +292,9 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(UIView*)viewForItemInSection:(int)section Row:(int)row Column:(int)column {
     NSMutableArray * groupIDs = [distanceGroupsIDSets objectAtIndex:section];
     NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:section];
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.friendsFilter)
+        groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
+    
     int index = row * NUM_COLUMNS + column;
     if (index >= [groupIDs count])
         return nil;
@@ -508,6 +513,31 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 -(void)doFilter {
     NSLog(@"Filters: industry %@ company %@ friends %d", self.filterViewController.industryFilter, self.filterViewController.companyFilter, self.filterViewController.friendsFilter);
+    
+    NSString * company = [self.filterViewController.companyFilter lowercaseString];
+    NSString * industry = [self.filterViewController.industryFilter lowercaseString];
+
+    for (int i=0; i<[distanceGroupsOrdered count]; i++) {
+        NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:i];
+        NSMutableArray * groupOrderedFiltered = [distanceGroupsOrderedFiltered objectAtIndex:i];
+        [groupOrderedFiltered removeAllObjects];
+        for (OrderedUser * orderedUser in groupOrdered) {
+            // filter for company
+            if ([orderedUser.userInfo.company.lowercaseString rangeOfString:company].location == NSNotFound)
+                continue;
+            
+            // filter for industry
+            if ([orderedUser.userInfo.industry.lowercaseString rangeOfString:industry].location == NSNotFound)
+                continue;
+            
+            // filter for friends in common...skip for now
+            
+            [groupOrderedFiltered addObject:orderedUser];
+        }
+        NSLog(@"Distance group %d total users %d filtered users %d", i, [groupOrdered count], [groupOrderedFiltered count]);
+    }
+    
+    [self.tableView reloadData];
 }
 
 /*
