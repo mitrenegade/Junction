@@ -68,7 +68,7 @@
     
 
     PFUser * currentUser = [PFUser currentUser];
-#if 1
+#if 0
     [self didLoginPFUser:currentUser withUserInfo:nil];
 #else
     if (currentUser) {
@@ -211,7 +211,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                 NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
 #if !TESTING
                 if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                    continue;
+//                    continue;
                 }
 #endif
                 [allJunctionUserInfosDict setObject:friendUserInfo forKey:friendUserInfo.pfUserID];
@@ -534,7 +534,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         NSLog(@"Comparing junction user %@ with %d LinkedIn friends", friendUserInfo.username, [linkedInFriends count]);
 #if !TESTING
         if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID])
-            continue;
+        {
+            UserPulse * myPulse = [allPulses objectForKey:myUserInfo.pfUserID];
+            if (myPulse) {
+                [proxController reloadUserPortrait:myUserInfo withPulse:myPulse];
+                continue;
+            }
+        }
 #endif
         [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
             if (error || [results count] == 0) {
@@ -561,6 +567,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(BOOL)isConnectedWithUser:(UserInfo*)user {
+    if ([user.pfUserID isEqualToString:myUserInfo.pfUserID])
+        return YES;
     for (UserInfo * userInfo in connected) {
         if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
             NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
@@ -571,6 +579,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat {
+#if USE_SIDEBAR
     RightTabController * rightTabController = [[RightTabController alloc] init];
     [rightTabController setUserInfo:friendUserInfo];
     [self.nav pushViewController:rightTabController animated:YES];
@@ -580,6 +589,18 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         [rightTabController didSelectViewController:1];
     else
         [rightTabController didSelectViewController:0];
+#else
+    if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+        ProfileViewController * controller = [[ProfileViewController alloc] init];
+        [controller setMyUserInfo:myUserInfo];
+        [self.window.rootViewController presentModalViewController:controller animated:YES];
+    }
+    else {
+        UserProfileViewController * controller = [[UserProfileViewController alloc] init];
+        [controller setUserInfo:friendUserInfo];
+        [self.window.rootViewController presentModalViewController:controller animated:YES];
+    }
+#endif
 }
 
 -(void)getMyConnections {

@@ -14,7 +14,7 @@
 
 #import "CreateProfilePhotoViewController.h"
 #import "CreateProfileInfoViewController.h"
-#import "ProfileViewController.h"
+#import "CreateProfilePreviewController.h"
 
 @protocol ViewControllerDelegate <NSObject>
 

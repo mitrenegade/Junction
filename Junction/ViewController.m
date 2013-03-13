@@ -13,7 +13,6 @@
 #import "UIImage+Resize.h"
 #import <QuartzCore/QuartzCore.h>
 #import "CreateProfileInfoViewController.h"
-#import "ProfileViewController.h"
 
 @implementation ViewController
 
@@ -94,7 +93,7 @@
     }
     
     UIButton * button = (UIButton*)sender;
-    if (button == buttonLogIn) {
+    if (1) { //button == buttonLogIn) {
         doSignup = NO;
         if ([self loadCachedOauth]) {
             [self tryCachedLogin];
@@ -107,12 +106,14 @@
         }
     }
     else if (button == buttonSignUp) {
+        /*
         doSignup = YES;
         self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         self.progress.labelText = @"Loading your LinkedIn information";
         OAuthLoginView * lhView = [lhHelper loginView];
         [lhView setDelegate:self];
         [self presentModalViewController:lhView animated:YES];
+         */
     }
 }
 
@@ -364,7 +365,8 @@
     [self.buttonLogIn setHidden:NO];
     [self.buttonSignUp setHidden:NO];
      */
-    [self.buttonView setHidden:NO];
+//    [self.buttonView setHidden:NO];
+    [self.buttonLogIn setEnabled:YES];
 }
 -(void)hideLoginButton {
     /*
@@ -372,7 +374,8 @@
     [self.buttonLogIn setHidden:YES];
     [self.buttonSignUp setHidden:YES];
      */
-    [self.buttonView setHidden:YES];
+//    [self.buttonView setHidden:YES];
+    [self.buttonLogIn setEnabled:NO];
 }
 -(void)requestOriginalLinkedInPhoto {
     // load photo in background
@@ -443,10 +446,8 @@
 
 #pragma mark CreateProfilePhotoDelegate
 -(void)didSaveProfilePhoto {
-    // display profile as a preview
-    ProfileViewController * controller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
-    [controller setMyUserInfo:myUserInfo];
-    [controller setIsPreview:YES];
+    CreateProfilePreviewController * controller = [[CreateProfilePreviewController alloc] init];
+    [controller setUserInfo:myUserInfo];
     [controller setDelegate:self];
     [self.nav pushViewController:controller animated:YES];
 }

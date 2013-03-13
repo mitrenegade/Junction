@@ -34,10 +34,10 @@ enum FILTER_INPUT_FIELDS {
 
 @property (nonatomic, strong) NSString * industryFilter;
 @property (nonatomic, strong) UITextField * industryField;
-//@property (nonatomic, assign) int industryFilterIndex;
 @property (nonatomic, strong) NSString * companyFilter;
 @property (nonatomic, strong) UITextField * companyField;
 @property (nonatomic, assign) BOOL friendsFilter;
+@property (nonatomic, strong) UISwitch * friendsSwitch;
 
 -(IBAction)didClickFilter:(id)sender;
 -(IBAction)didClickClear:(id)sender;

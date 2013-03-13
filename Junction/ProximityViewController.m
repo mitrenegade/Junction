@@ -265,6 +265,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     float ct = ((float)[[distanceGroupsIDSets objectAtIndex:section] count]);
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.friendsFilter) {
+        NSMutableArray * groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
+        ct = [groupOrdered count];
+    }
     float rows = ceil( ct / NUM_COLUMNS);
     //NSLog(@"Distance group: %d count: %d rows: %f", [distanceGroups count], [[distanceGroups objectAtIndex:section] count], rows);
     return rows;
@@ -296,7 +300,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
     
     int index = row * NUM_COLUMNS + column;
-    if (index >= [groupIDs count])
+    if (index >= [groupIDs count] || index >= [groupOrdered count])
         return nil;
     OrderedUser * ordered = [groupOrdered objectAtIndex:index];
     NSString * userID = ordered.userInfo.pfUserID;
@@ -371,10 +375,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [self dataSourceDidFinishLoadingNewData];
 
     NSString * userID = friendUserInfo.pfUserID;
-    if ([userID isEqualToString:myUserInfo.pfUserID])
-        return;
     
     if (showConnectionsOnly) {
+        if ([userID isEqualToString:myUserInfo.pfUserID])
+            return;
         if ([appDelegate isConnectedWithUser:friendUserInfo])
             NSLog(@"is connected!");
         else {
@@ -396,7 +400,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
         NSMutableArray * groupIDs = [distanceGroupsIDSets objectAtIndex:i];
         if ([groupIDs containsObject:userID]) {
-            [self removeUser:(NSString*)friendUserInfo fromGroup:i];
+            [self removeUser:friendUserInfo fromGroup:i];
         }
     }
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
@@ -415,6 +419,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:groupIndex];
     [groupIDs addObject:userID];
     OrderedUser * orderedUser = [[OrderedUser alloc] initWithUserInfo:friendUserInfo];
+    if ([userID isEqualToString:myUserInfo.pfUserID])
+        distance = 0;
     [orderedUser setWeight:distance];
     for (int i=0; i<[groupOrdered count]; i++) {
         OrderedUser * oldUser = [groupOrdered objectAtIndex:i];
@@ -523,12 +529,24 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         [groupOrderedFiltered removeAllObjects];
         for (OrderedUser * orderedUser in groupOrdered) {
             // filter for company
-            if ([orderedUser.userInfo.company.lowercaseString rangeOfString:company].location == NSNotFound)
-                continue;
-            
+            if (company) {
+                NSLog(@"User %@ company %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.company.lowercaseString, company);
+                if (!orderedUser.userInfo.company)
+                    continue;
+                if ([orderedUser.userInfo.company.lowercaseString rangeOfString:company].location == NSNotFound)
+                    continue;
+                NSLog(@"Passed");
+            }
+
             // filter for industry
-            if ([orderedUser.userInfo.industry.lowercaseString rangeOfString:industry].location == NSNotFound)
-                continue;
+            if (industry) {
+                NSLog(@"User %@ industry %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.industry.lowercaseString, industry);
+                if (!orderedUser.userInfo.industry)
+                    continue;
+                if ([orderedUser.userInfo.industry.lowercaseString rangeOfString:industry].location == NSNotFound)
+                    continue;
+                NSLog(@"Passed");
+            }
             
             // filter for friends in common...skip for now
             

@@ -8,6 +8,7 @@
 
 #import "CreateProfileInfoViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Constants.h"
 
 @interface CreateProfileInfoViewController ()
 
@@ -21,9 +22,11 @@
 @synthesize delegate;
 @synthesize stepButton;
 @synthesize scrollView;
-@synthesize viewsForCell;
+@synthesize viewsForCell, viewsForHeader;
 
 @synthesize privateLabel, privateSlider;
+@synthesize lookingForCount, talkAboutCount;
+@synthesize lookingForLastText, talkAboutLastText;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,10 +49,15 @@
 
     self.inputFields = [[NSMutableArray alloc] init];
     self.viewsForCell = [[NSMutableArray alloc] init];
+    self.viewsForHeader = [[NSMutableArray alloc] init];
     for (int i=0; i<15; i++) {
         [self.inputFields addObject:[NSNull null]];
         [self.viewsForCell addObject:[NSNull null]];
+        [self.viewsForHeader addObject:[NSNull null]];
     }
+    
+    // get rid of bar
+    self.navigationController.navigationBarHidden = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -86,9 +94,13 @@
 }
 
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 2)
-        return 220;
+    if (indexPath.section > 0 )
+        return 100;
     return 40;
+}
+
+-(float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return HEADER_HEIGHT;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -96,21 +108,95 @@
     if (section == 0)
         return 2;
     if (section == 1)
-        return 3;
+        return 1;
     if (section == 2)
         return 1;
     return 0;
 }
 
+/*
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 0) {
-        return @"Personal Information";
+        return @"PERSONAL INFORMATION (No one can see this)";
     }
     else if (section == 1) {
         return @"Professional Information";
     }
     else if (section == 2) {
         return @"What are you looking for?";
+    }
+    return nil;
+}
+ */
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    int index;
+    if (section == 0) {
+        if ([self.viewsForHeader objectAtIndex:section] != [NSNull null]) {
+            return [self.viewsForHeader objectAtIndex:section];
+        }
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, HEADER_HEIGHT)];
+        [label setFont:[UIFont boldSystemFontOfSize:11]];
+        [label setTextColor:COLOR_LIGHTBLUE];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextAlignment:NSTextAlignmentLeft];
+        [label setText:@"PERSONAL INFORMATION"];
+        UILabel * label2 = [[UILabel alloc] initWithFrame:CGRectMake(150, 0, 150, HEADER_HEIGHT)];
+        [label2 setFont:[UIFont systemFontOfSize:11]];
+        [label2 setTextColor:COLOR_LIGHTBLUE];
+        [label2 setBackgroundColor:[UIColor clearColor]];
+        [label2 setTextAlignment:NSTextAlignmentLeft];
+        [label2 setText:@"(No one can see this)"];
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, HEADER_HEIGHT)];
+        [view addSubview:label];
+        [view addSubview:label2];
+        [self.viewsForHeader replaceObjectAtIndex:section withObject:view];
+        return [self.viewsForHeader objectAtIndex:section];    }
+    else if (section == 1) {
+        if ([self.viewsForHeader objectAtIndex:section] != [NSNull null]) {
+            return [self.viewsForHeader objectAtIndex:section];
+        }
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, HEADER_HEIGHT)];
+        [label setFont:[UIFont boldSystemFontOfSize:11]];
+        [label setTextColor:COLOR_LIGHTBLUE];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextAlignment:NSTextAlignmentLeft];
+        [label setText:@"WHAT ARE YOU LOOKING FOR?"];
+        UILabel * label2 = [[UILabel alloc] initWithFrame:CGRectMake(200, 0, 100, HEADER_HEIGHT)];
+        [label2 setFont:[UIFont systemFontOfSize:11]];
+        [label2 setTextColor:COLOR_LIGHTBLUE];
+        [label2 setBackgroundColor:[UIColor clearColor]];
+        [label2 setTextAlignment:NSTextAlignmentRight];
+        [label2 setText:@"140"];
+        self.lookingForCount = label2;
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, HEADER_HEIGHT)];
+        [view addSubview:label];
+        [view addSubview:label2];
+        [self.viewsForHeader replaceObjectAtIndex:section withObject:view];
+        return [self.viewsForHeader objectAtIndex:section];
+    }
+    else if (section == 2) {
+        if ([self.viewsForHeader objectAtIndex:section] != [NSNull null]) {
+            return [self.viewsForHeader objectAtIndex:section];
+        }
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 300, HEADER_HEIGHT)];
+        [label setFont:[UIFont boldSystemFontOfSize:11]];
+        [label setTextColor:COLOR_LIGHTBLUE];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextAlignment:NSTextAlignmentLeft];
+        [label setText:@"WHAT SHOULD OTHERS TALK TO YOU ABOUT?"];
+        UILabel * label2 = [[UILabel alloc] initWithFrame:CGRectMake(200, 0, 100, HEADER_HEIGHT)];
+        [label2 setFont:[UIFont systemFontOfSize:11]];
+        [label2 setTextColor:COLOR_LIGHTBLUE];
+        [label2 setBackgroundColor:[UIColor clearColor]];
+        [label2 setTextAlignment:NSTextAlignmentRight];
+        [label2 setText:@"140"];
+        self.talkAboutCount = label2;
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, HEADER_HEIGHT)];
+        [view addSubview:label];
+        [view addSubview:label2];
+        [self.viewsForHeader replaceObjectAtIndex:section withObject:view];
+        return [self.viewsForHeader objectAtIndex:section];
     }
     return nil;
 }
@@ -128,20 +214,14 @@
         if (row == 1 && [self.viewsForCell objectAtIndex:INPUT_EMAIL] != [NSNull null]) {
                 return [self.viewsForCell objectAtIndex:INPUT_EMAIL];
         }
-        
-        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, ROW_HEIGHT)];
-        [label setFont:[UIFont boldSystemFontOfSize:15]];
-        [label setTextColor:[UIColor colorWithRed:105.0/255 green:200.0/255 blue:255.0/255 alpha:1]];
-        [label setBackgroundColor:[UIColor clearColor]];
-        [label setTextAlignment:NSTextAlignmentRight];
-        UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 200, ROW_HEIGHT)];
+        UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, 250, ROW_HEIGHT)];
         [inputField setTextAlignment:NSTextAlignmentLeft];
         [inputField setFont:[UIFont boldSystemFontOfSize:15]];
         inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         [inputField setDelegate:self];
         if (row == 0) {
             index = INPUT_NAME;
-            [label setText:@"NAME"];
+            //[label setText:@"NAME"];
             [inputField setPlaceholder:@"Your preferred name"];
             if (self.userInfo.username)
                 [inputField setText:self.userInfo.username];
@@ -149,7 +229,7 @@
         }
         else if (row == 1) {
             index = INPUT_EMAIL;
-            [label setText:@"EMAIL"];
+            //[label setText:@"EMAIL"];
             [inputField setPlaceholder:@"example@example.com"];
             if (self.userInfo.email)
                 [inputField setText:self.userInfo.email];
@@ -157,90 +237,23 @@
         }
 
         UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, ROW_HEIGHT)];
-        [view addSubview:label];
+        //[view addSubview:label];
         [view addSubview:inputField];
         [self.viewsForCell replaceObjectAtIndex:index withObject:view];
         [inputFields replaceObjectAtIndex:index withObject:inputField];
         return [self.viewsForCell objectAtIndex:index];
     }
     else if (section == 1) {
-        if (row == 0 && [self.viewsForCell objectAtIndex:INPUT_ROLE] != [NSNull null]) {
-            return [self.viewsForCell objectAtIndex:INPUT_ROLE];
-        }
-        if (row == 1 && [self.viewsForCell objectAtIndex:INPUT_COMPANY] != [NSNull null]) {
-            return [self.viewsForCell objectAtIndex:INPUT_COMPANY];
-        }
-        if (row == 2 && [self.viewsForCell objectAtIndex:INPUT_INDUSTRY] != [NSNull null]) {
-            return [self.viewsForCell objectAtIndex:INPUT_INDUSTRY];
-        }
-        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, ROW_HEIGHT)];
-        [label setFont:[UIFont boldSystemFontOfSize:15]];
-        [label setTextColor:[UIColor colorWithRed:105.0/255 green:200.0/255 blue:255.0/255 alpha:1]];
-        [label setBackgroundColor:[UIColor clearColor]];
-        [label setTextAlignment:NSTextAlignmentRight];
-        UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 200, ROW_HEIGHT)];
-        [inputField setTextAlignment:NSTextAlignmentLeft];
-        [inputField setFont:[UIFont boldSystemFontOfSize:15]];
-        inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        [inputField setDelegate:self];
-
-        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, ROW_HEIGHT)];
-        if (row == 0) {
-            index = INPUT_ROLE;
-            [label setText:@"ROLE"];
-            [inputField setPlaceholder:@""];
-            if (self.userInfo.position)
-                [inputField setText:self.userInfo.position];
-            else if (self.userInfo.headline)
-                [inputField setText:self.userInfo.headline];
-            [inputField setKeyboardType:UIKeyboardTypeAlphabet];
-        }
-        else if (row == 1) {
-            index = INPUT_COMPANY;
-            [label setText:@"COMPANY"];
-            [inputField setPlaceholder:@""];
-            if (self.userInfo.company)
-                [inputField setText:self.userInfo.company];
-            [inputField setKeyboardType:UIKeyboardTypeAlphabet];
-            inputField.frame = CGRectMake(85, 0, 150, ROW_HEIGHT);
-            self.privateSlider = [[UISlider alloc] initWithFrame:CGRectMake(235, 5, 50, ROW_HEIGHT/2.5)];
-            [privateSlider setMinimumValue:0];
-            [privateSlider setMaximumValue:1];
-            [self.privateSlider addTarget:self action:@selector(sliderDidChange:) forControlEvents:UIControlEventValueChanged];
-            [self.privateSlider addTarget:self action:@selector(sliderDidClick:) forControlEvents:UIControlEventTouchUpInside];
-            self.privateLabel = [[UILabel alloc] initWithFrame:CGRectMake(235, ROW_HEIGHT/2+5, 50, ROW_HEIGHT/2-5)];
-            [self.privateLabel setBackgroundColor:[UIColor clearColor]];
-            [self.privateLabel setFont:[UIFont boldSystemFontOfSize:10]];
-            [self.privateLabel setTextAlignment:NSTextAlignmentCenter];
-            [self.privateLabel setText:@"Private"];
-            [view addSubview:self.privateLabel];
-            [view addSubview:self.privateSlider];
-        }
-        else if (row == 2) {
-            index = INPUT_INDUSTRY;
-            [label setText:@"INDUSTRY"];
-            [inputField setPlaceholder:@"optional"];
-            if (self.userInfo.industry)
-                [inputField setText:self.userInfo.industry];
-            [inputField setKeyboardType:UIKeyboardTypeAlphabet];
-        }
-        
-        [view addSubview:label];
-        [view addSubview:inputField];
-        [self.viewsForCell replaceObjectAtIndex:index withObject:view];
-        [inputFields replaceObjectAtIndex:index withObject:inputField];
-        return [self.viewsForCell objectAtIndex:index];
-    }
-    else if (section == 2) {
-        if ([self.viewsForCell objectAtIndex:INPUT_LOOKINGFOR] != [NSNull null])
+        if (row == 0 && [self.viewsForCell objectAtIndex:INPUT_LOOKINGFOR] != [NSNull null]) {
             return [self.viewsForCell objectAtIndex:INPUT_LOOKINGFOR];
+        }
         int index = INPUT_LOOKINGFOR;
-        UITextView * textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 300, 200)];
+        UITextView * textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 300, 100)];
         [textView.layer setCornerRadius:5];
         [textView setFont:[UIFont boldSystemFontOfSize:15]];
         [textView setDelegate:self];
         textView.backgroundColor = [UIColor clearColor];
-        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, ROW_HEIGHT)];
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 100)];
         [view addSubview:textView];
         
         UIToolbar* keyboardDoneButtonView1 = [[UIToolbar alloc] init];
@@ -251,6 +264,33 @@
         UIBarButtonItem* doneButton1 = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Done")
                                                                         style:UIBarButtonItemStyleBordered target:self
                                                                        action:@selector(doneEditingLookingFor)];
+        [keyboardDoneButtonView1 setItems:[NSArray arrayWithObjects:doneButton1, nil]];
+        textView.inputAccessoryView = keyboardDoneButtonView1;
+        
+        [self.viewsForCell replaceObjectAtIndex:index withObject:view];
+        [inputFields replaceObjectAtIndex:index withObject:textView];
+        return [self.viewsForCell objectAtIndex:index];
+    }
+    else if (section == 2) {
+        if ([self.viewsForCell objectAtIndex:INPUT_TALKABOUT] != [NSNull null])
+            return [self.viewsForCell objectAtIndex:INPUT_TALKABOUT];
+        int index = INPUT_TALKABOUT;
+        UITextView * textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 300, 100)];
+        [textView.layer setCornerRadius:5];
+        [textView setFont:[UIFont boldSystemFontOfSize:15]];
+        [textView setDelegate:self];
+        textView.backgroundColor = [UIColor clearColor];
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 100)];
+        [view addSubview:textView];
+        
+        UIToolbar* keyboardDoneButtonView1 = [[UIToolbar alloc] init];
+        keyboardDoneButtonView1.barStyle = UIBarStyleBlack;
+        keyboardDoneButtonView1.translucent = YES;
+        keyboardDoneButtonView1.tintColor = nil;
+        [keyboardDoneButtonView1 sizeToFit];
+        UIBarButtonItem* doneButton1 = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Done")
+                                                                        style:UIBarButtonItemStyleBordered target:self
+                                                                       action:@selector(doneEditingTalkAbout)];
         [keyboardDoneButtonView1 setItems:[NSArray arrayWithObjects:doneButton1, nil]];
         textView.inputAccessoryView = keyboardDoneButtonView1;
         
@@ -290,7 +330,7 @@
         if ([inputFields objectAtIndex:index] == textField)
             break;
     }
-    CGRect frame = CGRectMake(0, index * ROW_HEIGHT, self.view.frame.size.width, self.view.frame.size.height);
+    CGRect frame = CGRectMake(0, index * ROW_HEIGHT-40, self.view.frame.size.width, self.view.frame.size.height);
     [self.scrollView scrollRectToVisible:frame animated:YES];
     return YES;
 }
@@ -301,12 +341,6 @@
     if (textField == [inputFields objectAtIndex:INPUT_NAME])
         [[inputFields objectAtIndex:INPUT_EMAIL] becomeFirstResponder];
     else if (textField == [inputFields objectAtIndex:INPUT_EMAIL])
-        [[inputFields objectAtIndex:INPUT_ROLE] becomeFirstResponder];
-    else if (textField == [inputFields objectAtIndex:INPUT_ROLE])
-        [[inputFields objectAtIndex:INPUT_COMPANY] becomeFirstResponder];
-    else if (textField == [inputFields objectAtIndex:INPUT_COMPANY])
-        [[inputFields objectAtIndex:INPUT_INDUSTRY] becomeFirstResponder];
-    else if (textField == [inputFields objectAtIndex:INPUT_INDUSTRY])
         [[inputFields objectAtIndex:INPUT_LOOKINGFOR] becomeFirstResponder];
     
 	return YES;
@@ -315,18 +349,55 @@
 #pragma mark UITextViewDelegate
 
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    [self.scrollView scrollRectToVisible:CGRectMake(0, ROW_HEIGHT * INPUT_LOOKINGFOR + 50, self.view.frame.size.width, self.view.frame.size.height) animated:YES];
+    if (textView == [inputFields objectAtIndex:INPUT_LOOKINGFOR])
+        [self.scrollView scrollRectToVisible:CGRectMake(0, 60, self.view.frame.size.width, self.view.frame.size.height) animated:YES];
+    else if (textView == [inputFields objectAtIndex:INPUT_TALKABOUT])
+        [self.scrollView scrollRectToVisible:CGRectMake(0, 180, self.view.frame.size.width, self.view.frame.size.height) animated:YES];
     return YES;
 }
 
 -(BOOL)textViewShouldEndEditing:(UITextView *)textView {
     [textView resignFirstResponder];
-    [self.scrollView scrollRectToVisible:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) animated:YES];
+    if (stopResponders) {
+        [self.scrollView scrollRectToVisible:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) animated:YES];
+        return YES;
+    }
+    
+    if (textView == [inputFields objectAtIndex:INPUT_LOOKINGFOR]) {
+        [[inputFields objectAtIndex:INPUT_TALKABOUT] becomeFirstResponder];
+    }
+    else {
+        [self.scrollView scrollRectToVisible:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) animated:YES];
+    }
     return YES;
+}
+
+-(void)textViewDidChange:(UITextView *)textView {
+    int ct = [textView.text length];
+    int left = 140 - ct;
+    if (left < 0) {
+        if (textView == [inputFields objectAtIndex:INPUT_LOOKINGFOR])
+            textView.text = lookingForLastText;
+        else if (textView == [inputFields objectAtIndex:INPUT_TALKABOUT])
+            textView.text = talkAboutLastText;
+    }
+    else {
+        if (textView == [inputFields objectAtIndex:INPUT_LOOKINGFOR]) {
+            lookingForCount.text = [NSString stringWithFormat:@"%d", left];
+            lookingForLastText = textView.text;
+        }
+        else if (textView == [inputFields objectAtIndex:INPUT_TALKABOUT]) {
+            talkAboutCount.text = [NSString stringWithFormat:@"%d", left];
+            talkAboutLastText = textView.text;
+        }        
+    }
 }
 
 -(void)doneEditingLookingFor {
     [self textViewShouldEndEditing:[inputFields objectAtIndex:INPUT_LOOKINGFOR]];
+}
+-(void)doneEditingTalkAbout {
+    [self textViewShouldEndEditing:[inputFields objectAtIndex:INPUT_TALKABOUT]];
 }
 
 #pragma mark navigation
@@ -336,9 +407,20 @@
     // copy back into userinfo if changed
     self.userInfo.username = ((UITextField*)[inputFields objectAtIndex:INPUT_NAME]).text;
     self.userInfo.email = ((UITextField*)[inputFields objectAtIndex:INPUT_EMAIL]).text;
-    self.userInfo.position = ((UITextField*)[inputFields objectAtIndex:INPUT_ROLE]).text;
-    self.userInfo.company = ((UITextField*)[inputFields objectAtIndex:INPUT_COMPANY]).text;
-    self.userInfo.industry = ((UITextField*)[inputFields objectAtIndex:INPUT_INDUSTRY]).text;
+
+    //self.userInfo.position = ((UITextField*)[inputFields objectAtIndex:INPUT_ROLE]).text;
+    //self.userInfo.company = ((UITextField*)[inputFields objectAtIndex:INPUT_COMPANY]).text;
+    //self.userInfo.industry = ((UITextField*)[inputFields objectAtIndex:INPUT_INDUSTRY]).text;
+    
+    self.userInfo.lookingFor = ((UITextView*)[inputFields objectAtIndex:INPUT_LOOKINGFOR]).text;
+    self.userInfo.talkAbout = ((UITextView*)[inputFields objectAtIndex:INPUT_TALKABOUT]).text;
+    
+    // dismiss all input keyboards
+    stopResponders = YES; // prevent other inputfields from becoming first responder
+    for (int i=0; i<INPUT_MAX; i++) {
+        [[inputFields objectAtIndex:i] resignFirstResponder];
+    }
+    
     [delegate didSaveProfileInfo];
 }
 

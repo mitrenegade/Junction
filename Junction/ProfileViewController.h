@@ -10,34 +10,29 @@
 #import "UserInfo.h"
 #import "Constants.h"
 #import "AsyncImageView.h"
+#import "UserProfileViewController.h"
 
-@protocol ProfilePreviewDelegate <NSObject>
+@interface ProfileViewController : UIViewController <UserProfileDelegate>
 
--(void)didFinishPreview;
-
-@end
-
-@interface ProfileViewController : UIViewController
-
-@property (weak, nonatomic) IBOutlet AsyncImageView * photoView;
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) UserInfo * myUserInfo;
-//@property (weak, nonatomic) id delegate;
+
+/*
+@property (weak, nonatomic) IBOutlet AsyncImageView * photoView;
 @property (nonatomic, weak) IBOutlet UILabel * titleLabel;
 @property (nonatomic, weak) IBOutlet UILabel * industryLabel;
 @property (nonatomic, weak) IBOutlet UIView * descriptionFrame;
 @property (nonatomic, strong) UITextView * descriptionView;
 @property (nonatomic, weak) IBOutlet UIScrollView * scrollView;
-
+*/
+@property (nonatomic, weak) IBOutlet UIView * buttonView;
 @property (nonatomic, weak) IBOutlet UIButton * viewForStrangers;
 @property (nonatomic, weak) IBOutlet UIButton * viewForConnections;
 @property (nonatomic) BOOL isViewForConnections;
 
-// used in preview
-@property (nonatomic, weak) id delegate;
-@property (nonatomic) BOOL isPreview;
+@property (nonatomic, strong) UserProfileViewController * userProfileViewController;
+@property (nonatomic, weak) IBOutlet UIView * viewForFrame;
 
-@property (nonatomic) IBOutlet UISlider * slider;
 -(IBAction)toggleViewForConnections:(id)sender;
 -(IBAction)sliderDidChange:(id)sender;
 @end

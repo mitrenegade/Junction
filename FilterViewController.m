@@ -13,12 +13,14 @@
 
 @end
 
+static AppDelegate * appDelegate;
+
 @implementation FilterViewController
 
 @synthesize labelTitle, buttonFilter, tableView;
 @synthesize viewsForCell;
 @synthesize companyFilter, industryFilter, friendsFilter;
-@synthesize companyField, industryField;
+@synthesize companyField, industryField, friendsSwitch;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -26,6 +28,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     }
     return self;
 }
@@ -57,8 +60,10 @@
     self.industryFilter = nil;
     self.companyFilter = nil;
     self.friendsFilter = NO;
-    [self.viewsForCell removeAllObjects];
-    [self.tableView reloadData];
+    
+    self.industryField.text = @"";
+    self.companyField.text = @"";
+    [self.friendsSwitch setOn:NO];
     
     [self.delegate doFilter];
 }
@@ -159,6 +164,8 @@
         if (self.friendsFilter)
             [toggle setOn:YES];
         
+        self.friendsSwitch = toggle;
+        
         index = INPUT_FILTER_FRIENDS;
         UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 40)];
         [view addSubview:label];
@@ -202,13 +209,15 @@
             // INDUSTRY filter
             IndustryFilterTableViewController * industryFilterTable = [[IndustryFilterTableViewController alloc] init];
             [industryFilterTable setDelegate:self];
-            [self presentModalViewController:industryFilterTable animated:YES];
+            //[self presentModalViewController:industryFilterTable animated:YES];
+            [appDelegate.window.rootViewController presentModalViewController:industryFilterTable animated:YES];
         }
     }
 }
 
 -(void)didSelectIndustryFilter:(NSString *)industry {
-    [self dismissModalViewControllerAnimated:YES];
+    //[self dismissModalViewControllerAnimated:YES];
+    [appDelegate.window.rootViewController dismissModalViewControllerAnimated:YES];
     NSLog(@"Filter selected: %@", industry);
     self.industryFilter = industry;
     [self.industryField setText:self.industryFilter];
