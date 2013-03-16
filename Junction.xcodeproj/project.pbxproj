@@ -114,7 +114,6 @@
 		9EB78CC016B84AAB00096DE8 /* BreeSerif_Reg.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CBD16B84AAB00096DE8 /* BreeSerif_Reg.otf */; };
 		9EB78CC116B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CBE16B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf */; };
 		9EB78CC216B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CBF16B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf */; };
-		9EB78CC816B8625700096DE8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB78CC716B8625700096DE8 /* Default-568h@2x.png */; };
 		9EC23C1116A67F3600270AF1 /* LinkedInHelperRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EC27744161043050069F6E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC27743161043050069F6E5 /* AudioToolbox.framework */; };
 		9EC277461610430A0069F6E5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC277451610430A0069F6E5 /* CFNetwork.framework */; };
@@ -123,6 +122,7 @@
 		9EC2774C161043280069F6E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774B161043280069F6E5 /* StoreKit.framework */; };
 		9EC2774E161043320069F6E5 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774D161043320069F6E5 /* libsqlite3.dylib */; };
 		9EC27750161043370069F6E5 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */; };
+		9ECE1F4B16F4071D00D0B942 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9ECE1F4A16F4071D00D0B942 /* Default-568h@2x.png */; };
 		9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -312,7 +312,6 @@
 		9EB78CBD16B84AAB00096DE8 /* BreeSerif_Reg.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BreeSerif_Reg.otf; sourceTree = "<group>"; };
 		9EB78CBE16B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sansus-Webissimo-Italic.ttf"; sourceTree = "<group>"; };
 		9EB78CBF16B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sansus-Webissimo-Regular.ttf"; sourceTree = "<group>"; };
-		9EB78CC716B8625700096DE8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		9EC23C0F16A67F3600270AF1 /* LinkedInHelperRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInHelperRequest.h; sourceTree = SOURCE_ROOT; };
 		9EC23C1016A67F3600270AF1 /* LinkedInHelperRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInHelperRequest.m; sourceTree = SOURCE_ROOT; };
 		9EC27743161043050069F6E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -322,6 +321,7 @@
 		9EC2774B161043280069F6E5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		9EC2774D161043320069F6E5 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.1.3.dylib; path = usr/lib/libz.1.1.3.dylib; sourceTree = SDKROOT; };
+		9ECE1F4A16F4071D00D0B942 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		9ED3D08F168B61DC0096A7EB /* MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKBlockAdditions.h; sourceTree = "<group>"; };
 		9ED3D090168B61DC0096A7EB /* NSObject+MKBlockAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MKBlockAdditions.h"; sourceTree = "<group>"; };
 		9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MKBlockAdditions.m"; sourceTree = "<group>"; };
@@ -660,11 +660,11 @@
 		9EECDF4F15EACB3900AD89D8 = {
 			isa = PBXGroup;
 			children = (
+				9ECE1F4A16F4071D00D0B942 /* Default-568h@2x.png */,
 				9EE927E016C70BDD005B4CCC /* Default@2x.png */,
 				9EE927DE16C70BD6005B4CCC /* Default.png */,
 				9EE927DC16C70BC4005B4CCC /* icon-114.png */,
 				9EE927D916C70BA6005B4CCC /* icon-57.png */,
-				9EB78CC716B8625700096DE8 /* Default-568h@2x.png */,
 				9EA4FBCE16AB315400A447F2 /* AWSLibs */,
 				9E1911E31680504900C50361 /* ParseHelperLibrary */,
 				9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */,
@@ -873,13 +873,13 @@
 				9EB78CC016B84AAB00096DE8 /* BreeSerif_Reg.otf in Resources */,
 				9EB78CC116B84AAB00096DE8 /* Sansus-Webissimo-Italic.ttf in Resources */,
 				9EB78CC216B84AAB00096DE8 /* Sansus-Webissimo-Regular.ttf in Resources */,
-				9EB78CC816B8625700096DE8 /* Default-568h@2x.png in Resources */,
 				9EE927DA16C70BA6005B4CCC /* icon-57.png in Resources */,
 				9EE927DD16C70BC4005B4CCC /* icon-114.png in Resources */,
 				9EE927DF16C70BD6005B4CCC /* Default.png in Resources */,
 				9EE927E116C70BDD005B4CCC /* Default@2x.png in Resources */,
 				9EE927E816C871B8005B4CCC /* bg-blue.png in Resources */,
 				9E3767A416CB0398004C680B /* img-wall.png in Resources */,
+				9ECE1F4B16F4071D00D0B942 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
