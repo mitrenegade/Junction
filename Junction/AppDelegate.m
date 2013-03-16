@@ -272,7 +272,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                 myUserInfo.pfObject = userInfo.pfObject;
                 myUserInfo.pfUser = userInfo.pfUser;
                 [[myUserInfo toPFObject] saveInBackground];
-#if TESTING
+#if TESTING && 0
                 for (UserInfo * friendUserInfo in allJunctionUserInfos) {
                     if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
                         //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
@@ -289,6 +289,56 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             }
         }
     }];
+}
+
+-(void)deleteUser {
+    /*
+    [myUserInfo.pfUser deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Could not delete pfUser: error: %@", error);
+            return;
+        }
+        else {
+     NSLog(@"PFUser deleted!");
+     */
+            if (myUserInfo.pfObject) {
+                [myUserInfo.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (error) {
+                        NSLog(@"Could not delete userinfo: error: %@", error);
+                        return;
+                    }
+                    else {
+                        NSLog(@"MyUserInfo deleted!");
+                        
+                        [self logout];
+                    }
+                }];
+            }
+    /*
+        }
+    }];
+     */
+}
+
+-(void)logout {
+    [self.viewController.view setAlpha:0];
+    [self.viewController enableLoginButton];
+    [self.viewController setMyUserInfo:nil];
+    [self.viewController clearCachedOAuth];
+    myUserInfo = nil;
+
+    [self.window addSubview:self.viewController.view];
+    [UIView animateWithDuration:1.5
+                          delay:0.0
+                        options:UIViewAnimationOptionTransitionFlipFromRight
+                     animations:^{
+                         [self.window.rootViewController.view setAlpha:0];
+                         [self.viewController.view setAlpha:1];
+                     }
+                     completion:^(BOOL finished) {
+                         [self.window.rootViewController.view removeFromSuperview];
+                         self.window.rootViewController = self.viewController;
+                     }];
 }
 
 -(void)saveCachedRecentChats {
@@ -456,24 +506,24 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 //    self.nav = [[UINavigationController alloc] initWithRootViewController:tabController];
     
     // this set of animations works correctly. first, dismiss with animation. while animating, the rootView becomes the other one.
-    self.nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    if ([[UIDevice currentDevice].systemVersion floatValue] < 6.0){
-        [self.viewController presentViewController:self.nav animated:YES completion:^{
-            [self.viewController dismissViewControllerAnimated:NO completion:nil]; // dismiss this controller
-            self.window.rootViewController = tabBarController;
-            [self.window makeKeyAndVisible];
-        }];
-    }
-    else {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:.5];
-        [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp
-                               forView:self.nav.view
-                                 cache:YES];
-        [UIView setAnimationDelegate:self];
+    if (self.window.rootViewController == nil) {
         self.window.rootViewController = tabBarController;
         [self.window makeKeyAndVisible];
-        [UIView commitAnimations];
+    }
+    else {
+        [self.window addSubview:tabBarController.view];
+        [tabBarController.view setAlpha:0];
+        [UIView animateWithDuration:1.5
+                              delay:0.0
+                            options:UIViewAnimationOptionTransitionFlipFromRight
+                         animations:^{
+                             [self.window.rootViewController.view setAlpha:0];
+                             [tabBarController.view setAlpha:1];
+                         }
+                         completion:^(BOOL finished) {
+                             [self.window.rootViewController.view removeFromSuperview];
+                             self.window.rootViewController = tabBarController;
+                         }];
     }
     
     NSLog(@"MyUserInfo pfUser: %@", myUserInfo.pfUser);
@@ -495,16 +545,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [ParseHelper Parse_subscribeToChannel:myUserInfo.pfUserID];
 }
 
--(void)didLogout {
-    myUserInfo = nil;
-    [PFUser logOut];
-    // currently no way to log out of linkedIn
-    self.nav = nil;
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    [self.viewController setMyUserInfo:myUserInfo];
-    [self.viewController setDelegate:self];
-    self.window.rootViewController = self.viewController;
-}
 
 -(void)didGetLinkedInFriends:(NSArray*)friendResults {
     if (!linkedInFriends) {

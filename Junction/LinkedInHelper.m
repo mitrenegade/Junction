@@ -59,8 +59,8 @@ static OAuthLoginView * sharedOAuthLoginView;
     
     NSLog(@"stored auth: %@ %@", storedOAuthAccessToken, storedOAuthConsumer);    
     
-    //[self getId];
-    [self profileApiCall]; // required for email
+    [self getId];
+    //[self profileApiCall]; // required for email
 }
 
 -(void)closeLoginView {
@@ -297,6 +297,12 @@ static OAuthLoginView * sharedOAuthLoginView;
 -(void) saveCachedOAuth {
     NSLog(@"Saving cached OAuth!");
     [storedOAuthAccessToken storeInUserDefaultsWithServiceProviderName:@"linkedin.com" prefix:@"junction"];
+}
+
+-(void) clearCachedOAuth {
+    self.storedOAuthAccessToken = nil;
+    self.storedOAuthConsumer = nil;
+	[OAToken removeFromUserDefaultsWithServiceProviderName:@"linkedin.com" prefix:@"junction"];
 }
 
 -(BOOL)isLoggedIn {

@@ -10,6 +10,8 @@
 #import "AppDelegate.h" 
 #import "UIImage+GaussianBlur.h"
 
+static AppDelegate * appDelegate;
+
 @interface UserProfileViewController ()
 
 @end
@@ -28,6 +30,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -57,7 +60,19 @@
 -(void)updateUserInfo {
     NSLog(@"UserProfile UpdateUserInfo");
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if ([appDelegate isConnectedWithUser:userInfo]) {
+    if ([userInfo.pfUserID isEqualToString:appDelegate.myUserInfo.pfUserID]) {
+        isOwnProfile = YES;
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoURL]);
+        if (userInfo.photo)
+            [photoView setImage:userInfo.photo];
+        [nameLabel setText:userInfo.username];
+        
+#if TESTING
+        [self.buttonConnect setTitle:@"Delete User" forState:UIControlStateNormal];
+#endif
+    }
+    else if ([appDelegate isConnectedWithUser:userInfo]) {
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
         NSLog(@"Profile photo url: %@", [userInfo photoURL]);
         if (userInfo.photo)
@@ -188,5 +203,34 @@
         [delegate didClickClose];
     else
         [self dismissModalViewControllerAnimated:YES];
+}
+
+-(IBAction)didClickBlock:(id)sender {
+    [[UIAlertView alertViewWithTitle:@"Blocked!" message:@"Why are you blocking me!?"] show];
+}
+
+-(IBAction)didClickChat:(id)sender {
+    [[UIAlertView alertViewWithTitle:@"Chat!" message:@"Blah blah blah. Go talk to a real person."] show];
+}
+
+-(IBAction)didClickConnect:(id)sender {
+    if (isOwnProfile) {
+#if TESTING
+        // this becomse a delete button
+        [UIAlertView alertViewWithTitle:@"Delete user?" message:@"Are you sure you want to delete your self? You will lose all your Junction info!" cancelButtonTitle:@"Cancel" otherButtonTitles:[NSArray arrayWithObjects:@"Log out", @"Delete", nil] onDismiss:^(int buttonIndex) {
+            NSLog(@"Clicked button index %d", buttonIndex);
+            // delete user
+            if (buttonIndex == 0)
+                [appDelegate logout];
+            else if (buttonIndex == 1)
+                [appDelegate deleteUser];
+        } onCancel:^{
+            // no deletion
+        }];
+#endif
+    }
+    else {
+        
+    }
 }
 @end

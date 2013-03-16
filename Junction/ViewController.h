@@ -52,4 +52,6 @@
 -(BOOL)loadCachedOauth;
 -(void)tryCachedLogin;
 -(void)linkedInDidLoginWithID:(NSString *)userID;
+-(void)enableLoginButton;
+-(void)clearCachedOAuth;
 @end

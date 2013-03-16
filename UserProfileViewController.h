@@ -17,7 +17,10 @@
 
 @end
 
-@interface UserProfileViewController : UIViewController
+@interface UserProfileViewController : UIViewController {
+    BOOL isOwnProfile;
+}
+
 @property (nonatomic, weak) id delegate;
 @property (weak, nonatomic) IBOutlet AsyncImageView * photoView;
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
@@ -33,6 +36,13 @@
 @property (nonatomic, weak) IBOutlet UILabel * talkAboutTitle;
 @property (nonatomic, weak) IBOutlet UILabel * talkAboutDetail;
 
+@property (nonatomic, weak) IBOutlet UIButton * buttonConnect;
+@property (nonatomic, weak) IBOutlet UIButton * buttonBlock;
+@property (nonatomic, weak) IBOutlet UIButton * buttonChat;
+
 -(IBAction)didClickBack:(id)sender;
+-(IBAction)didClickConnect:(id)sender;
+-(IBAction)didClickBlock:(id)sender;
+-(IBAction)didClickChat:(id)sender;
 -(void)toggleViewForConnection:(BOOL)isConnected;
 @end

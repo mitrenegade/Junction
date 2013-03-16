@@ -107,7 +107,7 @@
     [UIAlertView alertViewWithTitle:@"Log out?" message:@"Do you want to log out?" cancelButtonTitle:@"Cancel" otherButtonTitles:[NSArray arrayWithObject:@"Logout"] onDismiss:^(int buttonIndex) {
         // for now log out
         AppDelegate * appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        [appDelegate didLogout];
+        [appDelegate logout];
     } onCancel:^{
         return;
     }];

@@ -73,6 +73,10 @@
     return [lhHelper loadCachedOAuth];
 }
 
+-(void)clearCachedOAuth {
+    [lhHelper clearCachedOAuth];
+}
+
 
 -(void)tryCachedLogin {
     if (!lhHelper) {

@@ -10,7 +10,7 @@
 
 @interface Constants : NSObject
 
-#define TESTING 0
+#define TESTING 1
 #define PARSE_HELPER_JUNCTION // parseHelper can use junction specific calls
 
 #define PHOTO_BUCKET @"missionmade.junction.profile.photo"

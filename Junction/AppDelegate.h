@@ -89,5 +89,6 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 -(void)updateChatBrowserWithChat:(Chat*)mostRecentChatReceived;
 -(void)saveUserInfoToParse;
 -(void)forcePulse;
--(void)didLogout;
+-(void)deleteUser;
+-(void)logout;
 @end
