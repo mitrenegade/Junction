@@ -20,6 +20,7 @@
 #import "JunctionNotification.h"
 #import "Chat.h"
 #import "MBProgressHUD.h"
+#import "SettingsViewController.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -29,6 +30,7 @@ static NSString* const kParseConnectionsSentUpdated = @"kParseConnectionsSentUpd
 static NSString* const kParseConnectionsReceivedUpdated = @"kParseConnectionsReceivedUpdated";
 static NSString* const kNotificationsChanged = @"kNotificationsChanged";
 static NSString* const kNeedChatBrowserUpdate = @"kNeedChatBrowserUpdate";
+static NSString* const kFilterChanged = @"kFilterChanged";
 
 // junction notifications
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
@@ -57,7 +59,7 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 @property (nonatomic, strong) MapViewController * mapViewController;
 @property (nonatomic, strong) ChatBrowserViewController * chatsTableController;
 @property (nonatomic, strong) NotificationsViewController * notificationsController;
-
+@property (nonatomic, strong) SettingsViewController * settingsController;
 @property (nonatomic) CLLocationManager * locationManager;
 @property (nonatomic) CLLocation * lastLocation;
 
@@ -87,5 +89,6 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 -(void)updateChatBrowserWithChat:(Chat*)mostRecentChatReceived;
 -(void)saveUserInfoToParse;
 -(void)forcePulse;
--(void)didLogout;
+-(void)deleteUser;
+-(void)logout;
 @end

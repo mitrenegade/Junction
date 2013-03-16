@@ -15,6 +15,7 @@
 #import "JunctionNotification.h"
 #import "Chat.h"
 #import "MBProgressHUD.h"
+#import "Constants.h"
 
 @implementation AppDelegate
 
@@ -35,6 +36,7 @@
 @synthesize connected, connectRequestsReceived, connectRequestsSent;
 @synthesize notificationDeviceToken;
 @synthesize allRecentChats;
+@synthesize settingsController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -66,10 +68,13 @@
     
 
     PFUser * currentUser = [PFUser currentUser];
-    if (0 && currentUser) {
+#if 0
+    [self didLoginPFUser:currentUser withUserInfo:nil];
+#else
+    if (currentUser) {
         NSLog(@"Current PFUser exists.");
         MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.viewController.view animated:YES];
-        progress.labelText = @"Welcome back..";
+        progress.labelText = @"Welcome back...";
         [progress show:YES];
 
         // after login with a valid user, always get myUserInfo from parse
@@ -109,7 +114,7 @@
             [self.viewController tryCachedLogin];
         }
     }
-    
+#endif
     return YES;
 }
 
@@ -206,7 +211,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                 NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
 #if !TESTING
                 if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
-                    continue;
+//                    continue;
                 }
 #endif
                 [allJunctionUserInfosDict setObject:friendUserInfo forKey:friendUserInfo.pfUserID];
@@ -267,7 +272,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                 myUserInfo.pfObject = userInfo.pfObject;
                 myUserInfo.pfUser = userInfo.pfUser;
                 [[myUserInfo toPFObject] saveInBackground];
-#if TESTING
+#if TESTING && 0
                 for (UserInfo * friendUserInfo in allJunctionUserInfos) {
                     if (![friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
                         //[ParseHelper addConnectionBetweenUser:myUserInfo andUser:friendUserInfo];
@@ -284,6 +289,56 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             }
         }
     }];
+}
+
+-(void)deleteUser {
+    /*
+    [myUserInfo.pfUser deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Could not delete pfUser: error: %@", error);
+            return;
+        }
+        else {
+     NSLog(@"PFUser deleted!");
+     */
+            if (myUserInfo.pfObject) {
+                [myUserInfo.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (error) {
+                        NSLog(@"Could not delete userinfo: error: %@", error);
+                        return;
+                    }
+                    else {
+                        NSLog(@"MyUserInfo deleted!");
+                        
+                        [self logout];
+                    }
+                }];
+            }
+    /*
+        }
+    }];
+     */
+}
+
+-(void)logout {
+    [self.viewController.view setAlpha:0];
+    [self.viewController enableLoginButton];
+    [self.viewController setMyUserInfo:nil];
+    [self.viewController clearCachedOAuth];
+    myUserInfo = nil;
+
+    [self.window addSubview:self.viewController.view];
+    [UIView animateWithDuration:1.5
+                          delay:0.0
+                        options:UIViewAnimationOptionTransitionFlipFromRight
+                     animations:^{
+                         [self.window.rootViewController.view setAlpha:0];
+                         [self.viewController.view setAlpha:1];
+                     }
+                     completion:^(BOOL finished) {
+                         [self.window.rootViewController.view removeFromSuperview];
+                         self.window.rootViewController = self.viewController;
+                     }];
 }
 
 -(void)saveCachedRecentChats {
@@ -418,53 +473,59 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [tabBarController setDelegate:self];
     
     proxController = [[ProximityViewController alloc] init];
-    
-    //mapViewController = [[MapViewController alloc] init];
-    //[mapViewController setDelegate:self];
-    
-    profileController = [[ProfileViewController alloc] init];
-    
     connectionsController = [[ProximityViewController alloc] init];
     [connectionsController setShowConnectionsOnly:YES];
-
-    chatsTableController = [[ChatBrowserViewController alloc] init];
-
+    [connectionsController.tabBarItem setImage:[UIImage imageNamed:@"tabbar-connections"]];
+    [connectionsController.tabBarItem setTitle:@"Connections"];
     notificationsController = [[NotificationsViewController alloc] init];
+    chatsTableController = [[ChatBrowserViewController alloc] init];
+    settingsController = [[SettingsViewController alloc] init];
+    profileController = [[ProfileViewController alloc] init];
     
-    SideTabController * sideTabController = [[SideTabController alloc] init];
-    [sideTabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
-    [sideTabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
-    //[sideTabController addController:mapViewController withNormalImage:[UIImage imageNamed:@"tab_world"] andHighlightedImage:nil andTitle:@"Map"];
-    [sideTabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
-    [sideTabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
-    [sideTabController addController:connectionsController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Connections"];
+#if USING_SIDETAB
+    SideTabController * tabController = [[SideTabController alloc] init];
+    [tabController addController:proxController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Browse"];
+    [tabController addController:profileController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Me"];
+    [tabController addController:chatsTableController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Chats"];
+    [tabController addController:notificationsController withNormalImage:[UIImage imageNamed:@"tab_me"] andHighlightedImage:nil andTitle:@"Notifix"];
+    [tabController addController:connectionsController withNormalImage:[UIImage imageNamed:@"tab_friends"] andHighlightedImage:nil andTitle:@"Connections"];
+    [sideTabController didSelectViewController:0];
+#else
+    UITabBarController * tabController = [[UITabBarController alloc] init];
+    UINavigationController * tab0nav = [[UINavigationController alloc] initWithRootViewController:proxController];
+    UINavigationController * tab1nav = [[UINavigationController alloc] initWithRootViewController:connectionsController];
+    UINavigationController * tab2nav = [[UINavigationController alloc] initWithRootViewController:notificationsController];
+    UINavigationController * tab3nav = [[UINavigationController alloc] initWithRootViewController:chatsTableController];
+    UINavigationController * tab4nav = [[UINavigationController alloc] initWithRootViewController:settingsController];
+    NSArray * viewControllers = [NSArray arrayWithObjects: tab0nav, tab1nav, tab2nav, tab3nav, tab4nav, nil];
+    //NSArray * viewControllers = [NSArray arrayWithObjects: proxController, connectionsController, notificationsController, chatsTableController, settingsController, nil];
+    [tabBarController setViewControllers:viewControllers];
+    [tabBarController setDelegate:self];
+    [tabBarController setSelectedIndex:0];
+#endif
+//    self.nav = [[UINavigationController alloc] initWithRootViewController:tabController];
     
-    self.nav = [[UINavigationController alloc] initWithRootViewController:sideTabController];
-//    [self.viewController presentModalViewController:nav animated:YES];
-    //[self.nav pushViewController:sideTabController animated:YES];
-
     // this set of animations works correctly. first, dismiss with animation. while animating, the rootView becomes the other one.
-
-    self.nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    if ([[UIDevice currentDevice].systemVersion floatValue] < 6.0){
-        [self.viewController presentViewController:self.nav animated:YES completion:^{
-            [self.viewController dismissViewControllerAnimated:NO completion:nil]; // dismiss this controller
-            self.window.rootViewController = nav;
-        }];
+    if (self.window.rootViewController == nil) {
+        self.window.rootViewController = tabBarController;
+        [self.window makeKeyAndVisible];
     }
     else {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:.5];
-        [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp
-                               forView:self.nav.view
-                                 cache:YES];
-        [UIView setAnimationDelegate:self];
-        self.window.rootViewController = nav;
-        [UIView commitAnimations];
+        [self.window addSubview:tabBarController.view];
+        [tabBarController.view setAlpha:0];
+        [UIView animateWithDuration:1.5
+                              delay:0.0
+                            options:UIViewAnimationOptionTransitionFlipFromRight
+                         animations:^{
+                             [self.window.rootViewController.view setAlpha:0];
+                             [tabBarController.view setAlpha:1];
+                         }
+                         completion:^(BOOL finished) {
+                             [self.window.rootViewController.view removeFromSuperview];
+                             self.window.rootViewController = tabBarController;
+                         }];
     }
     
-
-    [sideTabController didSelectViewController:0];
     NSLog(@"MyUserInfo pfUser: %@", myUserInfo.pfUser);
     
     [self continueInit];
@@ -484,16 +545,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [ParseHelper Parse_subscribeToChannel:myUserInfo.pfUserID];
 }
 
--(void)didLogout {
-    myUserInfo = nil;
-    [PFUser logOut];
-    // currently no way to log out of linkedIn
-    self.nav = nil;
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    [self.viewController setMyUserInfo:myUserInfo];
-    [self.viewController setDelegate:self];
-    self.window.rootViewController = self.viewController;
-}
 
 -(void)didGetLinkedInFriends:(NSArray*)friendResults {
     if (!linkedInFriends) {
@@ -523,7 +574,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         NSLog(@"Comparing junction user %@ with %d LinkedIn friends", friendUserInfo.username, [linkedInFriends count]);
 #if !TESTING
         if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID])
-            continue;
+        {
+            UserPulse * myPulse = [allPulses objectForKey:myUserInfo.pfUserID];
+            if (myPulse) {
+                [proxController reloadUserPortrait:myUserInfo withPulse:myPulse];
+                continue;
+            }
+        }
 #endif
         [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
             if (error || [results count] == 0) {
@@ -550,6 +607,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(BOOL)isConnectedWithUser:(UserInfo*)user {
+    if ([user.pfUserID isEqualToString:myUserInfo.pfUserID])
+        return YES;
     for (UserInfo * userInfo in connected) {
         if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
             NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
@@ -560,6 +619,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat {
+#if USE_SIDEBAR
     RightTabController * rightTabController = [[RightTabController alloc] init];
     [rightTabController setUserInfo:friendUserInfo];
     [self.nav pushViewController:rightTabController animated:YES];
@@ -569,6 +629,18 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         [rightTabController didSelectViewController:1];
     else
         [rightTabController didSelectViewController:0];
+#else
+    if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
+        ProfileViewController * controller = [[ProfileViewController alloc] init];
+        [controller setMyUserInfo:myUserInfo];
+        [self.window.rootViewController presentModalViewController:controller animated:YES];
+    }
+    else {
+        UserProfileViewController * controller = [[UserProfileViewController alloc] init];
+        [controller setUserInfo:friendUserInfo];
+        [self.window.rootViewController presentModalViewController:controller animated:YES];
+    }
+#endif
 }
 
 -(void)getMyConnections {

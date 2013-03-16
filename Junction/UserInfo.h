@@ -41,6 +41,8 @@
 @property (strong, nonatomic) UserPulse * userPulse;
 @property (strong, nonatomic) NSString * pfUserID;
 
+@property (strong, nonatomic) NSString * talkAbout;
+
 @property (nonatomic) int privacyLevel; // 0 to 5
 
 +(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;

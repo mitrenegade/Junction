@@ -27,6 +27,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-notifications"]];
+        [self.tabBarItem setTitle:@"Notifications"];
     }
     return self;
 }
@@ -35,6 +37,24 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    // make a custom header label
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    UIImage * headerbg = [UIImage imageNamed:@"header_bg"];
+    [self.navigationController.navigationBar setBackgroundImage:headerbg forBarMetrics:UIBarMetricsDefault];
+    
+    UILabel * titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    [titleView setFont:[UIFont boldSystemFontOfSize:23]];
+    [titleView setTextColor:[UIColor whiteColor]];
+    [titleView setBackgroundColor:[UIColor colorWithRed:14.0/255.0 green:158.0/255.0 blue:205.0/255.0 alpha:1]];
+    [titleView setTextAlignment:NSTextAlignmentCenter];
+    titleView.text = @"Notifications";
+    UIFont * font = titleView.font;
+    CGRect frame = CGRectMake(0, 0, [self.navigationItem.title sizeWithFont:font].width, 44);
+    frame.origin.x = 320 - frame.size.width / 2;
+    [titleView setFrame:frame];
+    self.navigationItem.titleView = titleView;
+    
+    
     self.connectRequestUserInfos = [[NSMutableArray alloc] init];
     self.notifications = [[NSMutableArray alloc] init];
     

@@ -55,7 +55,7 @@
 
 -(void)addPhoto:(UIImage*)userPhoto withURL:(NSString*)urlString {
     self.photo = userPhoto;
-    int border = 2;
+    int border = 0;
     int size = self.view.frame.size.width;
     CGRect portraitframe = CGRectMake(border,border,size-border,size-border);
 
@@ -113,7 +113,7 @@
     [nameLabel setBackgroundColor:[UIColor clearColor]];
     [nameLabel setTextColor:[UIColor whiteColor]];
     [nameLabel setOutlineColor:[UIColor blackColor]];
-    [nameLabel setTextAlignment:NSTextAlignmentLeft];
+    [nameLabel setTextAlignment:NSTextAlignmentCenter];
     [page1 addSubview:nameLabel];
     if ([appDelegate isConnectedWithUser:userInfo]) {
         if (userInfo.username)
@@ -130,7 +130,7 @@
     [headlineLabel setBackgroundColor:[UIColor clearColor]];
     [headlineLabel setTextColor:[UIColor whiteColor]];
     [headlineLabel setOutlineColor:[UIColor blackColor]];
-    [headlineLabel setTextAlignment:NSTextAlignmentLeft];
+    [headlineLabel setTextAlignment:NSTextAlignmentCenter];
     [page2 addSubview:headlineLabel];
     if (userInfo.headline)
         [pages addObject:page2];
@@ -147,7 +147,7 @@
     [emailLabel setBackgroundColor:[UIColor clearColor]];
     [emailLabel setTextColor:[UIColor whiteColor]];
     [emailLabel setOutlineColor:[UIColor blackColor]];
-    [emailLabel setTextAlignment:NSTextAlignmentLeft];
+    [emailLabel setTextAlignment:NSTextAlignmentCenter];
     [page3 addSubview:emailLabel];
     if (userInfo.email)
         [pages addObject:page3];

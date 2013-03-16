@@ -39,6 +39,7 @@
 
 -(void)profileApiCall;
 -(BOOL) loadCachedOAuth;
+-(void) clearCachedOAuth;
 -(void)requestOriginalPhotoWithBlock:(void(^)(NSString*))gotURL;
 
 @end

@@ -33,6 +33,7 @@
 @synthesize pfUserID;
 @synthesize pfObject;
 @synthesize className;
+@synthesize talkAbout;
 
 #define CLASSNAME @"UserInfo"
 
@@ -86,6 +87,7 @@
     [aCoder encodeObject: industry forKey:@"industry"];
     [aCoder encodeObject: summary forKey:@"summary"];
     [aCoder encodeObject: lookingFor forKey:@"lookingFor"];
+    [aCoder encodeObject: talkAbout forKey:@"talkAbout"];
     [aCoder encodeObject: currentPositions forKey:@"currentPositions"];
     [aCoder encodeObject: specialties forKey:@"specialties"];
     //[aCoder encodeObject: pfUser forKey:@"pfUser"];
@@ -112,6 +114,7 @@
         [self setIndustry:[aDecoder decodeObjectForKey:@"industry"]];
         [self setSummary:[aDecoder decodeObjectForKey:@"summary"]];
         [self setLookingFor:[aDecoder decodeObjectForKey:@"lookingFor"]];
+        [self setTalkAbout:[aDecoder decodeObjectForKey:@"talkAbout"]];
         [self setCurrentPositions:[aDecoder decodeObjectForKey:@"currentPositions"]];
         [self setSpecialties:[aDecoder decodeObjectForKey:@"specialties"]];
         //[self setPfUser:[aDecoder decodeObjectForKey:@"pfUser"]];
@@ -150,6 +153,8 @@
             [self.pfObject setObject:summary forKey:@"summary"];
         if (lookingFor)
             [self.pfObject setObject:lookingFor forKey:@"lookingFor"];
+        if (talkAbout)
+            [self.pfObject setObject:talkAbout forKey:@"talkAbout"];
         if (location)
             [self.pfObject setObject:location forKey:@"location"];
         if (pfUserID)
@@ -197,6 +202,7 @@
     company = [obj objectForKey:@"company"];
     summary = [obj objectForKey:@"summary"];
     lookingFor = [obj objectForKey:@"lookingFor"];
+    talkAbout = [obj objectForKey:@"talkAbout"];
     location = [obj objectForKey:@"location"];
     pfUserID = [obj objectForKey:@"pfUserID"];
     pfUser = [obj objectForKey:@"pfUser"];

@@ -10,6 +10,8 @@
 #import "AppDelegate.h" 
 #import "UIImage+GaussianBlur.h"
 
+static AppDelegate * appDelegate;
+
 @interface UserProfileViewController ()
 
 @end
@@ -21,13 +23,14 @@
 @synthesize scrollView;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionFrame;
-@synthesize descriptionView;
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -57,7 +60,19 @@
 -(void)updateUserInfo {
     NSLog(@"UserProfile UpdateUserInfo");
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if ([appDelegate isConnectedWithUser:userInfo]) {
+    if ([userInfo.pfUserID isEqualToString:appDelegate.myUserInfo.pfUserID]) {
+        isOwnProfile = YES;
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoURL]);
+        if (userInfo.photo)
+            [photoView setImage:userInfo.photo];
+        [nameLabel setText:userInfo.username];
+        
+#if TESTING
+        [self.buttonConnect setTitle:@"Delete User" forState:UIControlStateNormal];
+#endif
+    }
+    else if ([appDelegate isConnectedWithUser:userInfo]) {
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
         NSLog(@"Profile photo url: %@", [userInfo photoURL]);
         if (userInfo.photo)
@@ -71,31 +86,59 @@
             [photoView setImage:userInfo.photoBlur];
         [nameLabel setText:@"Name hidden"];
     }
-    [self.titleLabel setText:userInfo.headline];
-    [self.industryLabel setText:userInfo.industry];
-    // hack: descriptionLabel only used as an initial framer
+    NSString * jobTitle = [NSString stringWithFormat:@"%@ @ %@", userInfo.position, userInfo.company];
+    [self.titleLabel setText:jobTitle];
+    NSString * industryTitle = [[NSString stringWithFormat:@"in %@ industry", userInfo.industry] uppercaseString];
+    [self.industryLabel setText:industryTitle];
     
-    UIFont * descriptionFont = [UIFont systemFontOfSize:14];
-    CGSize newsize = [userInfo.summary sizeWithFont:descriptionFont constrainedToSize:CGSizeMake(self.scrollView.frame.size.width, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
-    CGRect newFrame = CGRectMake(descriptionFrame.frame.origin.x, descriptionFrame.frame.origin.y, newsize.width, newsize.height + 50);
-    if (!self.descriptionView) {
-        self.descriptionView = [[UITextView alloc] initWithFrame:newFrame];
-        [self.scrollView addSubview:self.descriptionView];
-    }
-    else {
-        [self.descriptionView setFrame:newFrame];
-    }
-    [self.descriptionView setText:userInfo.summary];
-    [self.descriptionView setFont:descriptionFont];
-    [self.descriptionView setScrollEnabled:NO];
-//    [self.descriptionView setBackgroundColor:[UIColor redColor]];
+    [self.lookingForDetail setText:userInfo.lookingFor];
+    CGSize labelSize = [self.lookingForDetail.text sizeWithFont:self.lookingForDetail.font
+                                constrainedToSize:self.lookingForDetail.frame.size
+                                    lineBreakMode:UILineBreakModeWordWrap];
+    CGRect newframe = self.lookingForDetail.frame;
+    newframe.size.width = labelSize.width;
+    newframe.size.height = labelSize.height;
+    [self.lookingForDetail setFrame:newframe];
+    
+    CGRect labelFrame = self.talkAboutTitle.frame;
+    labelFrame.origin.y = newframe.origin.y + newframe.size.height + 20;
+    [self.talkAboutTitle setFrame:labelFrame];
+    
+    [self.talkAboutDetail setText:userInfo.talkAbout];
+    CGRect detailFrame = self.talkAboutDetail.frame;
+    detailFrame.origin.y = labelFrame.origin.y + labelFrame.size.height + 20;
+    CGSize labelSize2 = [self.talkAboutDetail.text sizeWithFont:self.talkAboutDetail.font
+                                              constrainedToSize:self.talkAboutDetail.frame.size
+                                                  lineBreakMode:UILineBreakModeWordWrap];
+    detailFrame.size.width = labelSize2.width;
+    detailFrame.size.height = labelSize2.height;
+    [self.talkAboutDetail setFrame:detailFrame];
     
     float width = self.scrollView.frame.size.width;
-    float height = descriptionView.frame.origin.y + descriptionView.frame.size.height;
+    float height = self.descriptionFrame.frame.origin.y + self.talkAboutDetail.frame.origin.y + self.talkAboutDetail.frame.size.height + 20;
     [self.scrollView setContentSize:CGSizeMake(width, height)];
     [self.scrollView setContentOffset:CGPointMake(0,0)];
     NSLog(@"UserProfile UpdateUserInfo done");
 //    NSLog(@"Scroll contentwidth: %f height: %f descriptionLabel size: %f %f", self.scrollView.contentSize.width, self.scrollView.contentSize.height, descriptionLabel.frame.size.width, descriptionLabel.frame.size.height);
+}
+
+-(void)toggleViewForConnection:(BOOL)isConnected {
+    // used for preview - use only the photos stored in myUserInfo, no AWS link
+    [photoView setImageURL:nil];
+    if (isConnected) {
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoURL]);
+        if (userInfo.photo)
+            [photoView setImage:userInfo.photo];
+        [nameLabel setText:userInfo.username];
+    }
+    else {
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoBlurURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoBlurURL]);
+        if (userInfo.photoBlur)
+            [photoView setImage:userInfo.photoBlur];
+        [nameLabel setText:@"Name hidden"];
+    }
 }
 
 -(void)updateConnections {
@@ -155,4 +198,39 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+-(IBAction)didClickBack:(id)sender {
+    if (delegate && [delegate respondsToSelector:@selector(didClickClose)])
+        [delegate didClickClose];
+    else
+        [self dismissModalViewControllerAnimated:YES];
+}
+
+-(IBAction)didClickBlock:(id)sender {
+    [[UIAlertView alertViewWithTitle:@"Blocked!" message:@"Why are you blocking me!?"] show];
+}
+
+-(IBAction)didClickChat:(id)sender {
+    [[UIAlertView alertViewWithTitle:@"Chat!" message:@"Blah blah blah. Go talk to a real person."] show];
+}
+
+-(IBAction)didClickConnect:(id)sender {
+    if (isOwnProfile) {
+#if TESTING
+        // this becomse a delete button
+        [UIAlertView alertViewWithTitle:@"Delete user?" message:@"Are you sure you want to delete your self? You will lose all your Junction info!" cancelButtonTitle:@"Cancel" otherButtonTitles:[NSArray arrayWithObjects:@"Log out", @"Delete", nil] onDismiss:^(int buttonIndex) {
+            NSLog(@"Clicked button index %d", buttonIndex);
+            // delete user
+            if (buttonIndex == 0)
+                [appDelegate logout];
+            else if (buttonIndex == 1)
+                [appDelegate deleteUser];
+        } onCancel:^{
+            // no deletion
+        }];
+#endif
+    }
+    else {
+        
+    }
+}
 @end

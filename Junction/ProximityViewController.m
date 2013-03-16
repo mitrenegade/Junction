@@ -34,18 +34,25 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 //@synthesize names, titles, photos, distances;
 @synthesize myUserInfo;
 @synthesize userInfos;
-@synthesize distanceGroupsIDSets, distanceGroupsOrdered;
+@synthesize distanceGroupsIDSets, distanceGroupsOrdered, distanceGroupsOrderedFiltered;
 @synthesize portraitViews, portraitLoaded;
 @synthesize headerViews;
 @synthesize showConnectionsOnly;
+@synthesize filterViewController;
+
+// pull to refresh
+@synthesize reloading=_reloading;
+@synthesize refreshHeaderView;
+@synthesize hasHeaderRow;
+@synthesize searchButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [self.tabBarItem setImage:[UIImage imageNamed:@"tab_friends"]];
-//        [self.tabBarItem setTitle:@"Nearby"];
+        [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-browse"]];
+        [self.tabBarItem setTitle:@"Browse"];
     }
     return self;
 }
@@ -54,6 +61,42 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    UIImage * headerbg = [UIImage imageNamed:@"header_bg"];
+    [self.navigationController.navigationBar setBackgroundImage:headerbg forBarMetrics:UIBarMetricsDefault];
+    
+    UILabel * titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    [titleView setFont:[UIFont boldSystemFontOfSize:23]];
+    [titleView setTextColor:[UIColor whiteColor]];
+    [titleView setBackgroundColor:[UIColor colorWithRed:14.0/255.0 green:158.0/255.0 blue:205.0/255.0 alpha:1]];
+    [titleView setTextAlignment:NSTextAlignmentCenter];
+    self.navigationItem.titleView = titleView;
+    
+    if (!showConnectionsOnly) {
+        // browse tab
+        //self.navigationItem.title = @"Junction";
+        titleView.text = @"Junction";
+    }
+    else {
+        // connections tab
+        //self.navigationItem.title = @"Connections";
+        titleView.text = @"Connections";
+    }
+    UIFont * font = titleView.font;
+    CGRect frame = CGRectMake(0, 0, [self.navigationItem.title sizeWithFont:font].width, 44);
+    frame.origin.x = 320 - frame.size.width / 2;
+    [titleView setFrame:frame];
+    
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setFrame:CGRectMake(0, 0, 26, 26)];
+    [button setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(didClickSearch:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem * rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    [self.navigationItem setRightBarButtonItem:rightButtonItem];
+    
+    self.searchButton = button;
+    
     /*
     names = [[NSMutableArray alloc] init];
     titles = [[NSMutableArray alloc] init];
@@ -63,23 +106,30 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     userInfos = [[NSMutableDictionary alloc] init];
     distanceGroupsIDSets = [[NSMutableArray alloc] init];
     distanceGroupsOrdered = [[NSMutableArray alloc] init];
+    distanceGroupsOrderedFiltered = [[NSMutableArray alloc] init];
     portraitViews = [[NSMutableDictionary alloc] init];
     portraitLoaded = [[NSMutableDictionary alloc] init];
     headerViews = [[NSMutableDictionary alloc] init];
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
         [distanceGroupsIDSets addObject:[[NSMutableArray alloc] init]];
         [distanceGroupsOrdered addObject:[[NSMutableArray alloc] init]];
+        [distanceGroupsOrderedFiltered addObject:[[NSMutableArray alloc] init]];
     }
     
     if (refreshHeaderView == nil) {
-        
-        PF_EGORefreshTableHeaderView *view = [[PF_EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
-        view.delegate = self;
+        /*
+        EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
+//        view.delegate = self;
+        [view setBackgroundColor:[UIColor blackColor]];
         [tableView addSubview:view];
         refreshHeaderView = view;
+         */
+        refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
+        refreshHeaderView.bottomBorderThickness = 0.0;
+        [self.tableView addSubview:refreshHeaderView];
     }
     //  update the last update date
-    [refreshHeaderView refreshLastUpdatedDate];
+//    [refreshHeaderView refreshLastUpdatedDate];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateMyUserInfo) 
@@ -168,8 +218,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         CGRect frame = CGRectMake(5, 0, self.view.bounds.size.width-10, HEADER_HEIGHT);
         UILabel * label = [[UILabel alloc] initWithFrame:frame];
         [label setTextColor:[UIColor whiteColor]];
-        [label setFont:[UIFont boldSystemFontOfSize:16]];
-        [label setBackgroundColor:[UIColor blackColor]];
+        [label setFont:[UIFont boldSystemFontOfSize:12]];
+        [label setBackgroundColor:[UIColor clearColor]];
         switch (section) {
             case CLOSE:
                 [label setText:@"Really close by"];
@@ -199,9 +249,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                 [label setText:@""];
                 break;
         }
+        frame = CGRectMake(0, 0, self.view.bounds.size.width, HEADER_HEIGHT);
+        UIView * bgView = [[UIView alloc] initWithFrame:frame];
+        [bgView setBackgroundColor:[UIColor colorWithRed:83.0/255.0 green:114.0/255.0 blue:142.0/255.0 alpha:1]];//[UIColor blackColor]];
+        [bgView setAlpha:.75];
         UIView * headerView = [[UIView alloc] initWithFrame:frame];
+        [headerView addSubview:bgView];
         [headerView addSubview:label];
-        [headerView setBackgroundColor:[UIColor blackColor]];
+        [headerView setBackgroundColor:[UIColor clearColor]];
         [headerViews setObject:headerView forKey:[NSNumber numberWithInt:section]];
     }
     return [headerViews objectForKey:[NSNumber numberWithInt:section]];
@@ -210,6 +265,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     float ct = ((float)[[distanceGroupsIDSets objectAtIndex:section] count]);
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.friendsFilter) {
+        NSMutableArray * groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
+        ct = [groupOrdered count];
+    }
     float rows = ceil( ct / NUM_COLUMNS);
     //NSLog(@"Distance group: %d count: %d rows: %f", [distanceGroups count], [[distanceGroups objectAtIndex:section] count], rows);
     return rows;
@@ -237,8 +296,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(UIView*)viewForItemInSection:(int)section Row:(int)row Column:(int)column {
     NSMutableArray * groupIDs = [distanceGroupsIDSets objectAtIndex:section];
     NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:section];
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.friendsFilter)
+        groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
+    
     int index = row * NUM_COLUMNS + column;
-    if (index >= [groupIDs count])
+    if (index >= [groupIDs count] || index >= [groupOrdered count])
         return nil;
     OrderedUser * ordered = [groupOrdered objectAtIndex:index];
     NSString * userID = ordered.userInfo.pfUserID;
@@ -309,12 +371,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 -(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    // because each user portrait gets loaded asynchronously, we have to reset the pull to refresh each time. there is no real moment for "finished loading data".
+    [self dataSourceDidFinishLoadingNewData];
 
     NSString * userID = friendUserInfo.pfUserID;
-    if ([userID isEqualToString:myUserInfo.pfUserID])
-        return;
     
     if (showConnectionsOnly) {
+        if ([userID isEqualToString:myUserInfo.pfUserID])
+            return;
         if ([appDelegate isConnectedWithUser:friendUserInfo])
             NSLog(@"is connected!");
         else {
@@ -336,7 +400,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
         NSMutableArray * groupIDs = [distanceGroupsIDSets objectAtIndex:i];
         if ([groupIDs containsObject:userID]) {
-            [self removeUser:(NSString*)friendUserInfo fromGroup:i];
+            [self removeUser:friendUserInfo fromGroup:i];
         }
     }
     for (int i=0; i<MAX_DISTANCE_GROUPS; i++) {
@@ -355,6 +419,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:groupIndex];
     [groupIDs addObject:userID];
     OrderedUser * orderedUser = [[OrderedUser alloc] initWithUserInfo:friendUserInfo];
+    if ([userID isEqualToString:myUserInfo.pfUserID])
+        distance = 0;
     [orderedUser setWeight:distance];
     for (int i=0; i<[groupOrdered count]; i++) {
         OrderedUser * oldUser = [groupOrdered objectAtIndex:i];
@@ -410,10 +476,17 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [self.portraitViews removeAllObjects];
     [self.portraitLoaded removeAllObjects]; // force reload of all portraits but don't clear portraitViews
     [self reloadAllUserInfo];
+    [self dataSourceDidFinishLoadingNewData];
 }
 
 -(IBAction)didClickSearch:(id)sender {
     NSLog(@"Proximity view clicked search");
+    if (!isFilterShowing) {
+        [self toggleFilterView:YES];
+    }
+    else {
+        [self toggleFilterView:NO];
+    }
 }
 
 -(void)refreshProximity {
@@ -422,6 +495,70 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [appDelegate forcePulse];
 }
 
+-(void)toggleFilterView:(BOOL)show {
+    if (!self.filterViewController) {
+        self.filterViewController = [[FilterViewController alloc] init];
+        [self.filterViewController setDelegate:self];
+        [self.view addSubview:self.filterViewController.view];
+    }
+    
+    isFilterShowing = show;
+    if (show) {
+        [self.filterViewController.view setHidden:NO];
+    }
+    else {
+        [self.filterViewController.view setHidden:YES];
+    }
+}
+
+#pragma mark FilterDelegate
+
+-(void)closeFilter {
+    [self toggleFilterView:NO];
+}
+
+-(void)doFilter {
+    NSLog(@"Filters: industry %@ company %@ friends %d", self.filterViewController.industryFilter, self.filterViewController.companyFilter, self.filterViewController.friendsFilter);
+    
+    NSString * company = [self.filterViewController.companyFilter lowercaseString];
+    NSString * industry = [self.filterViewController.industryFilter lowercaseString];
+
+    for (int i=0; i<[distanceGroupsOrdered count]; i++) {
+        NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:i];
+        NSMutableArray * groupOrderedFiltered = [distanceGroupsOrderedFiltered objectAtIndex:i];
+        [groupOrderedFiltered removeAllObjects];
+        for (OrderedUser * orderedUser in groupOrdered) {
+            // filter for company
+            if (company) {
+                NSLog(@"User %@ company %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.company.lowercaseString, company);
+                if (!orderedUser.userInfo.company)
+                    continue;
+                if ([orderedUser.userInfo.company.lowercaseString rangeOfString:company].location == NSNotFound)
+                    continue;
+                NSLog(@"Passed");
+            }
+
+            // filter for industry
+            if (industry) {
+                NSLog(@"User %@ industry %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.industry.lowercaseString, industry);
+                if (!orderedUser.userInfo.industry)
+                    continue;
+                if ([orderedUser.userInfo.industry.lowercaseString rangeOfString:industry].location == NSNotFound)
+                    continue;
+                NSLog(@"Passed");
+            }
+            
+            // filter for friends in common...skip for now
+            
+            [groupOrderedFiltered addObject:orderedUser];
+        }
+        NSLog(@"Distance group %d total users %d filtered users %d", i, [groupOrdered count], [groupOrderedFiltered count]);
+    }
+    
+    [self.tableView reloadData];
+}
+
+/*
 #pragma mark EGOrefresh
 
 #pragma mark -
@@ -440,7 +577,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     
     //  model should call this when its done loading
     _reloading = NO;
-    [refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:tableView];
+    //[refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:tableView];
+    refreshHeaderView 
 }
 
 #pragma mark -
@@ -480,5 +618,67 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     return [NSDate date]; // should return date data source was last changed
     
 }
+ */
+#pragma mark UIScrollViewDelegate Callbacks for ego refresh
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    //    if (scrollView == self.panelScrollView)
+    //        return;
+    
+    if (scrollView.isDragging) {
+        if (refreshHeaderView.state == EGOOPullRefreshPulling && scrollView.contentOffset.y > -65.0f && scrollView.contentOffset.y < 0.0f && !_reloading) {
+            NSLog(@"ScrollView: EGO refreshHeaderView going to normal");
+            [refreshHeaderView setState:EGOOPullRefreshNormal];
+        } else if (refreshHeaderView.state == EGOOPullRefreshNormal && scrollView.contentOffset.y < -65.0f && !_reloading) {
+            NSLog(@"ScrollView: EGO refreshHeaderView going to pulling");
+            [refreshHeaderView setState:EGOOPullRefreshPulling];
+        }
+    }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    //    if (scrollView == self.panelScrollView)
+    //        return;
+    
+    if (scrollView.contentOffset.y <= - 40.0f && !_reloading) {
+        _reloading = YES;
+        [refreshHeaderView setState:EGOOPullRefreshLoading];
+        
+        [UIView animateWithDuration:.5
+                              delay:0
+                            options: UIViewAnimationCurveLinear
+                         animations:^{
+                             [self.tableView setContentInset:UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0)];
+                         }
+                         completion:^(BOOL finished){
+                             [self reloadTableViewDataSource];
+                         }
+         ];
+    }
+}
+
+#pragma mark -
+#pragma mark refreshHeaderView Methods
+
+- (void)dataSourceDidFinishLoadingNewData{
+    
+    [self.tableView reloadData];
+    if (_reloading) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:.3];
+        [self.tableView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+        [UIView commitAnimations];
+        
+        [refreshHeaderView setState:EGOOPullRefreshNormal];
+    }
+    _reloading = NO;
+}
+
+-(void)reloadTableViewDataSource {
+    NSLog(@"Pull to refresh");
+    _reloading = YES;
+    [self refreshProximity];
+}
+
+
 
 @end

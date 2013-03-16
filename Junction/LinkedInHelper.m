@@ -60,6 +60,7 @@ static OAuthLoginView * sharedOAuthLoginView;
     NSLog(@"stored auth: %@ %@", storedOAuthAccessToken, storedOAuthConsumer);    
     
     [self getId];
+    //[self profileApiCall]; // required for email
 }
 
 -(void)closeLoginView {
@@ -69,6 +70,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void)getId {
     NSString * endpoint = @"http://api.linkedin.com/v1/people/~/id";
+//    NSString * endpoint = @"http://api.linkedin.com/v1/people/~:(id,email-address)";
     self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
     [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
         NSString *responseBody = [[NSString alloc] initWithData:data
@@ -85,7 +87,8 @@ static OAuthLoginView * sharedOAuthLoginView;
 - (void)profileApiCall
 {
     // NOT USED
-    NSString * endpoint = @"http://api.linkedin.com/v1/people/~";
+//    NSString * endpoint = @"http://api.linkedin.com/v1/people/v1/people/~:()";
+    NSString *endpoint =    @"http://api.linkedin.com/v1/people/~";
     self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
     [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
         if (success) {
@@ -294,6 +297,12 @@ static OAuthLoginView * sharedOAuthLoginView;
 -(void) saveCachedOAuth {
     NSLog(@"Saving cached OAuth!");
     [storedOAuthAccessToken storeInUserDefaultsWithServiceProviderName:@"linkedin.com" prefix:@"junction"];
+}
+
+-(void) clearCachedOAuth {
+    self.storedOAuthAccessToken = nil;
+    self.storedOAuthConsumer = nil;
+	[OAToken removeFromUserDefaultsWithServiceProviderName:@"linkedin.com" prefix:@"junction"];
 }
 
 -(BOOL)isLoggedIn {

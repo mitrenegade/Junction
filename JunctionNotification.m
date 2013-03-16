@@ -74,6 +74,11 @@
 }
 
 +(void)FindNotificationsForUser:(UserInfo*)userInfo withBlock:(void (^)(NSArray * results, NSError * error))queryCompletedWithResults{
+    
+    if (!userInfo) {
+        queryCompletedWithResults(nil, [NSError errorWithDomain:@"com.junction" code:0 userInfo:[NSDictionary dictionaryWithObject:@"No userinfo! Cannot query for pfUserID for null user" forKey:@"message"]]);
+        return;
+    }
     PFCachePolicy policy = kPFCachePolicyNetworkOnly;
     PFQuery * query = [PFQuery queryWithClassName:CLASSNAME];
     [query setCachePolicy:policy];
@@ -81,6 +86,7 @@
     if (!userInfo.pfUserID) {
         NSLog(@"No pfUserID! Cannot find notifications for a non-Parse user");
         queryCompletedWithResults(nil, nil);
+        return;
     };
     
     NSString * pfUserID = userInfo.pfUserID;
@@ -92,14 +98,17 @@
         if (error) {
             NSLog(@"FindUserInfoFromParse: Query resulted in error!");
             queryCompletedWithResults(nil, error);
+            return;
         }
         else {
             if ([objects count] == 0) {
                 NSLog(@"FindUserInfoFromParse: 0 results");
                 queryCompletedWithResults(nil, nil);
+                return;
             }
             else {
                 queryCompletedWithResults(objects, error);
+                return;
             }
         }
     }];

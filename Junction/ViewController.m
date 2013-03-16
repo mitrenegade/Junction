@@ -13,7 +13,6 @@
 #import "UIImage+Resize.h"
 #import <QuartzCore/QuartzCore.h>
 #import "CreateProfileInfoViewController.h"
-#import "ProfileViewController.h"
 
 @implementation ViewController
 
@@ -22,9 +21,11 @@
 @synthesize myUserInfo;
 @synthesize activityIndicator;
 @synthesize buttonLogIn, buttonSignUp;
-@synthesize buttonTour, buttonView;
+@synthesize buttonView;
 @synthesize nav;
-@synthesize descriptionLabel;
+@synthesize scrollView, viewControllers;
+@synthesize pageControl;
+
 -(id)init {
     self = [super init];
     if (self) {
@@ -53,7 +54,9 @@
         lhHelper  = [[LinkedInHelper alloc] init];
         [lhHelper setDelegate:self];
     }
-    [self.descriptionLabel setFont:[UIFont fontWithName:@"Bree Serif" size:12]];
+    //[self.descriptionLabel setFont:[UIFont fontWithName:@"Bree Serif" size:12]];
+    
+    [self initializeScroll];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -68,6 +71,10 @@
 -(BOOL)loadCachedOauth {
     // must exist on init so can test cached oauth
     return [lhHelper loadCachedOAuth];
+}
+
+-(void)clearCachedOAuth {
+    [lhHelper clearCachedOAuth];
 }
 
 
@@ -90,7 +97,7 @@
     }
     
     UIButton * button = (UIButton*)sender;
-    if (button == buttonLogIn) {
+    if (1) { //button == buttonLogIn) {
         doSignup = NO;
         if ([self loadCachedOauth]) {
             [self tryCachedLogin];
@@ -103,12 +110,14 @@
         }
     }
     else if (button == buttonSignUp) {
+        /*
         doSignup = YES;
         self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         self.progress.labelText = @"Loading your LinkedIn information";
         OAuthLoginView * lhView = [lhHelper loginView];
         [lhView setDelegate:self];
         [self presentModalViewController:lhView animated:YES];
+         */
     }
 }
 
@@ -135,7 +144,13 @@
     // dismiss linkedIn screen, display initial profile info on login screen
     [lhHelper closeLoginView];
     
-    [self linkedInParseProfileInformation:profile];
+//    [self linkedInParseProfileInformation:profile];
+    NSLog(@"Simple profile: %@", profile);
+    NSString * email = [profile objectForKey:@"emailAddress"];
+    if (email) {
+        NSLog(@"Found email: %@", email);
+        [myUserInfo setEmail:email];
+    }
 }
 
 -(void)linkedInParseProfileInformation:(NSDictionary*)profile {
@@ -360,7 +375,8 @@
     [self.buttonLogIn setHidden:NO];
     [self.buttonSignUp setHidden:NO];
      */
-    [self.buttonView setHidden:NO];
+//    [self.buttonView setHidden:NO];
+    [self.buttonLogIn setEnabled:YES];
 }
 -(void)hideLoginButton {
     /*
@@ -368,7 +384,8 @@
     [self.buttonLogIn setHidden:YES];
     [self.buttonSignUp setHidden:YES];
      */
-    [self.buttonView setHidden:YES];
+//    [self.buttonView setHidden:YES];
+    [self.buttonLogIn setEnabled:NO];
 }
 -(void)requestOriginalLinkedInPhoto {
     // load photo in background
@@ -439,10 +456,8 @@
 
 #pragma mark CreateProfilePhotoDelegate
 -(void)didSaveProfilePhoto {
-    // display profile as a preview
-    ProfileViewController * controller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewControllerWide" bundle:nil];
-    [controller setMyUserInfo:myUserInfo];
-    [controller setIsPreview:YES];
+    CreateProfilePreviewController * controller = [[CreateProfilePreviewController alloc] init];
+    [controller setUserInfo:myUserInfo];
     [controller setDelegate:self];
     [self.nav pushViewController:controller animated:YES];
 }
@@ -477,4 +492,82 @@
     [self dismissModalViewControllerAnimated:YES];
     [self.progress hide:YES];
 }
+
+#pragma mark scrollView
+-(void)initializeScroll {
+    self.viewControllers = [[NSMutableArray alloc] init];
+    NSMutableArray * nibNames = [[NSMutableArray alloc] initWithObjects:@"Tutorial0", @"Tutorial1", @"Tutorial2", @"Tutorial3", @"Tutorial4",  nil];
+    for (NSString * nibName in nibNames){
+        UIViewController *controller = [[UIViewController alloc] initWithNibName:nibName bundle:nil];
+        [controller.view setBackgroundColor:[UIColor clearColor]];
+        [self.viewControllers addObject:controller];
+    }
+    
+    int numberOfPages = [self.viewControllers count];
+    // a page is the width of the scroll view
+    
+    pageControl.numberOfPages = numberOfPages;
+    pageControl.currentPage = 0;
+
+    scrollView.pagingEnabled = YES;
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * numberOfPages, scrollView.frame.size.height);
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.scrollsToTop = NO;
+    scrollView.directionalLockEnabled = YES;
+    scrollView.delegate = self;
+    
+    // pages are created on demand
+    // load the visible page
+    // load the page on either side to avoid flashes when the user starts scrolling
+    //
+    [self loadScrollViewWithPage:0];
+    [self loadScrollViewWithPage:1];
+}
+
+- (void)loadScrollViewWithPage:(int)page
+{
+    if (page < 0)
+        return;
+    if (page >= [self.viewControllers count])
+        return;
+    
+    // replace the placeholder if necessary
+    UIViewController *controller = [self.viewControllers objectAtIndex:page];
+    
+    // add the controller's view to the scroll view
+    if (controller.view.superview == nil)
+    {
+        CGRect frame = scrollView.frame;
+        frame.origin.x = frame.size.width * page;
+        frame.origin.y = 0;
+        controller.view.frame = frame;
+        [scrollView addSubview:controller.view];
+    }
+}
+
+#pragma mark ScrollViewdelegate
+- (void)scrollViewDidScroll:(UIScrollView *)sender
+{
+    // We don't want a "feedback loop" between the UIPageControl and the scroll delegate in
+    // which a scroll event generated from the user hitting the page control triggers updates from
+    // the delegate method. We use a boolean to disable the delegate logic when the page control is used.
+    
+    // Switch the indicator when more than 50% of the previous/next page is visible
+    CGFloat pageSize;
+    int page;
+    pageSize = scrollView.frame.size.width;
+    page = floor((scrollView.contentOffset.x - pageSize / 2) / pageSize) + 1;
+    if (self.pageControl) {
+        [self.pageControl setCurrentPage:page];
+    }
+    pageControl.currentPage = page;
+    
+    // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
+    [self loadScrollViewWithPage:page - 1];
+    [self loadScrollViewWithPage:page];
+    [self loadScrollViewWithPage:page + 1];
+    
+}
+
 @end
