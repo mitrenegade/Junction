@@ -140,7 +140,13 @@
     // dismiss linkedIn screen, display initial profile info on login screen
     [lhHelper closeLoginView];
     
-    [self linkedInParseProfileInformation:profile];
+//    [self linkedInParseProfileInformation:profile];
+    NSLog(@"Simple profile: %@", profile);
+    NSString * email = [profile objectForKey:@"emailAddress"];
+    if (email) {
+        NSLog(@"Found email: %@", email);
+        [myUserInfo setEmail:email];
+    }
 }
 
 -(void)linkedInParseProfileInformation:(NSDictionary*)profile {
