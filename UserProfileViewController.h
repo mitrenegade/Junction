@@ -45,4 +45,5 @@
 -(IBAction)didClickBlock:(id)sender;
 -(IBAction)didClickChat:(id)sender;
 -(void)toggleViewForConnection:(BOOL)isConnected;
+-(void)toggleInteraction:(BOOL)canInteract;
 @end

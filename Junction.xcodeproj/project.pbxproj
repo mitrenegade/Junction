@@ -113,8 +113,8 @@
 		9E99542916804D68001E034A /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99542716804D68001E034A /* MapViewController.m */; };
 		9E99542A16804D68001E034A /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99542816804D68001E034A /* MapViewController.xib */; };
 		9E99542E16804D73001E034A /* ProximityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99542C16804D73001E034A /* ProximityViewController.m */; };
-		9E99543216804D7B001E034A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543116804D7B001E034A /* ViewController.m */; };
-		9E99543416804D8A001E034A /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99543316804D8A001E034A /* ViewController.xib */; };
+		9E99543216804D7B001E034A /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543116804D7B001E034A /* IntroViewController.m */; };
+		9E99543416804D8A001E034A /* IntroViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E99543316804D8A001E034A /* IntroViewController.xib */; };
 		9E99543716804D9B001E034A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543616804D9B001E034A /* AppDelegate.m */; };
 		9E99543E16804DA5001E034A /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543916804DA5001E034A /* UIImage+Alpha.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E99543F16804DA5001E034A /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99543B16804DA5001E034A /* UIImage+Resize.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -167,7 +167,6 @@
 		9EC2774C161043280069F6E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774B161043280069F6E5 /* StoreKit.framework */; };
 		9EC2774E161043320069F6E5 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774D161043320069F6E5 /* libsqlite3.dylib */; };
 		9EC27750161043370069F6E5 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC2774F161043370069F6E5 /* libz.1.1.3.dylib */; };
-		9ECE1F4B16F4071D00D0B942 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9ECE1F4A16F4071D00D0B942 /* Default-568h@2x.png */; };
 		9ED3D096168B61DC0096A7EB /* NSObject+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D091168B61DC0096A7EB /* NSObject+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D097168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D093168B61DC0096A7EB /* UIActionSheet+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9ED3D098168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ED3D095168B61DC0096A7EB /* UIAlertView+MKBlockAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -346,9 +345,9 @@
 		9E99542816804D68001E034A /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MapViewController.xib; path = Junction/MapViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E99542B16804D73001E034A /* ProximityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProximityViewController.h; path = Junction/ProximityViewController.h; sourceTree = SOURCE_ROOT; };
 		9E99542C16804D73001E034A /* ProximityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProximityViewController.m; path = Junction/ProximityViewController.m; sourceTree = SOURCE_ROOT; };
-		9E99543016804D7B001E034A /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = Junction/ViewController.h; sourceTree = SOURCE_ROOT; };
-		9E99543116804D7B001E034A /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = Junction/ViewController.m; sourceTree = SOURCE_ROOT; };
-		9E99543316804D8A001E034A /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ViewController.xib; path = Junction/ViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E99543016804D7B001E034A /* IntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntroViewController.h; path = Junction/IntroViewController.h; sourceTree = SOURCE_ROOT; };
+		9E99543116804D7B001E034A /* IntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntroViewController.m; path = Junction/IntroViewController.m; sourceTree = SOURCE_ROOT; };
+		9E99543316804D8A001E034A /* IntroViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = IntroViewController.xib; path = Junction/IntroViewController.xib; sourceTree = SOURCE_ROOT; };
 		9E99543516804D9B001E034A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Junction/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		9E99543616804D9B001E034A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Junction/AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		9E99543816804DA5001E034A /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Alpha.h"; path = "Junction/UIImage+Alpha.h"; sourceTree = SOURCE_ROOT; };
@@ -380,7 +379,6 @@
 		9EA4FBD216AB315400A447F2 /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageView.m; sourceTree = "<group>"; };
 		9EA4FBD316AB315400A447F2 /* AWSHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSHelper.h; sourceTree = "<group>"; };
 		9EA4FBD416AB315400A447F2 /* AWSHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSHelper.m; sourceTree = "<group>"; };
-		9EA4FBD516AB315400A447F2 /* AWSiOSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSiOSSDK.framework; sourceTree = "<group>"; };
 		9EAAF82A16DDBAF0007C9126 /* AWSiOSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSiOSSDK.framework; sourceTree = "<group>"; };
 		9EAEBC1916EEC2F90019AB73 /* btn-primary-small-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-primary-small-down.png"; sourceTree = "<group>"; };
 		9EAEBC1A16EEC2F90019AB73 /* btn-primary-small-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-primary-small-up.png"; sourceTree = "<group>"; };
@@ -476,9 +474,9 @@
 		9E0D28BC16B641560036792B /* SignUp Process */ = {
 			isa = PBXGroup;
 			children = (
-				9E99543016804D7B001E034A /* ViewController.h */,
-				9E99543116804D7B001E034A /* ViewController.m */,
-				9E99543316804D8A001E034A /* ViewController.xib */,
+				9E99543016804D7B001E034A /* IntroViewController.h */,
+				9E99543116804D7B001E034A /* IntroViewController.m */,
+				9E99543316804D8A001E034A /* IntroViewController.xib */,
 				9EAEBC2116EEC7910019AB73 /* Tutorial0.xib */,
 				9EAEBC2316EEC8260019AB73 /* Tutorial1.xib */,
 				9EAEBC2416EEC8260019AB73 /* Tutorial2.xib */,
@@ -758,7 +756,6 @@
 				9EA4FBD216AB315400A447F2 /* AsyncImageView.m */,
 				9EA4FBD316AB315400A447F2 /* AWSHelper.h */,
 				9EA4FBD416AB315400A447F2 /* AWSHelper.m */,
-				9EA4FBD516AB315400A447F2 /* AWSiOSSDK.framework */,
 			);
 			name = AWSLibs;
 			path = ../AWSLibs;
@@ -990,7 +987,7 @@
 			files = (
 				9E1911EE1680515900C50361 /* InfoPlist.strings in Resources */,
 				9E99542A16804D68001E034A /* MapViewController.xib in Resources */,
-				9E99543416804D8A001E034A /* ViewController.xib in Resources */,
+				9E99543416804D8A001E034A /* IntroViewController.xib in Resources */,
 				9E99544C16804DD2001E034A /* 19-gear.png in Resources */,
 				9E99544D16804DD2001E034A /* 19-gear@2x.png in Resources */,
 				9E99544E16804DD2001E034A /* graphic_addpic.png in Resources */,
@@ -1113,7 +1110,7 @@
 				9E99542516804D5D001E034A /* UserPulse.m in Sources */,
 				9E99542916804D68001E034A /* MapViewController.m in Sources */,
 				9E99542E16804D73001E034A /* ProximityViewController.m in Sources */,
-				9E99543216804D7B001E034A /* ViewController.m in Sources */,
+				9E99543216804D7B001E034A /* IntroViewController.m in Sources */,
 				9E99543716804D9B001E034A /* AppDelegate.m in Sources */,
 				9E99543E16804DA5001E034A /* UIImage+Alpha.m in Sources */,
 				9E99543F16804DA5001E034A /* UIImage+Resize.m in Sources */,

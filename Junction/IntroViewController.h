@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  IntroViewController.h
 //  Junction
 //
 //  Created by Bobby Ren on 8/26/12.
@@ -8,15 +8,15 @@
 #import <UIKit/UIKit.h>
 #import "LinkedInHelper.h"
 #import "UserInfo.h"
-#import "AppDelegate.h"
 #import "ParseHelper.h"
 #import "MBProgressHUD.h"
+#import "UIAlertView+MKBlockAdditions.h"
 
 #import "CreateProfilePhotoViewController.h"
 #import "CreateProfileInfoViewController.h"
 #import "CreateProfilePreviewController.h"
 
-@protocol ViewControllerDelegate <NSObject>
+@protocol IntroViewControllerDelegate <NSObject>
 
 -(void)saveUserInfoToDefaults;
 -(BOOL)loadUserInfo;
@@ -25,7 +25,7 @@
 
 @end
 
-@interface ViewController : UIViewController <UIAlertViewDelegate, CreateProfileInfoDelegate, CreateProfilePhotoDelegate, ProfilePreviewDelegate, LinkedInHelperDelegate, OAuthLoginDelegate, UIScrollViewDelegate>
+@interface IntroViewController : UIViewController <UIAlertViewDelegate, CreateProfileInfoDelegate, CreateProfilePhotoDelegate, ProfilePreviewDelegate, LinkedInHelperDelegate, OAuthLoginDelegate, UIScrollViewDelegate>
 {
 //    IBOutlet UILabel *locationLabel;
 //    UITabBarController * tabBarController;
@@ -34,7 +34,7 @@
 
 @property (nonatomic, unsafe_unretained) id delegate;
 @property (nonatomic, strong) LinkedInHelper * lhHelper;
-@property (nonatomic, strong) UserInfo * myUserInfo;
+@property (nonatomic, strong) UserInfo * shellUserInfo;
 //@property (weak, nonatomic) IBOutlet UIButton * buttonTour;
 @property (weak, nonatomic) IBOutlet UIButton * buttonLogIn;
 @property (weak, nonatomic) IBOutlet UIButton * buttonSignUp;

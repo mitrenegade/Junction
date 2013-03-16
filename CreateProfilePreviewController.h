@@ -17,7 +17,9 @@
 @end
 
 @interface CreateProfilePreviewController : UIViewController <UINavigationControllerDelegate, UserProfileDelegate>
-
+{
+    NSString * savedLinkedInString;
+}
 @property (nonatomic, strong) UserProfileViewController * userProfileViewController;
 @property (nonatomic, weak) IBOutlet UIButton * viewForStrangers;
 @property (nonatomic, weak) IBOutlet UIButton * viewForConnections;

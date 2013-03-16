@@ -83,6 +83,7 @@
 
 -(void)populateWithUserInfo:(UserInfo*)newUserInfo {
     self.userInfo = newUserInfo;
+    NSLog(@"Populating create profile page with userinfo: %x: %f %f", newUserInfo, newUserInfo.username, newUserInfo.email);
     [self.tableView reloadData];
 }
 
@@ -141,7 +142,7 @@
         [label setBackgroundColor:[UIColor clearColor]];
         [label setTextAlignment:NSTextAlignmentLeft];
         [label setText:@"PERSONAL INFORMATION"];
-        UILabel * label2 = [[UILabel alloc] initWithFrame:CGRectMake(150, 0, 150, HEADER_HEIGHT)];
+        UILabel * label2 = [[UILabel alloc] initWithFrame:CGRectMake(170, 0, 150, HEADER_HEIGHT)];
         [label2 setFont:[UIFont systemFontOfSize:11]];
         [label2 setTextColor:COLOR_LIGHTBLUE];
         [label2 setBackgroundColor:[UIColor clearColor]];

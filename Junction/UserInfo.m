@@ -326,11 +326,14 @@
 -(NSString*)photoURL {
     if (photoURL == nil) {
         // generate new link from amazon
+        if (self.linkedInString == nil)
+            return nil;
         photoURL = [AWSHelper getURLForKey:self.linkedInString inBucket:PHOTO_BUCKET];
         NSLog(@"New photoURL generated from AWS: %@", photoURL);
     }
     return photoURL;
 }
+
 -(NSString*)photoBlurURL {
     if (photoURL == nil) {
         // generate new link from amazon

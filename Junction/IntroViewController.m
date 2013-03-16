@@ -1,5 +1,5 @@
 //
-//  ViewController.m
+//  IntroViewController.m
 //  Junction
 //
 //  Created by Bobby Ren on 8/26/12.
@@ -7,18 +7,19 @@
 //
 
 
-#import "ViewController.h"
+#import "IntroViewController.h"
 #import "LinkedInHelper.h"
 #import "Constants.h"
 #import "UIImage+Resize.h"
 #import <QuartzCore/QuartzCore.h>
 #import "CreateProfileInfoViewController.h"
+#import "AppDelegate.h"
 
-@implementation ViewController
+@implementation IntroViewController
 
 @synthesize delegate;
 @synthesize lhHelper;
-@synthesize myUserInfo;
+@synthesize shellUserInfo;
 @synthesize activityIndicator;
 @synthesize buttonLogIn, buttonSignUp;
 @synthesize buttonView;
@@ -46,7 +47,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    myUserInfo = [[UserInfo alloc] init]; // create a shell myUserInfo to store any linkedIn that is received
+    shellUserInfo = [[UserInfo alloc] init]; // create a shell myUserInfo to store any linkedIn that is received
     
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"img-wall.jpg"]];
     
@@ -128,8 +129,8 @@
 
 #pragma mark LinkedInHelperDelegate
 -(void)linkedInDidLoginWithID:(NSString *)userID {
-    // if we logged in to linkedIn, we probably need to store the info in myUserInfo
-    [myUserInfo setLinkedInString:userID];
+    // if we logged in to linkedIn, we probably need to store the info in shellUserInfo
+    [shellUserInfo setLinkedInString:userID];
     NSLog(@"LinkedIn ID received: %@", userID);
     
     // request profile info
@@ -149,7 +150,7 @@
     NSString * email = [profile objectForKey:@"emailAddress"];
     if (email) {
         NSLog(@"Found email: %@", email);
-        [myUserInfo setEmail:email];
+        [shellUserInfo setEmail:email];
     }
 }
 
@@ -178,15 +179,15 @@
         currentPositions = [_currentPositions objectForKey:@"values"];
     
     if (name)
-        [myUserInfo setUsername:name];
+        [shellUserInfo setUsername:name];
     if (headline)
-        [myUserInfo setHeadline:headline];
+        [shellUserInfo setHeadline:headline];
     if (industry)
-        [myUserInfo setIndustry:industry];
+        [shellUserInfo setIndustry:industry];
     if (summary)
-        [myUserInfo setSummary:summary];
+        [shellUserInfo setSummary:summary];
     if (email)
-        [myUserInfo setEmail:email];
+        [shellUserInfo setEmail:email];
     if (pictureUrl) {
         NSLog(@"PictureURL: %@", pictureUrl);
         // if creating a new user and will go through profile process, must request photo
@@ -194,19 +195,19 @@
         // if logging in, request this photo but must get AWS photo later
     }
     if (location)
-        [myUserInfo setLocation:location];
+        [shellUserInfo setLocation:location];
     if (specialties)
-        [myUserInfo setSpecialties:specialties];
+        [shellUserInfo setSpecialties:specialties];
     if (currentPositions) {
-        [myUserInfo setCurrentPositions:currentPositions];
+        [shellUserInfo setCurrentPositions:currentPositions];
         id mostRecentPosition = [currentPositions objectAtIndex:0];
         id company = [mostRecentPosition objectForKey:@"company"];
         if ([company objectForKey:@"name"])
-            [myUserInfo setCompany:[company objectForKey:@"name"]];
+            [shellUserInfo setCompany:[company objectForKey:@"name"]];
         if ([company objectForKey:@"industry"]) // select current company's industry over personal industry
-            [myUserInfo setIndustry:[company objectForKey:@"industry"]];
+            [shellUserInfo setIndustry:[company objectForKey:@"industry"]];
         if ([mostRecentPosition objectForKey:@"title"])
-            [myUserInfo setPosition:[mostRecentPosition objectForKey:@"title"]];
+            [shellUserInfo setPosition:[mostRecentPosition objectForKey:@"title"]];
     }
     [delegate saveUserInfoToDefaults];
 
@@ -266,17 +267,13 @@
 
 #pragma mark ParseHelper login
 -(void)tryLogin {
-    NSString * loginID = myUserInfo?myUserInfo.linkedInString:lhHelper.userID;
+    NSString * loginID = shellUserInfo?shellUserInfo.linkedInString:lhHelper.userID;
     if (!self.progress)
         self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Logging in...";
     [ParseHelper ParseHelper_loginUsingID:loginID withBlock:^(PFUser * user, NSError * error) {
         if (user) {
-            NSLog(@"User LinkedIn %@ exists with PFUser id %@", myUserInfo.linkedInString, [user objectId]);
-            /*
-            [myUserInfo setPfUser:user];
-            [myUserInfo setPfUserID:user.objectId];
-             */
+            NSLog(@"User LinkedIn %@ exists with PFUser id %@", shellUserInfo.linkedInString, [user objectId]);
             
             // after login with a valid user, always get myUserInfo from parse
             [UserInfo GetUserInfoForPFUser:user withBlock:^(UserInfo * parseUserInfo, NSError * error) {
@@ -289,8 +286,8 @@
                         
                         self.progress.labelText = @"Please create a profile!";
                         
-                        myUserInfo.pfUser = user;
-                        myUserInfo.pfUserID = user.objectId;
+                        shellUserInfo.pfUser = user;
+                        shellUserInfo.pfUserID = user.objectId;
 
                         [self createNewUserProfileWithUser:user];
                     }
@@ -307,7 +304,7 @@
             // todo: check whether login failed due to missing user, or wrong user
             if (errorCode == 101) {
                 // invalid credentials
-                [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"Current LinkedIn profile for %@ is not registered with Junction! Would you like to sign up?", myUserInfo.username] delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Sign Up", nil] show];
+                [[[UIAlertView alloc] initWithTitle:@"Login Failed" message:[NSString stringWithFormat:@"Current LinkedIn profile for %@ is not registered with Junction! Would you like to sign up?", shellUserInfo.username] delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Sign Up", nil] show];
             }
             else if (errorCode == 100) {
                 // invalid credentials
@@ -325,7 +322,7 @@
 }
 
 -(void)trySignup {
-    NSString * loginID = myUserInfo?myUserInfo.linkedInString:lhHelper.userID;
+    NSString * loginID = shellUserInfo?shellUserInfo.linkedInString:lhHelper.userID;
     self.progress.labelText = @"Signing up";
     [ParseHelper ParseHelper_signupUsingID:loginID withBlock:^(BOOL bDidSignupUser, NSError * error) {
         if (bDidSignupUser) {
@@ -348,7 +345,7 @@
             }
             else {
                 self.progress.labelText = @"Signup Failed";
-                self.progress.detailsLabelText = [NSString stringWithFormat:@"Could not sign up user %@!", myUserInfo.username];
+                self.progress.detailsLabelText = [NSString stringWithFormat:@"Could not sign up user %@!", shellUserInfo.username];
                 
                 [self enableLoginButton];
             }
@@ -391,8 +388,8 @@
     // load photo in background
     [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {
         NSLog(@"Picture OriginalURL: %@", originalURL);
-        myUserInfo.photo = nil;
-        myUserInfo.photoBlur = nil;
+        shellUserInfo.photo = nil;
+        shellUserInfo.photoBlur = nil;
         
         // upload unblurred photo to aws
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -410,7 +407,7 @@
             image = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
             dispatch_sync(dispatch_get_main_queue(), ^{
                 // if we are creating a profile, first save this photo as unblurred
-                myUserInfo.photo = image;
+                shellUserInfo.photo = image;
 #if 0
                 AppDelegate * appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
                 [myUserInfo savePhotoToAWS:image withBlock:^(BOOL saved) {
@@ -440,7 +437,7 @@
     self.nav.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     [self presentModalViewController:self.nav animated:YES];
     
-    [controller populateWithUserInfo:myUserInfo];
+    [controller populateWithUserInfo:shellUserInfo]; // myUserInfo is new shell userInfo
     
     // request original photo here
     //[self requestOriginalLinkedInPhoto];
@@ -451,13 +448,13 @@
     CreateProfilePhotoViewController * controller = [[CreateProfilePhotoViewController alloc] init];
     [controller setDelegate:self];
     [self.nav pushViewController:controller animated:YES];
-    [controller populateWithUserInfo:myUserInfo];
+    [controller populateWithUserInfo:shellUserInfo];
 }
 
 #pragma mark CreateProfilePhotoDelegate
 -(void)didSaveProfilePhoto {
     CreateProfilePreviewController * controller = [[CreateProfilePreviewController alloc] init];
-    [controller setUserInfo:myUserInfo];
+    [controller setUserInfo:shellUserInfo];
     [controller setDelegate:self];
     [self.nav pushViewController:controller animated:YES];
 }
@@ -472,10 +469,10 @@
 
 -(void)continueLogin {
     // save finally created user
-    [[myUserInfo toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [[shellUserInfo toPFObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             [self.progress hide:YES];
-            [delegate didLoginPFUser:myUserInfo.pfUser withUserInfo:myUserInfo];
+            [delegate didLoginPFUser:shellUserInfo.pfUser withUserInfo:shellUserInfo];
         }
         else {
             self.progress.labelText = @"Could not save your User info!";

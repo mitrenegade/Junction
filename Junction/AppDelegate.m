@@ -10,7 +10,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Parse/Parse.h>
 #import "UserPulse.h"
-#import "ViewController.h"
+#import "IntroViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "JunctionNotification.h"
 #import "Chat.h"
@@ -20,7 +20,7 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
-@synthesize viewController = _viewController;
+@synthesize introViewController;
 @synthesize myUserInfo;
 @synthesize nav, navLogin;
 @synthesize lhHelper, lhView;
@@ -60,20 +60,19 @@
     allRecentChats = [[NSMutableDictionary alloc] init];
 
     // initialize root view controller which is also login controller
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    [self.viewController setMyUserInfo:myUserInfo];
-    [self.viewController setDelegate:self];
-    self.window.rootViewController = self.viewController;
+    self.introViewController = [[IntroViewController alloc] initWithNibName:@"IntroViewController" bundle:nil];
+    [self.introViewController setDelegate:self];
+    self.window.rootViewController = self.introViewController;
     [self.window makeKeyAndVisible];
     
 
     PFUser * currentUser = [PFUser currentUser];
-#if 0
+#if 0 && TESTING
     [self didLoginPFUser:currentUser withUserInfo:nil];
 #else
     if (currentUser) {
         NSLog(@"Current PFUser exists.");
-        MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.viewController.view animated:YES];
+        MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.introViewController.view animated:YES];
         progress.labelText = @"Welcome back...";
         [progress show:YES];
 
@@ -87,7 +86,7 @@
             else {
                 if (!parseUserInfo) {
                     // userInfo doesn't exist, must create by doing a cached login
-                    [self.viewController tryCachedLogin];
+                    [self.introViewController tryCachedLogin];
                 }
                 else {
                     [self didLoginPFUser:currentUser withUserInfo:parseUserInfo];
@@ -98,7 +97,7 @@
     }
     else {
         // check linkedIn first
-        if (![self.viewController loadCachedOauth]) {
+        if (![self.introViewController loadCachedOauth]) {
             // need to log in to LinkedIn
             // do nothing; show login viewController
             NSLog(@"No cached oauth");
@@ -111,7 +110,7 @@
             // load current user info
             //        }
             NSLog(@"Logged in with cached oauth!");
-            [self.viewController tryCachedLogin];
+            [self.introViewController tryCachedLogin];
         }
     }
 #endif
@@ -321,23 +320,23 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)logout {
-    [self.viewController.view setAlpha:0];
-    [self.viewController enableLoginButton];
-    [self.viewController setMyUserInfo:nil];
-    [self.viewController clearCachedOAuth];
+    [self.introViewController.view setAlpha:0];
+    [self.introViewController enableLoginButton];
+    [self.introViewController setShellUserInfo:[[UserInfo alloc] init]];
+    [self.introViewController clearCachedOAuth];
     myUserInfo = nil;
 
-    [self.window addSubview:self.viewController.view];
+    [self.window addSubview:self.introViewController.view];
     [UIView animateWithDuration:1.5
                           delay:0.0
                         options:UIViewAnimationOptionTransitionFlipFromRight
                      animations:^{
                          [self.window.rootViewController.view setAlpha:0];
-                         [self.viewController.view setAlpha:1];
+                         [self.introViewController.view setAlpha:1];
                      }
                      completion:^(BOOL finished) {
                          [self.window.rootViewController.view removeFromSuperview];
-                         self.window.rootViewController = self.viewController;
+                         self.window.rootViewController = self.introViewController;
                      }];
 }
 

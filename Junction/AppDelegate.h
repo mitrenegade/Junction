@@ -21,6 +21,7 @@
 #import "Chat.h"
 #import "MBProgressHUD.h"
 #import "SettingsViewController.h"
+#import "IntroViewController.h"
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -39,13 +40,11 @@ static NSString * const jnChatReceived = @"jnChatReceived";
 // junction push notifications - sent from web
 static NSString * const jpChatMessage = @"jpChatMessage";
 
-@class ViewController;
-
 @interface AppDelegate : UIResponder <UIApplicationDelegate, LinkedInHelperDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) ViewController *viewController;
+@property (nonatomic, strong) IntroViewController * introViewController;
 @property (nonatomic, strong) UINavigationController * nav;
 @property (assign, nonatomic) UINavigationController * navLogin;
 @property (nonatomic, weak) LinkedInHelper * lhHelper;

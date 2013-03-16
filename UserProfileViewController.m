@@ -59,7 +59,6 @@ static AppDelegate * appDelegate;
 
 -(void)updateUserInfo {
     NSLog(@"UserProfile UpdateUserInfo");
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([userInfo.pfUserID isEqualToString:appDelegate.myUserInfo.pfUserID]) {
         isOwnProfile = YES;
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
@@ -135,9 +134,18 @@ static AppDelegate * appDelegate;
     else {
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoBlurURL]]];
         NSLog(@"Profile photo url: %@", [userInfo photoBlurURL]);
-        if (userInfo.photoBlur)
+        if (userInfo.photoBlur) {
             [photoView setImage:userInfo.photoBlur];
+        }
         [nameLabel setText:@"Name hidden"];
+    }
+}
+
+-(void)toggleInteraction:(BOOL)canInteract {
+    if (!canInteract) {
+        [self.buttonBlock setEnabled:NO];
+        [self.buttonChat setEnabled:NO];
+        [self.buttonConnect setEnabled:NO];
     }
 }
 
