@@ -46,7 +46,8 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void) loginViewDidFinish:(NSNotification*)notification
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"loginViewDidFinish"
+                                                  object:nil];
     
     // We're going to do these calls serially just for easy code reading.
     // They can be done asynchronously
@@ -269,11 +270,11 @@ static OAuthLoginView * sharedOAuthLoginView;
 {
     NSLog(@"%@",[error description]);
 }
-/*
+
 -(void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"loginViewDidFinish"
+                                                  object:nil];
 }
-*/
 
 #pragma mark cached login tokens
 -(BOOL) loadCachedOAuth {

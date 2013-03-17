@@ -68,6 +68,7 @@ enum DISTANCE_GROUPS {
 -(void)reloadAll;
 -(IBAction)didClickSearch:(id)sender;
 -(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse;
+-(void)clearAllPortraits;
 
 // ego pull to refresh
 @property(assign,getter=isReloading) BOOL reloading;

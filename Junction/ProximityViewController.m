@@ -481,6 +481,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [self dataSourceDidFinishLoadingNewData];
 }
 
+-(void)clearAllPortraits {
+    [self.portraitLoaded removeAllObjects];
+    [self.portraitViews removeAllObjects];
+}
+
 -(IBAction)didClickSearch:(id)sender {
     NSLog(@"Proximity view clicked search");
     if (!isFilterShowing) {

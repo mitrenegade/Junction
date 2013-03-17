@@ -26,7 +26,7 @@
 @property (nonatomic) UIScrollView * scrollView;
 @property (nonatomic, strong) UIPageControl * pageControl;
 @property (nonatomic, weak) id delegate;
-@property (nonatomic, weak) UserInfo * userInfo;
+@property (nonatomic, strong) UserInfo * userInfo;
 @property (nonatomic, strong) UIImage * lastLoadedPortrait;
 @property (nonatomic, strong) AsyncImageView * photoBG;
 

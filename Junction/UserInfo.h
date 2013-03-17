@@ -52,5 +52,5 @@
 +(void)GetUserInfoForPFUser:(PFUser*)pfUser withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
 
 -(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))blurSaved;
-
+-(void)savePhotoToAWSSerial:(UIImage*)newPhoto andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))photosSaved;
 @end

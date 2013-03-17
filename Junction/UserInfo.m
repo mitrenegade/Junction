@@ -323,6 +323,30 @@
     }
 }
 
+-(void)savePhotoToAWSSerial:(UIImage*)newPhoto andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))photosSaved {
+    // AWSHelper uploadImage must always be on main thread!
+    // make sure both photos are saved
+    NSString * name =[NSString stringWithFormat:@"%@", self.linkedInString];
+    if (newPhoto) {
+        [AWSHelper uploadImage:newPhoto withName:name toBucket:PHOTO_BUCKET withCallback:^(NSString *url) {
+            NSLog(@"New URL for photo: %@", url);
+            self.photoURL = url;
+            self.photo = newPhoto;
+            if (blurPhoto) {
+                [AWSHelper uploadImage:blurPhoto withName:name toBucket:PHOTO_BLUR_BUCKET withCallback:^(NSString *url) {
+                    NSLog(@"New URL for photo blur: %@", url);
+                    self.photoBlurURL = url;
+                    self.photoBlur = blurPhoto;
+                    photosSaved(YES);
+                }];
+            }
+            else {
+                photosSaved(YES);
+            }
+        }];
+    }
+}
+
 -(NSString*)photoURL {
     if (photoURL == nil) {
         // generate new link from amazon
@@ -337,6 +361,8 @@
 -(NSString*)photoBlurURL {
     if (photoURL == nil) {
         // generate new link from amazon
+        if (self.linkedInString == nil)
+            return nil;
         photoBlurURL = [AWSHelper getURLForKey:self.linkedInString inBucket:PHOTO_BLUR_BUCKET];
         NSLog(@"New photoBlurURL generated from AWS: %@", photoBlurURL);
     }

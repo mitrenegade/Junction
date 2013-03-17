@@ -145,7 +145,7 @@
     UIImagePickerController * picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
     picker.navigationController.navigationBar.tintColor = [UIColor colorWithRed:23.0/255 green:153.0/255 blue:228.0/255 alpha:1];
-    picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera; //UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     picker.allowsEditing = YES;
     //picker.showsCameraControls = YES;
     [self presentModalViewController:picker animated:YES];
@@ -161,6 +161,8 @@
     [self.slider setValue:0];
     [photoView setImage:origImage];
     userInfo.photo = origImage;
+    NSLog(@"Origimage: %f %f", origImage.size.width, origImage.size.height);
+    NSLog(@"editImage: %f %f", editImage.size.width, editImage.size.height);
     if (editImage) {
         [photoView setImage:editImage];
         userInfo.photo = editImage;

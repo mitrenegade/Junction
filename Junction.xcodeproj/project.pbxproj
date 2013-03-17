@@ -76,6 +76,7 @@
 		9E5068DD1680EE8C003CA11D /* PortraitScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E5068DC1680EE8C003CA11D /* PortraitScrollViewController.m */; };
 		9E5EC2F516CE018B004C34F0 /* ProximityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E5EC2F416CE018B004C34F0 /* ProximityViewController.xib */; };
 		9E65865016AA239900FFE877 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E65864F16AA239900FFE877 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9E80BEA416F5A75800496EDC /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9ECE1F4A16F4071D00D0B942 /* Default-568h@2x.png */; };
 		9E85A46816E1AF16001D7C91 /* tabbar-browse.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A45E16E1AF16001D7C91 /* tabbar-browse.png */; };
 		9E85A46916E1AF16001D7C91 /* tabbar-browse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A45F16E1AF16001D7C91 /* tabbar-browse@2x.png */; };
 		9E85A46A16E1AF16001D7C91 /* tabbar-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A46016E1AF16001D7C91 /* tabbar-chat.png */; };
@@ -1079,6 +1080,7 @@
 				9E8CE2A116F05A800042E57D /* icon-connections@2x.png in Resources */,
 				9E8CE2A316F05D0E0042E57D /* img-LinkedIn.png in Resources */,
 				9E8CE2AD16F0707D0042E57D /* CreateProfilePreviewController.xib in Resources */,
+				9E80BEA416F5A75800496EDC /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

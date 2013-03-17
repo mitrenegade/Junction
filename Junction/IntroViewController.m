@@ -51,9 +51,9 @@
     
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"img-wall.jpg"]];
     
-    if (!lhHelper) {
-        lhHelper  = [[LinkedInHelper alloc] init];
-        [lhHelper setDelegate:self];
+    if (!self.lhHelper) {
+        self.lhHelper  = [[LinkedInHelper alloc] init];
+        [self.lhHelper setDelegate:self];
     }
     //[self.descriptionLabel setFont:[UIFont fontWithName:@"Bree Serif" size:12]];
     
@@ -80,9 +80,9 @@
 
 
 -(void)tryCachedLogin {
-    if (!lhHelper) {
-        lhHelper  = [[LinkedInHelper alloc] init];
-        [lhHelper setDelegate:self];
+    if (!self.lhHelper) {
+        self.lhHelper  = [[LinkedInHelper alloc] init];
+        [self.lhHelper setDelegate:self];
     }
     [self hideLoginButton];
     [lhHelper getId];
@@ -92,9 +92,9 @@
 }
 
 -(IBAction)didClickLinkedIn:(id)sender {
-    if (!lhHelper) {
-        lhHelper  = [[LinkedInHelper alloc] init];
-        [lhHelper setDelegate:self];
+    if (!self.lhHelper) {
+        self.lhHelper  = [[LinkedInHelper alloc] init];
+        [self.lhHelper setDelegate:self];
     }
     
     UIButton * button = (UIButton*)sender;

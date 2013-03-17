@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UserProfileViewController.h"
 #import "UserInfo.h"
+#import "MBProgressHUD.h"
 
 @protocol ProfilePreviewDelegate <NSObject>
 
@@ -19,6 +20,7 @@
 @interface CreateProfilePreviewController : UIViewController <UINavigationControllerDelegate, UserProfileDelegate>
 {
     NSString * savedLinkedInString;
+    MBProgressHUD * progress;
 }
 @property (nonatomic, strong) UserProfileViewController * userProfileViewController;
 @property (nonatomic, weak) IBOutlet UIButton * viewForStrangers;

@@ -64,8 +64,11 @@
     [photoBG setFrame:portraitframe];
     [self.view addSubview:photoBG];
 #else
-    self.photoBG = [[AsyncImageView alloc] initWithImage:self.photo];
+    self.photoBG = [[AsyncImageView alloc] init]; //WithImage:self.photo];
     [photoBG setDelegate:self];
+    NSLog(@"PortraitScroll for %@: adding photo at url %@", self.userInfo.username, urlString);
+    if (urlString == nil)
+        NSLog(@"Here!");
     [photoBG setImageURL:[NSURL URLWithString:urlString]];
     [photoBG setFrame:portraitframe];
     
@@ -81,6 +84,9 @@
 }
 
 -(void)addUserInfo:(UserInfo *)userInfo {
+    NSLog(@"Added userInfo %@ to portrait!", userInfo.username);
+    if (!userInfo)
+        NSLog(@"Added nil userinfo!");
     self.userInfo = userInfo;
     
     // create multiple pages

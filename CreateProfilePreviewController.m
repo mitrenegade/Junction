@@ -8,6 +8,7 @@
 
 #import "CreateProfilePreviewController.h"
 #import "AppDelegate.h"
+#import "AWSHelper.h"
 
 @interface CreateProfilePreviewController ()
 
@@ -83,16 +84,26 @@ static AppDelegate * appDelegate;
     UIImage * newImage = userInfo.photo;
     UIImage * newBlur = userInfo.photoBlur;
     self.userInfo.linkedInString = savedLinkedInString;
-
     
-    [userInfo savePhotoToAWS:newImage withBlock:^(BOOL saved) {
+    NSLog(@"Clearing cache for user at %@ and %@", userInfo.photoURL, userInfo.photoURL);
+    [AsyncImageView clearCacheForURL:userInfo.photoURL];
+    [AsyncImageView clearCacheForURL:userInfo.photoBlurURL];
+    NSString * nullurl = [AWSHelper getURLForKey:nil inBucket:PHOTO_BUCKET];
+    NSString * nullblururl = [AWSHelper getURLForKey:nil inBucket:PHOTO_BUCKET];
+    NSLog(@"Clearing cache for user at %@ and %@", nullurl, nullblururl);
+    [AsyncImageView clearCacheForURL:nullurl];
+    [AsyncImageView clearCacheForURL:nullblururl];
+    
+    progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    progress.labelText = @"Saving profile picture";
+    
+    [userInfo savePhotoToAWSSerial:newImage andBlur:newBlur withBlock:^(BOOL saved) {
         NSLog(@"Saved image at %@!", userInfo.photoURL);
-        // prevent old images for this user from showing up
-        [AsyncImageView clearCacheForURL:userInfo.photoURL];
-    } andBlur:newBlur withBlock:^(BOOL saved) {
         NSLog(@"Saved blur image at %@!", userInfo.photoBlurURL);
+        [progress hide:YES];
         [delegate didFinishPreview];
         // prevent old images for this user from showing up
+        [AsyncImageView clearCacheForURL:userInfo.photoURL];
         [AsyncImageView clearCacheForURL:userInfo.photoBlurURL];
     }];
 }

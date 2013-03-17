@@ -325,6 +325,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [self.introViewController setShellUserInfo:[[UserInfo alloc] init]];
     [self.introViewController clearCachedOAuth];
     myUserInfo = nil;
+    
+    [self.proxController clearAllPortraits];
 
     [self.window addSubview:self.introViewController.view];
     [UIView animateWithDuration:1.5
