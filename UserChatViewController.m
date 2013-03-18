@@ -561,12 +561,12 @@
     else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
         [self toggleChat:YES];
         self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
-        self.nameLabel.text = @"Name hidden";
+        self.nameLabel.text = ANON_NAME;
     }
     else {
         [self toggleChat:NO];
         self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
-        self.nameLabel.text = @"Name hidden";
+        self.nameLabel.text = ANON_NAME;
     }
 }
 

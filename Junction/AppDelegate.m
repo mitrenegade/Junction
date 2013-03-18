@@ -425,15 +425,21 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             lastLocation = [location copy];
             
             // create/update a userPulse into the UserPulse table on parse, for the current pfUser
-            [UserPulse DoUserPulseWithLocation:lastLocation forUser:myUserInfo withBlock:^(BOOL success) {
-                if (!success) {
-                    [self performSelector:@selector(redoPulseForLastLocation:) withObject:lastLocation afterDelay:30];
-                }
-            }];
-            
-            // update friends distances - without rerequesting
-            NSLog(@"Location changed! Recalculating friend distances");
-            [self updateFriendDistances];
+            @try {
+                [UserPulse DoUserPulseWithLocation:lastLocation forUser:myUserInfo withBlock:^(BOOL success) {
+                    if (!success) {
+                        [self performSelector:@selector(redoPulseForLastLocation:) withObject:lastLocation afterDelay:30];
+                    }
+                }];
+                // update friends distances - without rerequesting
+                NSLog(@"Location changed! Recalculating friend distances");
+                [self updateFriendDistances];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"Exception found! %@", exception.description);
+                if ([exception.description isEqualToString:@"This object has an outstanding network connection. You have to wait until it's done."])
+                    NSLog(@"Be patient! your last pulse was still uploading");
+            }
         }
     }
 }
@@ -770,7 +776,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)acceptConnectionRequestFromUser:(UserInfo*)user {
-    MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.nav.topViewController.view animated:YES];
+    MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.window.rootViewController.presentedViewController.view animated:YES]; //self.nav.topViewController.view animated:YES];
 
     [ParseHelper removeRelation:@"connectionsReceived" betweenUser:myUserInfo andUser:user];
     [ParseHelper removeRelation:@"connectionsSent" betweenUser:user andUser:myUserInfo];

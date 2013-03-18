@@ -511,10 +511,23 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     
     isFilterShowing = show;
     if (show) {
-        [self.filterViewController.view setHidden:NO];
+        CGRect frameOpen = self.filterViewController.view.frame;
+        frameOpen.origin.y = 0;
+        [UIView animateWithDuration:.5 animations:^{
+            self.filterViewController.view.frame = frameOpen;
+        } completion:^(BOOL finished) {
+            [self.filterViewController.view setHidden:NO];
+        }];
     }
     else {
-        [self.filterViewController.view setHidden:YES];
+        [self.filterViewController.companyField resignFirstResponder];
+        CGRect frameClosed = self.filterViewController.view.frame;
+        frameClosed.origin.y = -frameClosed.size.height;
+        [UIView animateWithDuration:.5 animations:^{
+            self.filterViewController.view.frame = frameClosed;
+        } completion:^(BOOL finished) {
+            [self.filterViewController.view setHidden:YES];
+        }];
     }
 }
 
@@ -529,6 +542,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     
     NSString * company = [self.filterViewController.companyFilter lowercaseString];
     NSString * industry = [self.filterViewController.industryFilter lowercaseString];
+    NSString * position = [self.filterViewController.positionFilter lowercaseString];
 
     for (int i=0; i<[distanceGroupsOrdered count]; i++) {
         NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:i];
@@ -554,7 +568,17 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                     continue;
                 NSLog(@"Passed");
             }
-            
+
+            // filter for position
+            if (position) {
+                NSLog(@"User %@ position %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.position.lowercaseString, industry);
+                if (!orderedUser.userInfo.position)
+                    continue;
+                if ([orderedUser.userInfo.position.lowercaseString rangeOfString:position].location == NSNotFound)
+                    continue;
+                NSLog(@"Passed");
+            }
+
             // filter for friends in common...skip for now
             
             [groupOrderedFiltered addObject:orderedUser];

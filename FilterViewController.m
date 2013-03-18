@@ -52,17 +52,23 @@ static AppDelegate * appDelegate;
 -(IBAction)didClickFilter:(id)sender {
     NSLog(@"Did click filter");
     
+    [self.companyField resignFirstResponder];
+    
     [self.delegate doFilter];
     [self.delegate closeFilter];
 }
 
 -(IBAction)didClickClear:(id)sender {
+    [self.companyField resignFirstResponder];
+
     self.industryFilter = nil;
     self.companyFilter = nil;
+    self.positionFilter = nil;
     self.friendsFilter = NO;
     
     self.industryField.text = @"";
     self.companyField.text = @"";
+    self.positionField.text = @"";
     [self.friendsSwitch setOn:NO];
     
     [self.delegate doFilter];
@@ -78,7 +84,7 @@ static AppDelegate * appDelegate;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0)
-        return 2;
+        return 3;
     if (section == 1)
         return 1;
     return 0;
@@ -91,30 +97,34 @@ static AppDelegate * appDelegate;
     
     int index;
     if (section == 0) {
-        if (row == 0 && [self.viewsForCell objectAtIndex:INPUT_FILTER_INDUSTRY] != [NSNull null]) {
+        if (row == INPUT_FILTER_INDUSTRY && [self.viewsForCell objectAtIndex:INPUT_FILTER_INDUSTRY] != [NSNull null]) {
             return [self.viewsForCell objectAtIndex:INPUT_FILTER_INDUSTRY];
         }
-        if (row == 1 && [self.viewsForCell objectAtIndex:INPUT_FILTER_COMPANY] != [NSNull null]) {
+        if (row == INPUT_FILTER_COMPANY && [self.viewsForCell objectAtIndex:INPUT_FILTER_COMPANY] != [NSNull null]) {
             return [self.viewsForCell objectAtIndex:INPUT_FILTER_COMPANY];
         }
-        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 40)];
+        if (row == INPUT_FILTER_POSITION && [self.viewsForCell objectAtIndex:INPUT_FILTER_POSITION] != [NSNull null]) {
+            return [self.viewsForCell objectAtIndex:INPUT_FILTER_POSITION];
+        }
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(20, 0, 300, FILTER_ROW_HEIGHT)];
         
-        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 120, 40)];
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 120, FILTER_ROW_HEIGHT)];
         [label setFont:[UIFont boldSystemFontOfSize:12]];
         [label setTextColor:[UIColor colorWithRed:105.0/255 green:200.0/255 blue:255.0/255 alpha:1]];
         [label setBackgroundColor:[UIColor clearColor]];
         [label setTextAlignment:NSTextAlignmentLeft];
         
-        if (row == 0) {
+        if (row == INPUT_FILTER_INDUSTRY) {
             UIImageView * forward = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"forward_arrows"]];
             [forward setFrame:CGRectMake(250, 0, 40, 40)];
             [view addSubview:forward];
-            UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(125, 0, 200, 40)];
+            UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(125, 0, 200, FILTER_ROW_HEIGHT)];
             [inputField setTextAlignment:NSTextAlignmentLeft];
             [inputField setFont:[UIFont boldSystemFontOfSize:15]];
             inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
             [inputField setKeyboardType:UIKeyboardTypeAlphabet];
             [inputField setUserInteractionEnabled:NO];
+            [inputField setClearButtonMode:UITextFieldViewModeUnlessEditing];
             if ([self.industryFilter length])
                 inputField.text = self.industryFilter;
             [view addSubview:inputField];
@@ -124,14 +134,15 @@ static AppDelegate * appDelegate;
             [label setText:@"INDUSTRY"];
             index = INPUT_FILTER_INDUSTRY;
         }
-        else if (row == 1) {
-            UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(125, 0, 200, 40)];
+        else if (row == INPUT_FILTER_COMPANY) {
+            UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(125, 0, 200, FILTER_ROW_HEIGHT)];
             [inputField setTextAlignment:NSTextAlignmentLeft];
             [inputField setFont:[UIFont boldSystemFontOfSize:15]];
             inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
             [inputField setKeyboardType:UIKeyboardTypeAlphabet];
             [inputField setPlaceholder:@"Type company name"];
             [inputField setDelegate:self];
+            [inputField setClearButtonMode:UITextFieldViewModeUnlessEditing];
             if ([self.companyFilter length])
                 inputField.text = self.companyFilter;
             [view addSubview:inputField];
@@ -140,6 +151,24 @@ static AppDelegate * appDelegate;
             
             [label setText:@"COMPANY"];
             index = INPUT_FILTER_COMPANY;
+        }
+        else if (row == INPUT_FILTER_POSITION) {
+            UITextField * inputField = [[UITextField alloc] initWithFrame:CGRectMake(125, 0, 200, FILTER_ROW_HEIGHT)];
+            [inputField setTextAlignment:NSTextAlignmentLeft];
+            [inputField setFont:[UIFont boldSystemFontOfSize:15]];
+            inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+            [inputField setKeyboardType:UIKeyboardTypeAlphabet];
+            [inputField setPlaceholder:@"e.g. Product Manager"];
+            [inputField setDelegate:self];
+            [inputField setClearButtonMode:UITextFieldViewModeUnlessEditing];
+            if ([self.positionFilter length])
+                inputField.text = self.positionFilter;
+            [view addSubview:inputField];
+            
+            self.positionField = inputField;
+            
+            [label setText:@"POSITION"];
+            index = INPUT_FILTER_POSITION;
         }
         [view addSubview:label];
         
@@ -150,7 +179,7 @@ static AppDelegate * appDelegate;
         if (row == 0 && [self.viewsForCell objectAtIndex:INPUT_FILTER_FRIENDS] != [NSNull null]) {
             return [self.viewsForCell objectAtIndex:INPUT_FILTER_FRIENDS];
         }
-        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, FILTER_ROW_HEIGHT)];
         [label setFont:[UIFont boldSystemFontOfSize:12]];
         [label setTextColor:[UIColor colorWithRed:105.0/255 green:200.0/255 blue:255.0/255 alpha:1]];
         [label setBackgroundColor:[UIColor clearColor]];
@@ -158,7 +187,7 @@ static AppDelegate * appDelegate;
         [label setText:@"FRIENDS IN COMMON"];
         
         UISwitch * toggle = [[UISwitch alloc] init];
-        [toggle setFrame:CGRectMake(200, 10, 120, 30)];
+        [toggle setFrame:CGRectMake(200, 5, 120, FILTER_ROW_HEIGHT-10)];
         [toggle addTarget:self action:@selector(didToggleFriendsFilter:) forControlEvents:UIControlEventValueChanged];
         
         if (self.friendsFilter)
@@ -167,7 +196,7 @@ static AppDelegate * appDelegate;
         self.friendsSwitch = toggle;
         
         index = INPUT_FILTER_FRIENDS;
-        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 40)];
+        UIView * view = [[UIView alloc] initWithFrame:CGRectMake(20, 0, 300, FILTER_ROW_HEIGHT)];
         [view addSubview:label];
         [view addSubview:toggle];
         [self.viewsForCell replaceObjectAtIndex:index withObject:view];
@@ -197,6 +226,8 @@ static AppDelegate * appDelegate;
 }
 
 -(void)didToggleFriendsFilter:(id)sender {
+    [self.companyField resignFirstResponder];
+    
     self.friendsFilter = !self.friendsFilter;
 //    [[NSNotificationCenter defaultCenter] postNotificationName:kFilterChanged object:self userInfo:nil];
 }
@@ -223,12 +254,24 @@ static AppDelegate * appDelegate;
     [self.industryField setText:self.industryFilter];
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 1;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return FILTER_ROW_HEIGHT;
+}
+
 #pragma mark UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     // text field must also have delegate set as file's owner
 	[textField resignFirstResponder];
+    if (textField == self.companyField)
+        [self.positionField becomeFirstResponder];
+    
     self.companyFilter = self.companyField.text;
+    self.positionFilter = self.positionField.text;
 	return YES;
 }
 

@@ -96,11 +96,12 @@
     
     // background photo
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if ([appDelegate isConnectedWithUser:userInfo])
-        [self addPhoto:userInfo.photo withURL:userInfo.photoURL];
-    else
-        [self addPhoto:userInfo.photoBlur withURL:userInfo.photoBlurURL];//[userInfo.photo imageWithGaussianBlur]];
-    
+    if ([appDelegate isConnectedWithUser:userInfo]) {
+        [self addPhoto:userInfo.photoThumb withURL:userInfo.photoThumbURL];
+    }
+    else {
+        [self addPhoto:userInfo.photoBlurThumb withURL:userInfo.photoBlurThumbURL];//[userInfo.photo imageWithGaussianBlur]];
+    }
     int fontSize = 12;
     int offset = 6;
     int size = self.view.frame.size.width;

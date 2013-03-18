@@ -44,22 +44,29 @@ static AppDelegate * appDelegate;
     [self updateUserInfo];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnections)
+                                             selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsUpdated
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnections)
+                                             selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsSentUpdated
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateConnections)
+                                             selector:@selector(updateUserInfo)
                                                  name:kParseConnectionsReceivedUpdated
                                                object:nil];
 }
 
 -(void)updateUserInfo {
     NSLog(@"UserProfile UpdateUserInfo");
+    
+    [self.buttonIgnore setHidden:YES];
+    CGRect frame = self.buttonConnect.frame;
+    frame.origin.x = 5;
+    frame.size.width = 310;
+    [self.buttonConnect setFrame:frame];
     if ([userInfo.pfUserID isEqualToString:appDelegate.myUserInfo.pfUserID]) {
+        // own profile
         isOwnProfile = YES;
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
         NSLog(@"Profile photo url: %@", [userInfo photoURL]);
@@ -68,22 +75,48 @@ static AppDelegate * appDelegate;
         [nameLabel setText:userInfo.username];
         
 #if TESTING
-        [self.buttonConnect setTitle:@"Delete User" forState:UIControlStateNormal];
+        [self.buttonConnect setTitle:@"Log out" forState:UIControlStateNormal];
 #endif
     }
     else if ([appDelegate isConnectedWithUser:userInfo]) {
+        // connected profile
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
         NSLog(@"Profile photo url: %@", [userInfo photoURL]);
         if (userInfo.photo)
             [photoView setImage:userInfo.photo];
         [nameLabel setText:userInfo.username];
+        [self.buttonConnect setTitle:@"Connected" forState:UIControlStateNormal];
     }
-    else {
+    else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
+        // request received - like connected profile
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoURL]]];
+        NSLog(@"Profile photo url: %@", [userInfo photoURL]);
+        if (userInfo.photo)
+            [photoView setImage:userInfo.photo];
+        [nameLabel setText:userInfo.username];
+        [self.buttonIgnore setHidden:NO];
+        CGRect frame = self.buttonConnect.frame;
+        int originalX = frame.origin.x;
+        frame.origin.x = self.buttonIgnore.frame.origin.x + self.buttonIgnore.frame.size.width + 5;
+        frame.size.width -= (frame.origin.x - originalX);
+        [self.buttonConnect setTitle:@"Accept Connection" forState:UIControlStateNormal];
+        [self.buttonConnect setFrame:frame];
+    }
+    else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
+        // request sent
         [photoView setImageURL:[NSURL URLWithString:[userInfo photoBlurURL]]];
-        NSLog(@"Profile photo url: %@", [userInfo photoBlurURL]);
         if (userInfo.photoBlur)
             [photoView setImage:userInfo.photoBlur];
-        [nameLabel setText:@"Name hidden"];
+        [nameLabel setText:ANON_NAME];
+        [self.buttonConnect setTitle:@"Connection Requested" forState:UIControlStateNormal];
+    }
+    else {
+        // not connected
+        [photoView setImageURL:[NSURL URLWithString:[userInfo photoBlurURL]]];
+        if (userInfo.photoBlur)
+            [photoView setImage:userInfo.photoBlur];
+        [nameLabel setText:ANON_NAME];
+        [self.buttonConnect setTitle:@"Connect" forState:UIControlStateNormal];
     }
     NSString * jobTitle = [NSString stringWithFormat:@"%@ @ %@", userInfo.position, userInfo.company];
     [self.titleLabel setText:jobTitle];
@@ -137,7 +170,7 @@ static AppDelegate * appDelegate;
         if (userInfo.photoBlur) {
             [photoView setImage:userInfo.photoBlur];
         }
-        [nameLabel setText:@"Name hidden"];
+        [nameLabel setText:ANON_NAME];
     }
 }
 
@@ -146,24 +179,6 @@ static AppDelegate * appDelegate;
         [self.buttonBlock setEnabled:NO];
         [self.buttonChat setEnabled:NO];
         [self.buttonConnect setEnabled:NO];
-    }
-}
-
--(void)updateConnections {
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if ([appDelegate isConnectedWithUser:userInfo]) {
-#if 0
-        [self.nameLabel setText:userInfo.username];
-        [self.photoView setImage:userInfo.photo];
-#else
-        [self updateUserInfo];
-#endif
-    }
-    else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
-        
-    }
-    else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
-        
     }
 }
 
@@ -238,7 +253,31 @@ static AppDelegate * appDelegate;
 #endif
     }
     else {
-        
+        NSLog(@"Connect button requested!");
+        AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        if ([appDelegate isConnectedWithUser:userInfo]) {
+            NSLog(@"Already connected!");
+        }
+        else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
+            NSLog(@"Accepting connection request!");
+            [appDelegate acceptConnectionRequestFromUser:userInfo];
+        }
+        else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
+            NSLog(@"Connection request already sent!");
+        }
+        else {
+            [[UIAlertView alertViewWithTitle:@"Send connection request?" message:[NSString stringWithFormat:@"Do you want to send a connection request to %@?", userInfo.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObject:@"Connect"] onDismiss:^(int buttonIndex) {
+                NSLog(@"Sending connection request!");
+                [appDelegate sendConnectionRequestToUser:userInfo];
+            } onCancel:^{
+                NSLog(@"No request sent!");
+            }] show];
+        }
     }
+}
+
+-(IBAction)didClickIgnore:(id)sender {
+    NSLog(@"Ignoring connection request");
+    [UIAlertView alertViewWithTitle:@"Request ignored!" message:@"Why even click here? You're not really ignoring them if you click..."];
 }
 @end

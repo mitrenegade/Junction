@@ -89,13 +89,13 @@
             newImage = [[self resizeImage:userInfo.photo byScale:.5] imageWithGaussianBlur];
             break;
         case 3:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.5] imageWithGaussianBlur] imageWithGaussianBlur];
+            newImage = [[[self resizeImage:userInfo.photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
             break;
         case 4:
-            newImage = [[self resizeImage:userInfo.photo byScale:.25] imageWithGaussianBlur];
+            newImage = [[[self resizeImage:userInfo.photo byScale:.15] imageWithGaussianBlur] imageWithGaussianBlur];
             break;
         case 5:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
+            newImage = [[[self resizeImage:userInfo.photo byScale:.05] imageWithGaussianBlur] imageWithGaussianBlur];
             break;
             
         default:
@@ -145,10 +145,20 @@
     UIImagePickerController * picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
     picker.navigationController.navigationBar.tintColor = [UIColor colorWithRed:23.0/255 green:153.0/255 blue:228.0/255 alpha:1];
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera; //UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     picker.allowsEditing = YES;
-    //picker.showsCameraControls = YES;
-    [self presentModalViewController:picker animated:YES];
+
+    [UIAlertView alertViewWithTitle:nil message:@"Where do you want to get your profile picture?" cancelButtonTitle:@"Cancel" otherButtonTitles:[NSArray arrayWithObjects:@"Camera", @"Photo Album", nil] onDismiss:^(int buttonIndex) {
+        if (buttonIndex == 0) {
+            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        }
+        else if (buttonIndex == 1) {
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary; // regular res!
+        }
+        [self presentModalViewController:picker animated:YES];
+    } onCancel:^{
+        return;
+    }];
 }
 
 #pragma mark UIImagePickerControllerDelegate

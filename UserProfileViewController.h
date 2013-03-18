@@ -39,11 +39,13 @@
 @property (nonatomic, weak) IBOutlet UIButton * buttonConnect;
 @property (nonatomic, weak) IBOutlet UIButton * buttonBlock;
 @property (nonatomic, weak) IBOutlet UIButton * buttonChat;
+@property (nonatomic, weak) IBOutlet UIButton * buttonIgnore;
 
 -(IBAction)didClickBack:(id)sender;
 -(IBAction)didClickConnect:(id)sender;
 -(IBAction)didClickBlock:(id)sender;
 -(IBAction)didClickChat:(id)sender;
+-(IBAction)didClickIgnore:(id)sender;
 -(void)toggleViewForConnection:(BOOL)isConnected;
 -(void)toggleInteraction:(BOOL)canInteract;
 @end

@@ -30,6 +30,10 @@
 @property (strong, nonatomic) NSString * photoURL;
 @property (strong, nonatomic) UIImage * photoBlur;
 @property (strong, nonatomic) NSString * photoBlurURL;
+@property (strong, nonatomic) UIImage * photoThumb;
+@property (strong, nonatomic) NSString * photoThumbURL;
+@property (strong, nonatomic) UIImage * photoBlurThumb;
+@property (strong, nonatomic) NSString * photoBlurThumbURL;
 
 @property (strong, nonatomic) NSString * industry;
 @property (strong, nonatomic) NSString * summary;
@@ -53,4 +57,5 @@
 
 -(void)savePhotoToAWS:(UIImage*)newPhoto withBlock:(void (^)(BOOL))photoSaved andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))blurSaved;
 -(void)savePhotoToAWSSerial:(UIImage*)newPhoto andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))photosSaved;
+-(void)saveThumbsToAWSSerial:(UIImage*)newPhoto andBlur:(UIImage*)blurPhoto withBlock:(void (^)(BOOL))photosSaved;
 @end

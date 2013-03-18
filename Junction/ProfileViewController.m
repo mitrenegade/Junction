@@ -79,6 +79,7 @@ static AppDelegate * appDelegate;
     self.userProfileViewController = [[UserProfileViewController alloc] init];
     [self.userProfileViewController setUserInfo:appDelegate.myUserInfo];
     [self.userProfileViewController setDelegate:self];
+    //[self.userProfileViewController toggleInteraction:NO];
     
     [self.view insertSubview:self.userProfileViewController.view belowSubview:self.buttonView];
     [self.userProfileViewController.view setFrame:self.viewForFrame.frame];

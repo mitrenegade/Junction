@@ -12,8 +12,11 @@
 enum FILTER_INPUT_FIELDS {
     INPUT_FILTER_INDUSTRY = 0,
     INPUT_FILTER_COMPANY,
+    INPUT_FILTER_POSITION,
     INPUT_FILTER_FRIENDS
 };
+
+#define FILTER_ROW_HEIGHT 35
 
 @protocol FilterDelegate <NSObject>
 
@@ -36,6 +39,8 @@ enum FILTER_INPUT_FIELDS {
 @property (nonatomic, strong) UITextField * industryField;
 @property (nonatomic, strong) NSString * companyFilter;
 @property (nonatomic, strong) UITextField * companyField;
+@property (nonatomic, strong) NSString * positionFilter;
+@property (nonatomic, strong) UITextField * positionField;
 @property (nonatomic, assign) BOOL friendsFilter;
 @property (nonatomic, strong) UISwitch * friendsSwitch;
 

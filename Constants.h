@@ -15,9 +15,13 @@
 
 #define PHOTO_BUCKET @"missionmade.junction.profile.photo"
 #define PHOTO_BLUR_BUCKET @"missionmade.junction.profile.photoblur"
+#define PHOTO_THUMB_BUCKET @"missionmade.junction.profile.photo.thumb"
+#define PHOTO_BLUR_THUMB_BUCKET @"missionmade.junction.profile.photoblur.thumb"
 
 #define PROFILE_WIDTH 280
 #define PROFILE_HEIGHT 280
+
+#define BROWSE_THUMB_SIZE 160
 
 #define USE_SIDEBAR 0
 #define SIDEBAR_WIDTH 40
@@ -34,4 +38,5 @@
 #define COLOR_GREEN [UIColor colorWithRed:51.0/255.0 green:153.0/255.0 blue:102.0/255.0 alpha:1]
 #define COLOR_[UIColor colorWithRed:67.0/255.0 green:99.0/255.0 blue:132.0/255.0 alpha:1]
 
+#define ANON_NAME @"Name Hidden"
 @end

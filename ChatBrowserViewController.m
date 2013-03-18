@@ -164,7 +164,7 @@
         }
         
         UILabel * nameLabel = (UILabel*)[cell.contentView viewWithTag:CB_TAG_NAMELABEL];
-        [nameLabel setText:@"Name hidden"];
+        [nameLabel setText:ANON_NAME];
         if ([appDelegate isConnectedWithUser:userInfo])
             nameLabel.text = userInfo.username;
         

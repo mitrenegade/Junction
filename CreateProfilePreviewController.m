@@ -9,6 +9,7 @@
 #import "CreateProfilePreviewController.h"
 #import "AppDelegate.h"
 #import "AWSHelper.h"
+#import "UIImage+Resize.h"
 
 @interface CreateProfilePreviewController ()
 
@@ -106,6 +107,25 @@ static AppDelegate * appDelegate;
         [AsyncImageView clearCacheForURL:userInfo.photoURL];
         [AsyncImageView clearCacheForURL:userInfo.photoBlurURL];
     }];
+    
+    // save thumbnails
+    CGSize thumbSize = CGSizeMake(BROWSE_THUMB_SIZE, BROWSE_THUMB_SIZE);
+    UIImage * newImageThumb = [newImage resizedImage:thumbSize interpolationQuality:kCGInterpolationHigh];
+    UIImage * newBlurThumb;
+    if (newBlur.size.width > BROWSE_THUMB_SIZE)
+        newBlurThumb = [newBlur resizedImage:thumbSize interpolationQuality:kCGInterpolationHigh];
+    else
+        newBlurThumb = newBlur;
+    NSLog(@"blur size: %f %f", newBlur.size.width, newBlur.size.height);
+    [userInfo saveThumbsToAWSSerial:newImageThumb andBlur:newBlurThumb withBlock:^(BOOL finished) {
+        NSLog(@"New thumbnails saved!");
+    }];
+    
+    // todo: solve this problem:
+    /* subway low connectivity
+    AmazonServiceException { RequestId:031EF73E53C9E45C, ErrorCode:RequestTimeout, Message:Your socket connection to the server was not read from or written to within the timeout period. Idle connections will be closed. }
+    2013-03-18 09:28:21.611 Junction[16888:907] AWSHelper upload Success: 0
+     */
 }
 
 #pragma mark UserProfileDelegate
