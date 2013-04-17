@@ -41,13 +41,14 @@
 @property (strong, nonatomic) NSString * location;
 @property (strong, nonatomic) NSArray * specialties;
 //@property (nonatomic) NSArray * educations;
-@property (strong, nonatomic) NSArray * currentPositions;
+@property (strong, nonatomic) NSMutableArray * currentPositions;
 @property (strong, nonatomic) UserPulse * userPulse;
 @property (strong, nonatomic) NSString * pfUserID;
 
 @property (strong, nonatomic) NSString * talkAbout;
 
 @property (nonatomic) int privacyLevel; // 0 to 5
+@property (nonatomic) BOOL isVisible; // whether pulse/location can be seen
 
 +(void)FindUserInfoFromParse:(UserInfo*)userInfo withBlock:(void (^)(UserInfo *, NSError *))queryCompletedWithResults;
 +(void)UpdateUserInfoToParse:(UserInfo*)userInfo;

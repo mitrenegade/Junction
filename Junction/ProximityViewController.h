@@ -43,6 +43,9 @@ enum DISTANCE_GROUPS {
     int columnHeight;
     
     BOOL isFilterShowing;
+    
+    IBOutlet UIButton * buttonFilter;
+    IBOutlet UIButton * buttonFeedback;
 }
 
 @property (nonatomic) BOOL showConnectionsOnly;
@@ -65,14 +68,15 @@ enum DISTANCE_GROUPS {
 
 @property (weak, nonatomic) UserInfo * myUserInfo;
 
--(void)reloadAll;
--(IBAction)didClickSearch:(id)sender;
--(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse;
--(void)clearAllPortraits;
-
 // ego pull to refresh
 @property(assign,getter=isReloading) BOOL reloading;
 @property(nonatomic,readonly) EGORefreshTableHeaderView *refreshHeaderView;
 @property (nonatomic, assign) BOOL hasHeaderRow;
 
+-(void)reloadAll;
+-(IBAction)didClickSearch:(id)sender;
+-(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse;
+-(void)clearAllPortraits;
+
+-(IBAction)didClickFeedback:(id)sender;
 @end

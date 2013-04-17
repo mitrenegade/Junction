@@ -193,6 +193,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
         [[NSNotificationCenter defaultCenter] postNotificationName:jnChatReceived object:self userInfo:userInfo];
     }
+    else if ([type isEqualToString:jpConnectionRequest]) {
+        NSLog(@"Connection request received from %@", senderUserInfo.username);
+        [UIAlertView alertViewWithTitle:@"Connection Request" message:[NSString stringWithFormat:@"Connection request received from %@", senderUserInfo.username]];
+        [self getMyConnections];
+        [self getMyConnectionsReceived];
+        [self getMyConnectionsSent];
+    }
+    else if ([type isEqualToString:jpConnectionAccepted]) {
+        NSLog(@"Connection request accepted by %@", senderUserInfo.username);
+        [UIAlertView alertViewWithTitle:@"Connection Accepted" message:[NSString stringWithFormat:@"You are now connected with %@", senderUserInfo.username]];
+        [self getMyConnections];
+        [self getMyConnectionsReceived];
+        [self getMyConnectionsSent];
+    }
 }
 
 -(void)getJunctionUsers {
@@ -383,8 +397,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 #define LOCATION_RECENT_TIME_INTERVAL 15.0  // threshold for old location updates - if older than this, we discard
 #define LOCATION_MIN_DISTANCE_FOR_UPDATE 10.0 // threshold for updating location to Parse. may not be needed if significantChanges is used
 -(void)startPulsing {
+    NSLog(@"Start pulsing");
     if ([CLLocationManager locationServicesEnabled]) {
         //        [self.locationManager startMonitoringSignificantLocationChanges]; // monitor changes
+        NSLog(@"Location services enabled? %d", [CLLocationManager locationServicesEnabled]);
         [self.locationManager startUpdatingLocation];
     }
     else {
@@ -394,13 +410,19 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 -(void)locationSetHighAccuracy {
     // we are monitoring significant changes, these have no effect
+    [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+    [locationManager setDistanceFilter:kCLDistanceFilterNone];
+    [self performSelector:@selector(locationSetHighAccuracyInBackground) withObject:nil afterDelay:10];
+}
+-(void)locationSetHighAccuracyInBackground {
+    // we are monitoring significant changes, these have no effect
     [locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
     [locationManager setDistanceFilter:25]; // movement threshold for new events - in meters
 }
 -(void)locationSetLowAccuracy {
     // we are monitoring significant changes, these have no effect
     [locationManager setDesiredAccuracy:kCLLocationAccuracyHundredMeters];
-    [locationManager setDistanceFilter:kCLDistanceFilterNone];
+    [locationManager setDistanceFilter:25];
 }
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray *)locations {
@@ -430,6 +452,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                     if (!success) {
                         [self performSelector:@selector(redoPulseForLastLocation:) withObject:lastLocation afterDelay:30];
                     }
+                    else {
+                        NSLog(@"Pulsed own location! setting to userInfo");
+                        [allPulses setObject:myUserInfo.userPulse forKey:myUserInfo.pfUserID];
+                    }
                 }];
                 // update friends distances - without rerequesting
                 NSLog(@"Location changed! Recalculating friend distances");
@@ -445,12 +471,19 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)redoPulseForLastLocation:(CLLocation*)lastloc {
-    [UserPulse DoUserPulseWithLocation:lastloc forUser:myUserInfo withBlock:^(BOOL success) {
-        if (!success)
-            NSLog(@"Could not pulse your location! We tried twice!");
-        else
-            [self updateFriendDistances];
-    }];
+    @try {
+        [UserPulse DoUserPulseWithLocation:lastloc forUser:myUserInfo withBlock:^(BOOL success) {
+            if (!success)
+                NSLog(@"Could not pulse your location! We tried twice!");
+            else
+                [self updateFriendDistances];
+        }];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Exception found! %@", exception.description);
+        if ([exception.description isEqualToString:@"This object has an outstanding network connection. You have to wait until it's done."])
+            NSLog(@"Be patient! your last pulse was still uploading");
+    }
 }
 
 -(void)forcePulse {
@@ -474,6 +507,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 #pragma mark ViewControllerDelegate - new login process
 -(void)didLoginPFUser:(PFUser*)pfUser withUserInfo:(UserInfo*)parseUserInfo {
     myUserInfo = parseUserInfo;
+    
+    if (myUserInfo.photo == nil) {
+        [self loadPhotoFromWebWithBlock:nil];
+    }
 
     NSLog(@"Login successful! Adding tabs!");
     UITabBarController * tabBarController = [[UITabBarController alloc] init];
@@ -589,6 +626,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             }
         }
 #endif
+        // todo: do in background so UI doesn't freeze
         [UserPulse FindUserPulseForUserInfo:friendUserInfo withBlock:^(NSArray * results, NSError * error) {
             if (error || [results count] == 0) {
                 NSLog(@"Could not find pulse for user %@", friendUserInfo.username);
@@ -626,17 +664,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat {
-#if USE_SIDEBAR
-    RightTabController * rightTabController = [[RightTabController alloc] init];
-    [rightTabController setUserInfo:friendUserInfo];
-    [self.nav pushViewController:rightTabController animated:YES];
-    //[rightTabController addDefaultControllers];
-    
-    if (forChat)
-        [rightTabController didSelectViewController:1];
-    else
-        [rightTabController didSelectViewController:0];
-#else
     if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
         ProfileViewController * controller = [[ProfileViewController alloc] init];
         [controller setMyUserInfo:myUserInfo];
@@ -647,7 +674,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         [controller setUserInfo:friendUserInfo];
         [self.window.rootViewController presentModalViewController:controller animated:YES];
     }
-#endif
 }
 
 -(void)getMyConnections {
@@ -754,9 +780,18 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         }
         else {
             // no need to update requests received
-            // todo: send notification to user to update requests!
         }
     }];
+    
+    // send notification to user to update requests!
+    NSString * channel = [user.pfUserID stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    [data setObject:[NSString stringWithFormat:@"%@ wants to connect", self.myUserInfo.username] forKey:@"alert"];
+    [data setObject:self.myUserInfo.pfUserID forKey:@"sender"];
+    [data setObject:jpConnectionRequest forKey:@"type"];
+    [data setObject:channel forKey:@"channel"];
+    [PFPush sendPushDataToChannelInBackground:channel withData:data];
     
     // create notification for display
     JunctionNotification * notification = [[JunctionNotification alloc] init];
@@ -803,6 +838,15 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         [progress hide:YES];
     }];
     
+    // send notification for user to update
+    NSString * channel = [user.pfUserID stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    [data setObject:[NSString stringWithFormat:@"%@ accepted your connection", self.myUserInfo.username] forKey:@"alert"];
+    [data setObject:self.myUserInfo.pfUserID forKey:@"sender"];
+    [data setObject:jpConnectionAccepted forKey:@"type"];
+    [data setObject:channel forKey:@"channel"];
+    [PFPush sendPushDataToChannelInBackground:channel withData:data];
+    
     NSMutableArray * notificationsForDeletion = [self.notificationsController findNotificationsOfType:jnConnectionRequestNotification fromSender:user];
     
     if ([notificationsForDeletion count] == 0) {
@@ -832,6 +876,81 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         
         [self saveCachedRecentChats];
     }
+}
+
+#pragma mark feedback MessageController and delegate
+- (void)mailComposeController:(MFMailComposeViewController*)controller
+          didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+    
+    // Notifies users about errors associated with the interface
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            //feedbackMsg.text = @"Result: Mail sending canceled";
+            break;
+        case MFMailComposeResultSaved:
+            //feedbackMsg.text = @"Result: Mail saved";
+            break;
+        case MFMailComposeResultSent:
+            //feedbackMsg.text = @"Result: Mail sent";
+            break;
+        case MFMailComposeResultFailed:
+            //feedbackMsg.text = @"Result: Mail sending failed";
+            break;
+        default:
+            //feedbackMsg.text = @"Result: Mail not sent";
+            break;
+    }
+    [self.window.rootViewController dismissModalViewControllerAnimated:YES];
+}
+
+-(void)sendFeedback:(NSString *)message {
+    NSLog(@"Message: %@", message);
+    if ([MFMailComposeViewController canSendMail]){
+        NSMutableArray * recipients = [[NSMutableArray alloc] init];
+        [recipients addObject:@"bobbysaadmanojabhay@gmail.com"];
+        NSString * subject = [NSString stringWithFormat:@"Junction Alpha Feedback - %@", message];
+        NSString * body = [NSString stringWithFormat:@"Feedback about: %@", message];
+        
+        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+        picker.mailComposeDelegate = self;
+        [picker setToRecipients:recipients];
+        [picker setSubject:subject];
+        [picker setMessageBody:body isHTML:NO];
+        
+        //[self.navigationController pushViewController:picker animated:YES];
+        if (self.window.rootViewController.presentedViewController != nil) {
+            [self.window.rootViewController.presentedViewController presentModalViewController:picker animated:YES];
+        }
+        else {
+            [self.window.rootViewController presentModalViewController:picker animated:YES];
+        }
+    }
+}
+
+-(void)loadPhotoFromWebWithBlock:(void (^)(UIImage *))gotImage {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSString * photoURL = myUserInfo.photoURL;
+        UIImage * photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:photoURL]]];
+        myUserInfo.photo = photo;
+        if (gotImage) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                gotImage(photo);
+            });
+        }
+    });
+}
+-(void)loadPhotoBlurFromWebWithBlock:(void(^)(UIImage*))gotImage {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSString * photoBlurURL = myUserInfo.photoBlurURL;
+        UIImage * photo = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:photoBlurURL]]];
+        myUserInfo.photoBlur = photo;
+        if (gotImage) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                gotImage(photo);
+            });
+        }
+    });
 }
 
 @end

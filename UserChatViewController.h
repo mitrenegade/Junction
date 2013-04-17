@@ -21,7 +21,6 @@
 }
 @property (nonatomic, weak) UserInfo * userInfo;
 
-@property (nonatomic, weak) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) IBOutlet UILabel * labelConnectionRequired;
 @property (nonatomic, weak) IBOutlet UIButton * buttonConnect;
 @property (nonatomic, weak) IBOutlet UITableView * tableView;
@@ -29,6 +28,7 @@
 @property (nonatomic, weak) IBOutlet UITextField * chatInput;
 @property (nonatomic, weak) IBOutlet UITextField * chatBar;
 
+@property (nonatomic, weak) IBOutlet UIView * inputView;
 @property (nonatomic, weak) IBOutlet UIButton * buttonChat;
 @property (nonatomic, strong) NSString * chatChannel;
 @property (nonatomic, strong) UIImage * userPhoto;

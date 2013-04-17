@@ -15,6 +15,8 @@
 
 @implementation NotificationsViewController
 
+static AppDelegate * appDelegate;
+
 //@synthesize users;
 //@synthesize messages;
 @synthesize tableView;
@@ -29,6 +31,8 @@
         // Custom initialization
         [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-notifications"]];
         [self.tabBarItem setTitle:@"Notifications"];
+
+        appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -54,7 +58,12 @@
     [titleView setFrame:frame];
     self.navigationItem.titleView = titleView;
     
-    
+#if TESTING
+    UIBarButtonItem * leftButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonFeedback];
+    [self.navigationItem setLeftBarButtonItem:leftButtonItem];
+    [buttonFeedback.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
+#endif
+
     self.connectRequestUserInfos = [[NSMutableArray alloc] init];
     self.notifications = [[NSMutableArray alloc] init];
     
@@ -286,5 +295,10 @@
             [returnArray addObject:notif];
     }
     return returnArray;
+}
+
+#pragma mark feedback
+-(IBAction)didClickFeedback:(id)sender {
+    [appDelegate sendFeedback:@"Notifications view"];
 }
 @end

@@ -31,5 +31,6 @@
 @property (nonatomic, strong) AsyncImageView * photoBG;
 
 -(void)addUserInfo:(UserInfo *)userInfo;
+-(void)reloadWithUserInfo:(UserInfo*)userInfo;
 
 @end

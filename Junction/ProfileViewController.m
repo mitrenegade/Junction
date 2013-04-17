@@ -74,7 +74,11 @@ static AppDelegate * appDelegate;
     [titleView setFrame:frame];
     self.navigationItem.titleView = titleView;
     
-    [self.viewForStrangers setSelected:YES];
+#if TESTING
+    UIBarButtonItem * leftButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonFeedback];
+    [self.navigationItem setLeftBarButtonItem:leftButtonItem];
+    [buttonFeedback.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
+#endif
     
     self.userProfileViewController = [[UserProfileViewController alloc] init];
     [self.userProfileViewController setUserInfo:appDelegate.myUserInfo];
@@ -83,7 +87,11 @@ static AppDelegate * appDelegate;
     
     [self.view insertSubview:self.userProfileViewController.view belowSubview:self.buttonView];
     [self.userProfileViewController.view setFrame:self.viewForFrame.frame];
-    [self toggleViewForConnections:viewForStrangers];
+
+    // start with connected profile
+    // hack: asyncimageview doesnt load the blur correctly so lets start without blur
+    [self toggleViewForConnections:viewForConnections];
+    [self.viewForStrangers setSelected:NO];
 }
 
 -(void)updateMyUserInfo {
@@ -144,6 +152,14 @@ static AppDelegate * appDelegate;
 #pragma mark UserProfileDelegate
 -(void)didClickClose {
     [self dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark feedback
+-(IBAction)didClickFeedback:(id)sender {
+    if ([myUserInfo.pfUserID isEqualToString:appDelegate.myUserInfo.pfUserID])
+        [appDelegate sendFeedback:@"My Profile view"];
+    else
+        [appDelegate sendFeedback:@"Other's Profile view"];
 }
 
 @end

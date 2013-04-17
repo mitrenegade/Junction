@@ -15,6 +15,8 @@
 
 @interface ChatBrowserViewController : UIViewController <UINavigationControllerDelegate, UITabBarControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
+    IBOutlet UIButton * buttonFeedback;
+
 #if USE_PULL_TO_REFRESH
     EGORefreshTableHeaderView *refreshHeaderView;
     BOOL _reloading;
@@ -38,5 +40,7 @@
 #if USE_PULL_TO_REFRESH
 - (void)dataSourceDidFinishLoadingNewData;
 #endif
+
+-(IBAction)didClickFeedback:(id)sender;
 
 @end

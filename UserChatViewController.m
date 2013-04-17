@@ -12,23 +12,28 @@
 #import "UIImage+GaussianBlur.h"
 #import "Chat.h"
 
+static AppDelegate * appDelegate;
+
 @interface UserChatViewController ()
 
 @end
 
 @implementation UserChatViewController
-@synthesize userInfo, nameLabel;
+@synthesize userInfo;
 @synthesize labelConnectionRequired, buttonConnect;
 @synthesize tableView;
 @synthesize chatData;
 @synthesize chatInput;
 @synthesize buttonChat;
 @synthesize chatBar;
+@synthesize inputView;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     }
     return self;
 }
@@ -38,12 +43,24 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    [self toggleTitleView:ANON_NAME];
     [self updateUserInfo];
     chatData  = [[NSMutableArray alloc] init];
     
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.chatChannel = [NSString stringWithFormat:@"%@+%@", userInfo.pfUserID, [appDelegate myUserInfo].pfUserID];
 
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    UIImage * headerbg = [UIImage imageNamed:@"header_bg"];
+    [self.navigationController.navigationBar setBackgroundImage:headerbg forBarMetrics:UIBarMetricsDefault];
+    
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setImage:[UIImage imageNamed:@"icon-back"] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(dismissModalViewControllerAnimated:) forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(10, 0, 30, 30)];
+    UIBarButtonItem * backbutton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    [self.navigationItem setLeftBarButtonItem:backbutton];
+
+    
     if (refreshHeaderView == nil) {
         
         PF_EGORefreshTableHeaderView *view = [[PF_EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - tableView.bounds.size.height, self.view.frame.size.width, tableView.bounds.size.height)];
@@ -256,10 +273,10 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [cell setBackgroundColor:[UIColor clearColor]];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                
+        
         UIButton * photoView = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-		[photoView.layer setBorderColor: [[UIColor blackColor] CGColor]];
-        [photoView.layer setBorderWidth: 2.0];
+		//[photoView.layer setBorderColor: [[UIColor blackColor] CGColor]];
+        //[photoView.layer setBorderWidth: 2.0];
         //[photoView addTarget:self action:@selector(didClickUserPhoto:) forControlEvents:UIControlEventTouchUpInside];
         [photoView setUserInteractionEnabled:NO];
         photoView.tag = TAG_PHOTO;
@@ -267,10 +284,16 @@
         UITextView * textLabel = [[UITextView alloc] initWithFrame:CGRectMake(60, 10, self.tableView.frame.size.width - 80, 50)];
         [textLabel setUserInteractionEnabled:NO];
         [textLabel setScrollEnabled:NO];
+        [textLabel setFont:[UIFont systemFontOfSize:11]];
+        [textLabel setTextColor:COLOR_GRAY];
+		[textLabel.layer setBorderColor:[COLOR_LIGHTBLUE CGColor]];
+        [textLabel.layer setBorderWidth: 2.0];
+        [textLabel.layer setCornerRadius:5];
         textLabel.tag = TAG_TEXTLABEL;
 
         UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 55, 100, 20)];
         timeLabel.tag = TAG_TIMELABEL;
+        [timeLabel setBackgroundColor:[UIColor clearColor]];
         
         [cell.contentView addSubview:textLabel];
         [cell.contentView addSubview:timeLabel];
@@ -288,8 +311,6 @@
     Chat * chat = [chatData objectAtIndex:row];
     
     if (row < chatData.count){
-        AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-
         NSString *chatText = [chat message];
         cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
         UIFont *font = [UIFont boldSystemFontOfSize:14];
@@ -357,8 +378,6 @@
 
 - (void)loadLocalChat
 {
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    
     PFQuery *query = [PFQuery queryWithClassName:[Chat getClassName]];
     // additional whereKeys are AND
     NSString * channel1 = [NSString stringWithFormat:@"%@+%@", appDelegate.myUserInfo.pfUserID, userInfo.pfUserID];
@@ -419,14 +438,13 @@
     
     else {
         __block int totalNumberOfEntries = 0;
-        [query orderByAscending:@"createdAt"];
+        [query orderByDescending:@"createdAt"]; // descending makes the first ones the most recent
         [query countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
             if (!error) {
                 // The count request succeeded. Log the count
                 NSLog(@"There are currently %d entries", number);
                 totalNumberOfEntries = number;
                 if (totalNumberOfEntries > [chatData count]) {
-                    NSLog(@"Retrieving data");
                     int theLimit;
                     if (totalNumberOfEntries-[chatData count]>MAX_ENTRIES_LOADED) {
                         theLimit = MAX_ENTRIES_LOADED;
@@ -434,14 +452,17 @@
                     else {
                         theLimit = totalNumberOfEntries-[chatData count];
                     }
+                    NSLog(@"Retrieving data. Limit: %d", theLimit);
                     query.limit = theLimit; //[NSNumber numberWithInt:theLimit];
+                    int insertIndex = [chatData count];
                     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                         if (!error) {
                             // The find succeeded.
                             NSLog(@"Successfully retrieved %d chats.", objects.count);
                             for (PFObject * obj in objects) {
                                 Chat * chat = [[Chat alloc] initWithPFObject:obj];
-                                [chatData addObject:chat];
+                                //[chatData addObject:chat];
+                                [chatData insertObject:chat atIndex:insertIndex];
                             }
                             NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
                             for (int ind = 0; ind < objects.count; ind++) {
@@ -478,8 +499,6 @@
 #pragma other stuff
 
 -(void)sendChat {
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-
     /*
     PFObject * pfObject = [PFObject objectWithClassName:CLASSNAME];
     [pfObject setObject:self.chatChannel forKey:@"chatChannel"];
@@ -536,7 +555,6 @@
             [data setObject:message forKey:@"message"];
             [data setObject:channel forKey:@"channel"];
             [PFPush sendPushDataToChannelInBackground:channel withData:data];
-            
 #endif
         }
         else {
@@ -547,26 +565,46 @@
 }
 
 -(void)updateUserInfo {
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSString * photoLink = nil;
     if ([appDelegate isConnectedWithUser:userInfo]) {
         [self toggleChat:YES];
-        self.userPhoto = userInfo.photo;
-        self.nameLabel.text = userInfo.username;
+        self.userPhoto = userInfo.photoThumb;
+        photoLink = userInfo.photoThumbURL;
+        [self toggleTitleView:userInfo.username];
     }
     else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
-        [self toggleChat:YES];
-        self.userPhoto = userInfo.photo; // imageWithGaussianBlur] imageWithGaussianBlur];
-        self.nameLabel.text = userInfo.username;
+        [self toggleChat:NO];
+        self.userPhoto = userInfo.photoThumb;
+        photoLink = userInfo.photoThumbURL;
+        [self toggleTitleView:userInfo.username];
+        [buttonConnect setTitle:@"Accept" forState:UIControlStateNormal];
+        [buttonConnect setBackgroundImage:[UIImage imageNamed:@"btn-primary-up"] forState:UIControlStateNormal];
     }
     else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
-        [self toggleChat:YES];
-        self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
-        self.nameLabel.text = ANON_NAME;
+        [self toggleChat:NO];
+        self.userPhoto = userInfo.photoBlurThumb;
+        photoLink = userInfo.photoBlurThumbURL;
+        [self toggleTitleView:ANON_NAME];
+        [buttonConnect setTitle:@"Connection Requested" forState:UIControlStateNormal];
+        [buttonConnect setBackgroundImage:[UIImage imageNamed:@"btn-primary-press"] forState:UIControlStateNormal];
     }
     else {
         [self toggleChat:NO];
-        self.userPhoto = [[userInfo.photo imageWithGaussianBlur] imageWithGaussianBlur];
-        self.nameLabel.text = ANON_NAME;
+        self.userPhoto = userInfo.photoBlurThumb;
+        photoLink = userInfo.photoBlurThumbURL;
+        [self toggleTitleView:ANON_NAME];
+        [buttonConnect setTitle:@"Connect" forState:UIControlStateNormal];
+        [buttonConnect setBackgroundImage:[UIImage imageNamed:@"btn-primary-up"] forState:UIControlStateNormal];
+    }
+    if (!self.userPhoto) {
+        // must load from link
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            UIImage * imageLoad = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:photoLink]]];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                self.userPhoto = imageLoad;
+                [self.tableView reloadData];
+            });
+        });
     }
 }
 
@@ -574,29 +612,35 @@
     if (enabled) {
         [labelConnectionRequired setHidden:YES];
         [buttonConnect setHidden:YES];
+        [inputView setHidden:NO];
+        [chatInput setHidden:NO];
+        [buttonChat setHidden:NO];
         [tableView setHidden:NO];
     }
     else {
         [labelConnectionRequired setHidden:NO];
         [buttonConnect setHidden:NO];
+        [inputView setHidden:YES];
+        [chatInput setHidden:YES];
+        [buttonChat setHidden:YES];
         [tableView setHidden:YES];
     }
 }
 
 -(IBAction)didClickConnect:(id)sender {
     NSLog(@"Connect button requested!");
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo]) {
         NSLog(@"Already connected!");
     }
     else if ([appDelegate isConnectRequestReceivedFromUser:userInfo]) {
         NSLog(@"Accept connection request!");
+        [appDelegate acceptConnectionRequestFromUser:userInfo];
     }
     else if ([appDelegate isConnectRequestSentToUser:userInfo]) {
         NSLog(@"Connection request already sent!");
     }
     else {
-        [[UIAlertView alertViewWithTitle:@"Send connection request?" message:[NSString stringWithFormat:@"Do you want to send a connection request to %@?", userInfo.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObject:@"Connect"] onDismiss:^(int buttonIndex) {
+        [[UIAlertView alertViewWithTitle:@"Send connection request?" message:@"Do you want to send a connection request?" cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObject:@"Connect"] onDismiss:^(int buttonIndex) {
             NSLog(@"Sending connection request!");
             [appDelegate sendConnectionRequestToUser:userInfo];
         } onCancel:^{
@@ -626,5 +670,20 @@
             [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[chatData count]-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
         }
     }
+}
+
+-(void)toggleTitleView:(NSString*)titleText {
+    UILabel * titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    [titleView setFont:[UIFont boldSystemFontOfSize:23]];
+    [titleView setTextColor:[UIColor whiteColor]];
+    [titleView setBackgroundColor:[UIColor colorWithRed:14.0/255.0 green:158.0/255.0 blue:205.0/255.0 alpha:1]];
+    [titleView setTextAlignment:NSTextAlignmentCenter];
+    titleView.text = titleText;
+    UIFont * font = titleView.font;
+    CGRect frame = CGRectMake(0, 0, [self.navigationItem.title sizeWithFont:font].width, 44);
+    frame.origin.x = 320 - frame.size.width / 2;
+    [titleView setFrame:frame];
+    self.navigationItem.titleView = titleView;
+    
 }
 @end

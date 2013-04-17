@@ -94,12 +94,18 @@ static NSMutableDictionary * allUserPulses;
     // we can't just do a save call
     // returns success of pulsing/savinng
     
+    if (myUserInfo.isVisible == NO) {
+        NSLog(@"No! I should be invisible!");
+    }
+    
     PFGeoPoint *currentPoint = [PFGeoPoint geoPointWithLatitude:location.coordinate.latitude
                                                       longitude:location.coordinate.longitude];
     if (myUserInfo.userPulse) {
         // already has a userPulse
         UserPulse * userPulse = myUserInfo.userPulse;
         PFObject * pfObject = userPulse.pfObject;
+        // todo: can crash here with error 'This object has an outstanding network connection. You have to wait until it's done.'
+        // todo: make sure userPulse has saved?
         [pfObject setObject:currentPoint forKey:@"pfGeopoint"];
         [pfObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             pulseCompleted(succeeded);
@@ -147,6 +153,8 @@ static NSMutableDictionary * allUserPulses;
                     NSLog(@"Replacing new value %@ for key %@", currentPoint, key);
                     [oldObject setObject:currentPoint forKey:@"pfGeopoint"];
                     [oldObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        UserPulse * pulse = [[UserPulse alloc] initWithPFObject:oldObject];
+                        [myUserInfo setUserPulse:pulse];
                         pulseCompleted(succeeded);
                     }];
                 }

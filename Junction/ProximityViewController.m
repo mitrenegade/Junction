@@ -12,13 +12,15 @@
 #import "UserPulse.h"
 #import "PortraitScrollViewController.h"
 
+static AppDelegate * appDelegate;
+
 const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     10  ,
     30,
     100,
     500, // BALLPARK
     9999, // DISTANT
-    1e7 // infinity == greater than US
+    1e8 // infinity == greater than US
 };
 
 
@@ -53,6 +55,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         // Custom initialization
         [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-browse"]];
         [self.tabBarItem setTitle:@"Browse"];
+        
+        appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -87,16 +91,37 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     CGRect frame = CGRectMake(0, 0, [self.navigationItem.title sizeWithFont:font].width, 44);
     frame.origin.x = 320 - frame.size.width / 2;
     [titleView setFrame:frame];
+
+#if TESTING
+    UIBarButtonItem * leftButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonFeedback];
+    [self.navigationItem setLeftBarButtonItem:leftButtonItem];
+    [buttonFeedback.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
+#endif
     
-    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setFrame:CGRectMake(0, 0, 26, 26)];
-    [button setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(didClickSearch:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem * rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    UIBarButtonItem * rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonFilter];
     [self.navigationItem setRightBarButtonItem:rightButtonItem];
+    [buttonFilter.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
     
-    self.searchButton = button;
+    self.searchButton = buttonFilter;
     
+#if TESTING == 1
+    NSArray *familyNames = [[NSArray alloc] initWithArray:[UIFont familyNames]];
+    
+    NSArray *fontNames;
+    NSInteger indFamily, indFont;
+    for (indFamily=0; indFamily<[familyNames count]; ++indFamily)
+    {
+        NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
+        fontNames = [[NSArray alloc] initWithArray:
+                     [UIFont fontNamesForFamilyName:
+                      [familyNames objectAtIndex:indFamily]]];
+        for (indFont=0; indFont<[fontNames count]; ++indFont)
+        {
+            NSLog(@"    Font name: %@", [fontNames objectAtIndex:indFont]);
+        }
+    }
+#endif
+
     /*
     names = [[NSMutableArray alloc] init];
     titles = [[NSMutableArray alloc] init];
@@ -147,6 +172,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                                              selector:@selector(updateConnections)
                                                  name:kParseConnectionsUpdated
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateConnections)
+                                                 name:kParseConnectionsReceivedUpdated
+                                               object:nil];
 }
 
 - (void)viewDidUnload
@@ -170,30 +199,42 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator
                                                     name:kParseFriendsFinishedUpdatingNotification
                                                   object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator
+    [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:kParseConnectionsUpdated
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kParseConnectionsReceivedUpdated
                                                   object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self updateMyUserInfo];
 //    [self.tableView reloadData];
     [self reloadAll];
+    
+    // must updateMyUserInfo after reloadAll. allJunctionUserInfos is not updated at this time, so it has the old myUserInfo.
+    // todo: request allJunctionUserInfos at certain times. This will be unscalable though
+    [self updateMyUserInfo];
 }
 
 -(void)updateMyUserInfo {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     myUserInfo = [appDelegate myUserInfo];
+    [userInfos setObject:myUserInfo forKey:myUserInfo.pfUserID];
 //    [nameLabel setText:myUserInfo.username];
 //    [photoView setImage:myUserInfo.photo];
 //    [descLabel setText:myUserInfo.headline];
+    if (!myUserInfo.userPulse) {
+        NSLog(@"No pulse found!");
+    }
+    [self reloadUserPortrait:myUserInfo withPulse:myUserInfo.userPulse];
 }
 
 -(void)updateConnections {
     // show new people connections in Connections tab
     // also change blurriness in proximity tab
-    [self reloadAll];
+    [self.portraitLoaded removeAllObjects]; // force reload of all portraits but don't
+    [self refreshProximity];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -265,26 +306,29 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     float ct = ((float)[[distanceGroupsIDSets objectAtIndex:section] count]);
-    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.friendsFilter) {
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.positionFilter || self.filterViewController.friendsFilter) {
+        NSLog(@"Using filtered distances");
         NSMutableArray * groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
         ct = [groupOrdered count];
     }
     float rows = ceil( ct / NUM_COLUMNS);
-    //NSLog(@"Distance group: %d count: %d rows: %f", [distanceGroups count], [[distanceGroups objectAtIndex:section] count], rows);
+    NSLog(@"NumberOfRows: Distance group: %d portraits: %d rows: %f", section,  [[distanceGroupsIDSets objectAtIndex:section] count], rows);
     return rows;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if ([[distanceGroupsIDSets objectAtIndex:section] count] == 0)
         return 0.0;
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.positionFilter || self.filterViewController.friendsFilter) {
+        NSLog(@"Using filtered distances");
+        NSMutableArray * groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
+        int ct = [groupOrdered count];
+        if (ct == 0)
+            return 0.0;
+    }
     return HEADER_HEIGHT;
 }
-/*
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 1.0;
-//    return 30;
-}
-*/
+
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     //if ([[distanceGroups objectAtIndex:indexPath.section] count] == 0)
     //    return 0;
@@ -296,17 +340,22 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(UIView*)viewForItemInSection:(int)section Row:(int)row Column:(int)column {
     NSMutableArray * groupIDs = [distanceGroupsIDSets objectAtIndex:section];
     NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:section];
-    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.friendsFilter)
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.positionFilter || self.filterViewController.friendsFilter) {
+        NSLog(@"Using filtered groups");
         groupOrdered = [distanceGroupsOrderedFiltered objectAtIndex:section];
+    }
     
     int index = row * NUM_COLUMNS + column;
-    if (index >= [groupIDs count] || index >= [groupOrdered count])
+    if (index >= [groupIDs count] || index >= [groupOrdered count]) {
+        NSLog(@"Returning nil for index %d", index);
         return nil;
+    }
     OrderedUser * ordered = [groupOrdered objectAtIndex:index];
     NSString * userID = ordered.userInfo.pfUserID;
     //NSLog(@"Section %d row %d col %d index %d count %d userID %@", section, row, column, index, [group count], userID);
     
-    if (![portraitViews objectForKey:userID] || ![portraitLoaded objectForKey:userID]) {
+    NSLog(@"ViewForItemInSection %d row %d column %d, User %@ %@", section, row, column, userID, ordered.userInfo.username);
+    if (![portraitViews objectForKey:userID]) {
         // create new portraitView
         UserInfo * userInfo = [userInfos objectForKey:userID];
         if (userInfo) {
@@ -324,6 +373,19 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         else {
             NSLog(@"Could not addUserInfo for userID %@", userID);
         }
+    }
+    else if (![portraitLoaded objectForKey:userID]) {
+        // refresh portrait without having the portraitView flash/turn black
+        UserInfo * userInfo = [userInfos objectForKey:userID];
+        if (userInfo) {
+            PortraitScrollViewController * portraitView = [portraitViews objectForKey:userID];
+            [portraitView addUserInfo:userInfo];
+            [portraitViews setObject:portraitView forKey:userID];
+            [portraitLoaded setObject:[NSNumber numberWithBool:YES] forKey:userID];
+        }
+    }
+    else {
+        NSLog(@"Not creating userInfo for user %@ %@", userID, ordered.userInfo.username);
     }
     return [[portraitViews objectForKey:userID] view];
     //return [portraitViews objectForKey:userID];
@@ -372,18 +434,21 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(void)reloadUserPortrait:(UserInfo*)friendUserInfo withPulse:(UserPulse*)pulse {
+    NSLog(@"ReloadUserPortrait for user %@ and pulse %f %f", friendUserInfo.username, pulse.coordinate.latitude, pulse.coordinate.longitude);
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     // because each user portrait gets loaded asynchronously, we have to reset the pull to refresh each time. there is no real moment for "finished loading data".
-    [self dataSourceDidFinishLoadingNewData];
 
     NSString * userID = friendUserInfo.pfUserID;
     
     if (showConnectionsOnly) {
-        if ([userID isEqualToString:myUserInfo.pfUserID])
+        if ([userID isEqualToString:myUserInfo.pfUserID]) {
+            [self dataSourceDidFinishLoadingNewData];
             return;
+        }
         if ([appDelegate isConnectedWithUser:friendUserInfo])
             NSLog(@"is connected!");
         else {
+            [self dataSourceDidFinishLoadingNewData];
             return;
         }
     }
@@ -392,9 +457,17 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     if (appDelegate.lastLocation) {
         CLLocation * friendLocation = [[CLLocation alloc] initWithLatitude:pulse.coordinate.latitude longitude:pulse.coordinate.longitude];
         distanceInMeters = [appDelegate.lastLocation distanceFromLocation:friendLocation];
+        NSLog(@"Last location for friend %@: %f %f distanceInMeters: %f", friendUserInfo.username, friendLocation.coordinate.latitude, friendLocation.coordinate.longitude, distanceInMeters);
+        if (distanceInMeters > 10000)
+            NSLog(@"Distance = %f", distanceInMeters);
     }
     else {
         NSLog(@"No last location!");
+    }
+    
+    if ([userID isEqualToString:myUserInfo.pfUserID]) {
+        // is self, so always show at 0 distance
+        distanceInMeters = 0;
     }
     
     //NSLog(@"You are at %f %f: %@ %@ found at coord %f %f distance %f", appDelegate.lastLocation.coordinate.latitude, appDelegate.lastLocation.coordinate.longitude, friendUserInfo.username, userID, pulse.coordinate.latitude, pulse.coordinate.longitude, distanceInMeters);
@@ -412,7 +485,11 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             break;
         }
     }
-    [self.tableView reloadData];
+    
+    // to force reload of info, use this. otherwise, reloadUserPortrait only relocates
+    // this doesn't allow the portrait to be loaded without a pull to refresh!
+    //[portraitLoaded removeObjectForKey:userID];
+    [self dataSourceDidFinishLoadingNewData];
 }
 
 -(void)addUser:(UserInfo*)friendUserInfo atDistance:(float)distance forGroup:(int)groupIndex {
@@ -428,8 +505,9 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         OrderedUser * oldUser = [groupOrdered objectAtIndex:i];
         if ([orderedUser compare:oldUser] == NSOrderedAscending || [orderedUser compare:oldUser] == NSOrderedSame) {
             [groupOrdered insertObject:orderedUser atIndex:i];
+            
+            NSLog(@"Added ordered user %@ at weight %f to position %d in group %d", orderedUser.userInfo.username, orderedUser.weight, i, groupIndex);
             /*
-            NSLog(@"Added ordered user %@ at weight %f to position %d", orderedUser.userInfo.username, orderedUser.weight, i);
             int ct = 0;
             for (OrderedUser * user in groupOrdered) {
                 NSLog(@"  user %d: %@ weight %f", ct++, user.userInfo.username, user.weight);
@@ -439,7 +517,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
         }
     }
     [groupOrdered addObject:orderedUser];
-    NSLog(@"Added ordered user %@ at weight %f to position %d", orderedUser.userInfo.username, orderedUser.weight, [groupOrdered count]-1);
+    NSLog(@"Added ordered user %@ at weight %f to position %d in group %d", orderedUser.userInfo.username, orderedUser.weight, [groupOrdered count]-1, groupIndex);
 }
 
 -(void)removeUser:(UserInfo*)friendUserInfo fromGroup:(int)groupIndex {
@@ -449,6 +527,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [groupIDs removeObject:userID];
     for (OrderedUser * user in groupOrdered) {
         if ([user.userInfo.pfUserID isEqualToString:userID]) {
+            NSLog(@"removing user %@ from group %d", user.userInfo.username
+                  , groupIndex);
             [groupOrdered removeObject:user];
             return;
         }
@@ -463,12 +543,15 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 }
 
 -(void)reloadAllUserInfo {
+    // just refreshes allUserInfos from appDelegate. Not necessarily after allUserInfos has been refreshed from the web!
+    
     // all Junction users
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NSMutableArray * allUserInfos = [appDelegate allJunctionUserInfos];
     NSMutableDictionary * allPulses = [appDelegate allPulses];
 
     for (UserInfo * friendUserInfo in allUserInfos) {
+        [userInfos setObject:friendUserInfo forKey:friendUserInfo.pfUserID];
         UserPulse * pulse = [allPulses objectForKey:friendUserInfo.pfUserID];
         [self reloadUserPortrait:friendUserInfo withPulse:pulse];
     }
@@ -537,20 +620,21 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [self toggleFilterView:NO];
 }
 
--(void)doFilter {
-    NSLog(@"Filters: industry %@ company %@ friends %d", self.filterViewController.industryFilter, self.filterViewController.companyFilter, self.filterViewController.friendsFilter);
+-(int)doFilter {
+    NSLog(@"Filters: position %@ company %@ industry %@ friends %d", self.filterViewController.positionFilter, self.filterViewController.companyFilter, self.filterViewController.industryFilter, self.filterViewController.friendsFilter);
     
     NSString * company = [self.filterViewController.companyFilter lowercaseString];
     NSString * industry = [self.filterViewController.industryFilter lowercaseString];
     NSString * position = [self.filterViewController.positionFilter lowercaseString];
 
+    int filteredResults = 0;
     for (int i=0; i<[distanceGroupsOrdered count]; i++) {
         NSMutableArray * groupOrdered = [distanceGroupsOrdered objectAtIndex:i];
         NSMutableArray * groupOrderedFiltered = [distanceGroupsOrderedFiltered objectAtIndex:i];
         [groupOrderedFiltered removeAllObjects];
         for (OrderedUser * orderedUser in groupOrdered) {
             // filter for company
-            if (company) {
+            if ([company length]) {
                 NSLog(@"User %@ company %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.company.lowercaseString, company);
                 if (!orderedUser.userInfo.company)
                     continue;
@@ -560,7 +644,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             }
 
             // filter for industry
-            if (industry) {
+            if ([industry length]) {
                 NSLog(@"User %@ industry %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.industry.lowercaseString, industry);
                 if (!orderedUser.userInfo.industry)
                     continue;
@@ -570,8 +654,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             }
 
             // filter for position
-            if (position) {
-                NSLog(@"User %@ position %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.position.lowercaseString, industry);
+            if ([position length]) {
+                NSLog(@"User %@ position %@ filter %@", orderedUser.userInfo.username, orderedUser.userInfo.position.lowercaseString, position);
                 if (!orderedUser.userInfo.position)
                     continue;
                 if ([orderedUser.userInfo.position.lowercaseString rangeOfString:position].location == NSNotFound)
@@ -584,9 +668,15 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
             [groupOrderedFiltered addObject:orderedUser];
         }
         NSLog(@"Distance group %d total users %d filtered users %d", i, [groupOrdered count], [groupOrderedFiltered count]);
+        filteredResults += [groupOrderedFiltered count];
     }
     
+    if (filteredResults == 0) {
+        [self.filterViewController showEmptyResultsMessage];
+    }
     [self.tableView reloadData];
+
+    return filteredResults;
 }
 
 /*
@@ -707,9 +797,18 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 -(void)reloadTableViewDataSource {
     NSLog(@"Pull to refresh");
     _reloading = YES;
+    [self.portraitLoaded removeAllObjects]; // force reload of all portraits but don't clear portraitViews
     [self refreshProximity];
 }
 
-
+#pragma mark feedback
+-(IBAction)didClickFeedback:(id)sender {
+    if (isFilterShowing)
+        [appDelegate sendFeedback:@"Filters"];
+    else if (showConnectionsOnly)
+        [appDelegate sendFeedback:@"Connections view"];
+    else
+        [appDelegate sendFeedback:@"Browse view"];
+}
 
 @end

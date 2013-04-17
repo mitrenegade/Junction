@@ -12,16 +12,15 @@
 #import "ProximityViewController.h"
 #import "ParseHelper.h"
 #import "LinkedInHelper.h"
-#import "SideTabController.h"
 #import "ChatBrowserViewController.h"
 #import "NotificationsViewController.h"
 #import "Constants.h"
-#import "RightTabController.h"
 #import "JunctionNotification.h"
 #import "Chat.h"
 #import "MBProgressHUD.h"
 #import "SettingsViewController.h"
 #import "IntroViewController.h"
+#import <MessageUI/MFMailComposeViewController.h>
 
 static NSString* const kMyUserInfoDidChangeNotification= @"kMyUserInfoDidChangeNotification";
 static NSString* const kParseFriendsStartedUpdatingNotification = @"kParseFriendsStartedUpdatingNotification";
@@ -33,14 +32,16 @@ static NSString* const kNotificationsChanged = @"kNotificationsChanged";
 static NSString* const kNeedChatBrowserUpdate = @"kNeedChatBrowserUpdate";
 static NSString* const kFilterChanged = @"kFilterChanged";
 
-// junction notifications
+// junction notifications - stored as objects in Parse
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
 static NSString * const jnChatReceived = @"jnChatReceived";
 
-// junction push notifications - sent from web
+// junction push notifications - sent from web as push notifications
 static NSString * const jpChatMessage = @"jpChatMessage";
+static NSString * const jpConnectionRequest = @"jpConnectionRequest";
+static NSString * const jpConnectionAccepted = @"jpConnectionAccepted";
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, LinkedInHelperDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, LinkedInHelperDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CLLocationManagerDelegate, MFMailComposeViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -90,4 +91,8 @@ static NSString * const jpChatMessage = @"jpChatMessage";
 -(void)forcePulse;
 -(void)deleteUser;
 -(void)logout;
+
+-(void)sendFeedback:(NSString*)message;
+-(void)loadPhotoFromWebWithBlock:(void(^)(UIImage*))gotImage;
+-(void)loadPhotoBlurFromWebWithBlock:(void(^)(UIImage*))gotImage;
 @end

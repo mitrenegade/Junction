@@ -49,7 +49,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.stepButton setSelected:YES];
+//    [self.stepButton setSelected:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -127,14 +127,14 @@
 
 -(IBAction)didClickProfileInfo:(id)sender {
     // go back
-    [self.stepButton setSelected:NO];
+//    [self.stepButton setSelected:NO];
     self.userInfo.privacyLevel = slider.value;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(IBAction)didClickProfilePreview:(id)sender {
     // go forward
-    [self.stepButton setSelected:NO];
+//    [self.stepButton setSelected:NO];
     [self didClickNext:sender];
 }
 

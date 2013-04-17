@@ -16,6 +16,8 @@
 #define TAG_LASTROW 1004
 @interface NotificationsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, PF_EGORefreshTableHeaderDelegate>
 {
+    IBOutlet UIButton * buttonFeedback;
+
     PF_EGORefreshTableHeaderView *refreshHeaderView;
     BOOL _reloading;
 }
@@ -26,5 +28,7 @@
 
 -(NSMutableArray*) findNotificationsOfType:(NSString*)notificationType fromSender:(UserInfo*)sender;
 -(void)refreshNotifications;
+
+-(IBAction)didClickFeedback:(id)sender;
 
 @end

@@ -36,7 +36,7 @@
 #define COLOR_ORANGE [UIColor colorWithRed:255.0/255.0 green:116.0/255.0 blue:82.0/255.0 alpha:1]
 #define COLOR_GRAY [UIColor colorWithRed:87.0/255.0 green:87.0/255.0 blue:87.0/255.0 alpha:1]
 #define COLOR_GREEN [UIColor colorWithRed:51.0/255.0 green:153.0/255.0 blue:102.0/255.0 alpha:1]
-#define COLOR_[UIColor colorWithRed:67.0/255.0 green:99.0/255.0 blue:132.0/255.0 alpha:1]
+#define COLOR_SLATE [UIColor colorWithRed:67.0/255.0 green:99.0/255.0 blue:132.0/255.0 alpha:1]
 
 #define ANON_NAME @"Name Hidden"
 @end

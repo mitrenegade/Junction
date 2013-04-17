@@ -50,7 +50,7 @@ static AppDelegate * appDelegate;
     [self.userProfileViewController setDelegate:self];
     [self.userProfileViewController setUserInfo:userInfo];
     [self.view addSubview:self.userProfileViewController.view];
-    [self.userProfileViewController.view setFrame:CGRectMake(0, 60, self.view.frame.size.width, self.view.frame.size.height - 60)];
+    [self.userProfileViewController.view setFrame:self.viewForFrame.frame]; //CGRectMake(0, 60, self.view.frame.size.width, self.view.frame.size.height - 60)];
     [self toggleViewForConnections:viewForStrangers];
     [self.userProfileViewController toggleInteraction:NO];
 }
@@ -77,6 +77,7 @@ static AppDelegate * appDelegate;
 }
 
 -(IBAction)didClickPhoto:(id)sender {
+    self.userInfo.linkedInString = savedLinkedInString;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -98,17 +99,7 @@ static AppDelegate * appDelegate;
     progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     progress.labelText = @"Saving profile picture";
     
-    [userInfo savePhotoToAWSSerial:newImage andBlur:newBlur withBlock:^(BOOL saved) {
-        NSLog(@"Saved image at %@!", userInfo.photoURL);
-        NSLog(@"Saved blur image at %@!", userInfo.photoBlurURL);
-        [progress hide:YES];
-        [delegate didFinishPreview];
-        // prevent old images for this user from showing up
-        [AsyncImageView clearCacheForURL:userInfo.photoURL];
-        [AsyncImageView clearCacheForURL:userInfo.photoBlurURL];
-    }];
-    
-    // save thumbnails
+    // save thumbnails first so proximity controller will have a valid image
     CGSize thumbSize = CGSizeMake(BROWSE_THUMB_SIZE, BROWSE_THUMB_SIZE);
     UIImage * newImageThumb = [newImage resizedImage:thumbSize interpolationQuality:kCGInterpolationHigh];
     UIImage * newBlurThumb;
@@ -119,6 +110,18 @@ static AppDelegate * appDelegate;
     NSLog(@"blur size: %f %f", newBlur.size.width, newBlur.size.height);
     [userInfo saveThumbsToAWSSerial:newImageThumb andBlur:newBlurThumb withBlock:^(BOOL finished) {
         NSLog(@"New thumbnails saved!");
+    }];
+    
+    [userInfo savePhotoToAWSSerial:newImage andBlur:newBlur withBlock:^(BOOL saved) {
+        NSLog(@"Saved image at %@!", userInfo.photoURL);
+        NSLog(@"Saved blur image at %@!", userInfo.photoBlurURL);
+        [progress hide:YES];
+        [delegate didFinishPreview];
+        // prevent old images for this user from showing up
+        [AsyncImageView clearCacheForURL:userInfo.photoURL];
+        [AsyncImageView clearCacheForURL:userInfo.photoBlurURL];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:nil];
     }];
     
     // todo: solve this problem:

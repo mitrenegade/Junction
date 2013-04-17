@@ -71,8 +71,8 @@ static OAuthLoginView * sharedOAuthLoginView;
 
 -(void)getId {
     NSString * endpoint = @"http://api.linkedin.com/v1/people/~/id";
-//    NSString * endpoint = @"http://api.linkedin.com/v1/people/~:(id,email-address)";
     self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    NSLog(@"DoRequestForEndpoint: %@", endpoint);
     [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
         NSString *responseBody = [[NSString alloc] initWithData:data
                                                        encoding:NSUTF8StringEncoding];
@@ -91,6 +91,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 //    NSString * endpoint = @"http://api.linkedin.com/v1/people/v1/people/~:()";
     NSString *endpoint =    @"http://api.linkedin.com/v1/people/~";
     self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    NSLog(@"DoRequestForEndpoint: %@", endpoint);
     [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
         if (success) {
             NSString *responseBody = [[NSString alloc] initWithData:data
@@ -132,6 +133,7 @@ static OAuthLoginView * sharedOAuthLoginView;
     NSString * endpoint = [NSString stringWithFormat:@"http://api.linkedin.com/v1/people/id=%@:(first-name,last-name,headline,industry,positions,picture-url,public-profile-url,email-address,three-current-positions,summary,connections)", _userID];
     NSLog(@"All profile request: %@", endpoint);
     self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    NSLog(@"DoRequestForEndpoint: %@", endpoint);
     [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
         if (success) {
             NSString *responseBody = [[NSString alloc] initWithData:data
@@ -216,6 +218,7 @@ static OAuthLoginView * sharedOAuthLoginView;
 -(void)requestOriginalPhotoWithBlock:(void (^)(NSString *))gotURL {
     NSString * endpoint = @"http://api.linkedin.com/v1/people/~/picture-urls::(original)";
     self.lhRequest = [[LinkedInHelperRequest alloc] initWithOAuthConsumer:self.storedOAuthConsumer andOAuthAccessToken:self.storedOAuthAccessToken];
+    NSLog(@"DoRequestForEndpoint: %@", endpoint);
     [self.lhRequest doRequestForEndpoint:endpoint withParams:nil withBlockForSuccess:^(BOOL success, NSData * data) {
         if (success) {
             NSMutableDictionary * dict = [data objectFromJSONData];

@@ -24,6 +24,7 @@ static AppDelegate * appDelegate;
 @synthesize nameLabel;
 @synthesize titleLabel, industryLabel, descriptionFrame;
 @synthesize delegate;
+@synthesize chatController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -42,6 +43,11 @@ static AppDelegate * appDelegate;
     
     // must set userinfo before controller is displayed
     [self updateUserInfo];
+
+#if TESTING
+    [buttonFeedback setHidden:NO];
+    [buttonFeedback.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
+#endif
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
@@ -214,6 +220,7 @@ static AppDelegate * appDelegate;
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self updateUserInfo];
+
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -233,7 +240,11 @@ static AppDelegate * appDelegate;
 }
 
 -(IBAction)didClickChat:(id)sender {
-    [[UIAlertView alertViewWithTitle:@"Chat!" message:@"Blah blah blah. Go talk to a real person."] show];
+//    [[UIAlertView alertViewWithTitle:@"Chat!" message:@"Blah blah blah. Go talk to a real person."] show];
+    self.chatController = [[UserChatViewController alloc] init];
+    [self.chatController setUserInfo:self.userInfo];
+    UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:self.chatController];
+    [self presentModalViewController:nav animated:YES];
 }
 
 -(IBAction)didClickConnect:(id)sender {
@@ -266,7 +277,7 @@ static AppDelegate * appDelegate;
             NSLog(@"Connection request already sent!");
         }
         else {
-            [[UIAlertView alertViewWithTitle:@"Send connection request?" message:[NSString stringWithFormat:@"Do you want to send a connection request to %@?", userInfo.username] cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObject:@"Connect"] onDismiss:^(int buttonIndex) {
+            [[UIAlertView alertViewWithTitle:@"Send connection request?" message:@"Do you want to send a connection request?" cancelButtonTitle:@"Not now" otherButtonTitles:[NSArray arrayWithObject:@"Connect"] onDismiss:^(int buttonIndex) {
                 NSLog(@"Sending connection request!");
                 [appDelegate sendConnectionRequestToUser:userInfo];
             } onCancel:^{
@@ -280,4 +291,14 @@ static AppDelegate * appDelegate;
     NSLog(@"Ignoring connection request");
     [UIAlertView alertViewWithTitle:@"Request ignored!" message:@"Why even click here? You're not really ignoring them if you click..."];
 }
+
+#pragma mark feedback
+-(IBAction)didClickFeedback:(id)sender {
+    if ([userInfo.pfUserID isEqualToString:appDelegate.myUserInfo.pfUserID])
+        [appDelegate sendFeedback:@"My Profile view"];
+    else
+        [appDelegate sendFeedback:@"Other's Profile view"];
+}
+
+
 @end

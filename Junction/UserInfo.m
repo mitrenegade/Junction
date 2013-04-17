@@ -35,6 +35,7 @@
 @synthesize className;
 @synthesize talkAbout;
 @synthesize photoBlurThumb, photoBlurThumbURL, photoThumb, photoThumbURL;
+@synthesize isVisible;
 
 #define CLASSNAME @"UserInfo"
 
@@ -94,6 +95,7 @@
     //[aCoder encodeObject: pfUser forKey:@"pfUser"];
     [aCoder encodeObject:pfUserID forKey:@"pfUserID"];
     //    [aCoder encodeObject: educations forKey:@"educations"];
+    [aCoder encodeBool:isVisible forKey:@"isVisible"];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {    
@@ -120,6 +122,7 @@
         [self setSpecialties:[aDecoder decodeObjectForKey:@"specialties"]];
         //[self setPfUser:[aDecoder decodeObjectForKey:@"pfUser"]];
         [self setPfUserID:[aDecoder decodeObjectForKey:@"pfUserID"]];
+        [self setIsVisible:[aDecoder decodeBoolForKey:@"isVisible"]];
     }
     return self;
 }
@@ -158,10 +161,15 @@
             [self.pfObject setObject:talkAbout forKey:@"talkAbout"];
         if (location)
             [self.pfObject setObject:location forKey:@"location"];
+        if (currentPositions) {
+            [self.pfObject setObject:currentPositions forKey:@"currentPositions"];
+        }
         if (pfUserID)
             [self.pfObject setObject:pfUserID forKey:@"pfUserID"];
         if (pfUser)
             [self.pfObject setObject:pfUser forKey:@"pfUser"];
+        
+        [self.pfObject setObject:[NSNumber numberWithBool:isVisible] forKey:@"isVisible"];
     }
     @catch (NSException *exception) {
         NSLog(@"Exception in UserInfo.toPFObject! %@", exception.description);
@@ -207,6 +215,10 @@
     location = [obj objectForKey:@"location"];
     pfUserID = [obj objectForKey:@"pfUserID"];
     pfUser = [obj objectForKey:@"pfUser"];
+    id currpos = [obj objectForKey:@"currentPositions"];
+    currentPositions = [[NSMutableArray alloc] initWithArray:currpos];
+    
+    isVisible = [[obj objectForKey:@"isVisible"] boolValue];
     
     return [super fromPFObject:obj];
 }

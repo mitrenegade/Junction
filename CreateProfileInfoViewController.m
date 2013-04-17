@@ -62,7 +62,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.stepButton setSelected:YES]; // fake nav buttons
+//    [self.stepButton setSelected:YES]; // fake nav buttons
     CGRect frame = self.scrollView.frame;
     frame.size.height += 400;
     [self.scrollView setContentSize:frame.size];
@@ -426,7 +426,7 @@
 }
 
 -(IBAction)didClickProfilePhoto:(id)sender {
-    [self.stepButton setSelected:NO];
+//    [self.stepButton setSelected:NO];
     [self didClickNext:sender];
 }
 

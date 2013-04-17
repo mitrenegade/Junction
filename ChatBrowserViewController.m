@@ -16,6 +16,8 @@
 
 @end
 
+static AppDelegate * appDelegate;
+
 @implementation ChatBrowserViewController
 
 @synthesize recentChats;
@@ -28,6 +30,7 @@
         // Custom initialization
         [self.tabBarItem setImage:[UIImage imageNamed:@"tabbar-chat"]];
         [self.tabBarItem setTitle:@"Chats"];
+        appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -54,6 +57,12 @@
     [titleView setFrame:frame];
     self.navigationItem.titleView = titleView;
     
+#if TESTING
+    UIBarButtonItem * leftButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonFeedback];
+    [self.navigationItem setLeftBarButtonItem:leftButtonItem];
+    [buttonFeedback.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
+#endif
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateChats)
                                                  name:jnChatReceived
@@ -234,5 +243,8 @@
     [self.tableView reloadData];
 }
 
-
+#pragma mark feedback
+-(IBAction)didClickFeedback:(id)sender {
+    [appDelegate sendFeedback:@"Chats view"];
+}
 @end

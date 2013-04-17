@@ -13,7 +13,9 @@
 #import "UserProfileViewController.h"
 
 @interface ProfileViewController : UIViewController <UserProfileDelegate>
-
+{
+    IBOutlet UIButton * buttonFeedback;
+}
 @property (weak, nonatomic) IBOutlet UILabel * nameLabel;
 @property (nonatomic, weak) UserInfo * myUserInfo;
 
@@ -35,4 +37,5 @@
 
 -(IBAction)toggleViewForConnections:(id)sender;
 -(IBAction)sliderDidChange:(id)sender;
+-(IBAction)didClickFeedback:(id)sender;
 @end

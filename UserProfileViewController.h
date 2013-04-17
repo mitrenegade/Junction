@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
 #import "AsyncImageView.h"
+#import "UserChatViewController.h"
 
 @protocol UserProfileDelegate <NSObject>
 
@@ -19,6 +20,8 @@
 
 @interface UserProfileViewController : UIViewController {
     BOOL isOwnProfile;
+
+    IBOutlet UIButton * buttonFeedback;
 }
 
 @property (nonatomic, weak) id delegate;
@@ -41,6 +44,8 @@
 @property (nonatomic, weak) IBOutlet UIButton * buttonChat;
 @property (nonatomic, weak) IBOutlet UIButton * buttonIgnore;
 
+@property (nonatomic, strong) UserChatViewController * chatController;
+
 -(IBAction)didClickBack:(id)sender;
 -(IBAction)didClickConnect:(id)sender;
 -(IBAction)didClickBlock:(id)sender;
@@ -48,4 +53,7 @@
 -(IBAction)didClickIgnore:(id)sender;
 -(void)toggleViewForConnection:(BOOL)isConnected;
 -(void)toggleInteraction:(BOOL)canInteract;
+
+-(IBAction)didClickFeedback:(id)sender;
+
 @end

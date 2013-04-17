@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController
+@interface SettingsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+{
+    IBOutlet UITableView * tableView;
+    IBOutlet UISwitch * toggleVisibility;
+}
 
+-(IBAction)didToggleVisibility:(id)sender;
 @end
