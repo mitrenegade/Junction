@@ -11,11 +11,10 @@
 
 static AppDelegate * appDelegate;
 
-@interface SettingsProfessionalInfoViewController ()
-
-@end
-
 @implementation SettingsProfessionalInfoViewController
+
+@synthesize lhHelper;
+@synthesize shellUserInfo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -159,34 +158,122 @@ static AppDelegate * appDelegate;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (indexPath.section) {
-        case 0:
-        {
-            // edit role
-        }
-            break;
-            
-        default:
-            break;
-    }
+    NSArray * positions = appDelegate.myUserInfo.currentPositions;
+    NSDictionary * currPos = [positions objectAtIndex:indexPath.row];
+    NSString * company = [[currPos objectForKey:@"company"] objectForKey:@"name"];
+    NSString * industry = [[currPos objectForKey:@"company"] objectForKey:@"industry"];
+    NSString * position = [currPos objectForKey:@"title"];
+    SettingsEditRoleViewController * roleEditor = [[SettingsEditRoleViewController alloc] init];
+    [roleEditor setDelegate:self];
+    [roleEditor setRoleIndex:indexPath.row];
+    [roleEditor setCompany:company];
+    [roleEditor setIndustry:industry];
+    [roleEditor setPosition:position];
+    [self.navigationController pushViewController:roleEditor animated:YES];
 }
+
 
 -(void)didClickAddRole:(id)sender {
     NSLog(@"Add a new role!");
-    if (!appDelegate.myUserInfo.currentPositions) {
-        appDelegate.myUserInfo.currentPositions = [[NSMutableArray alloc] init];
-    }
+    SettingsEditRoleViewController * roleEditor = [[SettingsEditRoleViewController alloc] init];
+    [roleEditor setDelegate:self];
+    [roleEditor setRoleIndex:-1];
+    [self.navigationController pushViewController:roleEditor animated:YES];
 }
-
--(void)didClickPullFromLinkedIn:(id)sender {
-    NSLog(@"Pull from linkedIn");
-}
-
 -(void)goBack:(id)sender {
     // save
     
     // dismiss
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void)didClickPullFromLinkedIn:(id)sender {
+    NSLog(@"Pull from linkedIn");
+    
+    if (self.lhHelper == nil) {
+        self.lhHelper = [[LinkedInHelper alloc] init];
+        self.lhHelper.delegate = self;
+        
+        [self.lhHelper loadCachedOAuth];
+    }
+    
+    progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    progress.labelText = @"Pulling from LinkedIn...";
+    [self.lhHelper requestAllProfileInfoForID:appDelegate.myUserInfo.linkedInString];
+}
+
+#pragma mark LinkedInHelperDelegate
+-(void)linkedInDidFail:(NSError *)error {
+    NSLog(@"Could not pull from linkedIn! Error: %@", error);
+    progress.labelText = @"Error pulling your info!";
+    progress.mode = MBProgressHUDModeCustomView;
+    UIView *blankView = [[UIView alloc] initWithFrame:CGRectZero];
+    progress.customView = blankView;
+    [progress hide:YES afterDelay:2];
+}
+-(void)linkedInParseProfileInformation:(NSDictionary*)profile {
+    // returns the following information: first-name,last-name,industry,location:(name),specialties,summary,picture-url,email-address,educations,three-current-positions
+
+    id _currentPositions = [profile objectForKey:@"positions"];
+    NSArray * currentPositions = nil;
+    if (_currentPositions && [_currentPositions isKindOfClass:[NSDictionary class]])
+        currentPositions = [_currentPositions objectForKey:@"values"];
+    
+    for (NSMutableDictionary * newRole in currentPositions) {
+        NSMutableDictionary * newCompany = [newRole objectForKey:@"company"];
+        NSString * newPosition = [newRole objectForKey:@"title"];
+        NSString * newCompanyName = [newCompany objectForKey:@"name"];
+        NSString * newIndustry = [newCompany objectForKey:@"industry"];
+        
+        BOOL alreadyExists = NO;
+        for (NSMutableDictionary * existingRole in appDelegate.myUserInfo.currentPositions) {
+            NSMutableDictionary * existingCompany = [existingRole objectForKey:@"company"];
+            NSString * existingPosition = [existingRole objectForKey:@"title"];
+            NSString * existingCompanyName = [existingCompany objectForKey:@"name"];
+            NSString * existingIndustry = [existingCompany objectForKey:@"industry"];
+            
+            if ([newPosition isEqualToString:existingPosition] && [newIndustry isEqualToString:existingIndustry] && [newCompanyName isEqualToString:existingCompanyName]) {
+                alreadyExists = YES;
+                break;
+            }
+        }
+        if (!alreadyExists) {
+            NSLog(@"Pulled role from linkedIn not listed in app: %@ @ %@ (%@)", newPosition, newCompanyName, newIndustry);
+            [appDelegate.myUserInfo.currentPositions addObject:newRole];
+        }
+    }
+    [progress hide:YES];
+    [appDelegate.myUserInfo.toPFObject saveInBackground];
+    [tableView reloadData];
+}
+
+#pragma mark SettingsEditRoleDelegate
+
+-(void)didSaveRoleAtIndex:(int)index withPosition:(NSString *)newPosition withCompany:(NSString *)newCompany withIndustry:(NSString *)newIndustry {
+    [self.navigationController popToViewController:self animated:YES];
+    
+    if (!appDelegate.myUserInfo.currentPositions) {
+        appDelegate.myUserInfo.currentPositions = [[NSMutableArray alloc] init];
+    }
+
+    if (index == -1) {
+        NSMutableDictionary * newRole = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary * company = [[NSMutableDictionary alloc] init];
+        [newRole setObject:company forKey:@"company"];
+        [appDelegate.myUserInfo.currentPositions addObject:newRole];
+        index = [appDelegate.myUserInfo.currentPositions count]-1;
+    }
+    
+    NSMutableDictionary * role = [appDelegate.myUserInfo.currentPositions objectAtIndex:index];
+    NSMutableDictionary * company = [role objectForKey:@"company"];
+    [company setObject:newIndustry forKey:@"industry"];
+    [company setObject:newCompany forKey:@"name"];
+    [role setObject:newPosition forKey:@"title"];
+    
+    NSLog(@"Role at %d saved! %@, %@, %@", index, newPosition, newCompany, newIndustry);
+    [appDelegate.myUserInfo.toPFObject save];
+    
+    [tableView reloadData];
 }
 
 @end

@@ -17,6 +17,7 @@
 @synthesize pfObject;
 @synthesize className;
 @synthesize chatChannel;
+@synthesize hasBeenSeen;
 //@synthesize userInfo;
 
 -(id)init {

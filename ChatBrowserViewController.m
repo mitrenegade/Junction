@@ -57,6 +57,10 @@ static AppDelegate * appDelegate;
     [titleView setFrame:frame];
     self.navigationItem.titleView = titleView;
     
+    UIBarButtonItem * clearButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonClear];
+    [self.navigationItem setRightBarButtonItem:clearButtonItem];
+    [buttonClear.titleLabel setFont:[UIFont fontWithName:@"BreeSerif-Regular" size:12]];
+
 #if TESTING
     UIBarButtonItem * leftButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonFeedback];
     [self.navigationItem setLeftBarButtonItem:leftButtonItem];

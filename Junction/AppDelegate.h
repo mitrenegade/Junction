@@ -35,6 +35,7 @@ static NSString* const kFilterChanged = @"kFilterChanged";
 // junction notifications - stored as objects in Parse
 static NSString * const jnConnectionRequestNotification = @"jnConnectionRequestNotification";
 static NSString * const jnChatReceived = @"jnChatReceived";
+static NSString * const jnChatsSeenUpdated = @"jnChatsSeenUpdated";
 
 // junction push notifications - sent from web as push notifications
 static NSString * const jpChatMessage = @"jpChatMessage";
@@ -95,4 +96,7 @@ static NSString * const jpConnectionAccepted = @"jpConnectionAccepted";
 -(void)sendFeedback:(NSString*)message;
 -(void)loadPhotoFromWebWithBlock:(void(^)(UIImage*))gotImage;
 -(void)loadPhotoBlurFromWebWithBlock:(void(^)(UIImage*))gotImage;
+-(UIImage*)blurPhoto:(UIImage*)photo atPrivacyLevel:(int)newPrivacyLevel;
+-(BOOL)hasNewChatFromUserInfo:(UserInfo*)userInfo;
+-(void)didSeeChat:(Chat*)seenChat fromUserInfo:(UserInfo*)userInfo;
 @end

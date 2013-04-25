@@ -26,6 +26,10 @@
 		9E1F0AFE16EFB22300BAA1CE /* icon-block.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E1F0AFA16EFB22300BAA1CE /* icon-block.png */; };
 		9E1F0AFF16EFB22300BAA1CE /* icon-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E1F0AFB16EFB22300BAA1CE /* icon-chat.png */; };
 		9E1F0B0016EFB22300BAA1CE /* icon-connections.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E1F0AFC16EFB22300BAA1CE /* icon-connections.png */; };
+		9E219B5317250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E219B5117250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.m */; };
+		9E219B5417250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E219B5217250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.xib */; };
+		9E2B5FFF1728A76400EA80E9 /* icon-connected.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E2B5FFD1728A76400EA80E9 /* icon-connected.png */; };
+		9E2B60001728A76400EA80E9 /* icon-new-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E2B5FFE1728A76400EA80E9 /* icon-new-chat.png */; };
 		9E3059AC16805DED00A35ABE /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059AD16805DED00A35ABE /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30596F16805DED00A35ABE /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9E3059AE16805DED00A35ABE /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E30597116805DED00A35ABE /* NSURL+Base.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -237,6 +241,11 @@
 		9E1F0AFA16EFB22300BAA1CE /* icon-block.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-block.png"; sourceTree = "<group>"; };
 		9E1F0AFB16EFB22300BAA1CE /* icon-chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-chat.png"; sourceTree = "<group>"; };
 		9E1F0AFC16EFB22300BAA1CE /* icon-connections.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-connections.png"; sourceTree = "<group>"; };
+		9E219B5017250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PullFromLinkedInProfilePreviewController.h; sourceTree = SOURCE_ROOT; };
+		9E219B5117250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PullFromLinkedInProfilePreviewController.m; sourceTree = SOURCE_ROOT; };
+		9E219B5217250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PullFromLinkedInProfilePreviewController.xib; sourceTree = SOURCE_ROOT; };
+		9E2B5FFD1728A76400EA80E9 /* icon-connected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-connected.png"; sourceTree = "<group>"; };
+		9E2B5FFE1728A76400EA80E9 /* icon-new-chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-new-chat.png"; sourceTree = "<group>"; };
 		9E30596C16805DED00A35ABE /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
 		9E30596D16805DED00A35ABE /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
 		9E30596E16805DED00A35ABE /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
@@ -714,6 +723,9 @@
 				9EAD604917114A00004DE2BE /* SettingsEditProfileViewController.h */,
 				9EAD604A17114A00004DE2BE /* SettingsEditProfileViewController.m */,
 				9EAD604B17114A00004DE2BE /* SettingsEditProfileViewController.xib */,
+				9E219B5017250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.h */,
+				9E219B5117250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.m */,
+				9E219B5217250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.xib */,
 				9EE538C717126CBA009BEC11 /* SettingsEditPersonalViewController.h */,
 				9EE538C817126CBA009BEC11 /* SettingsEditPersonalViewController.m */,
 				9EE538C917126CBA009BEC11 /* SettingsEditPersonalViewController.xib */,
@@ -756,6 +768,8 @@
 		9E99544116804DD2001E034A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9E2B5FFD1728A76400EA80E9 /* icon-connected.png */,
+				9E2B5FFE1728A76400EA80E9 /* icon-new-chat.png */,
 				9E3A34541706CADE002B6C15 /* ico-header-JN-filled.png */,
 				9E3A34571706CADE002B6C15 /* ico-header-man-filled.png */,
 				9E3A34521706CADE002B6C15 /* ico-header-camera-empty.png */,
@@ -1159,6 +1173,9 @@
 				9EE538D617130532009BEC11 /* SettingsEditBlurrinessViewController.xib in Resources */,
 				9EE538F1171336F9009BEC11 /* SettingsEditRoleViewController.xib in Resources */,
 				9E4B6E721713E1B60007AACB /* TutorialViewController.xib in Resources */,
+				9E219B5417250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.xib in Resources */,
+				9E2B5FFF1728A76400EA80E9 /* icon-connected.png in Resources */,
+				9E2B60001728A76400EA80E9 /* icon-new-chat.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1258,6 +1275,7 @@
 				9EE538D517130532009BEC11 /* SettingsEditBlurrinessViewController.m in Sources */,
 				9EE538F0171336F9009BEC11 /* SettingsEditRoleViewController.m in Sources */,
 				9E4B6E711713E1B60007AACB /* TutorialViewController.m in Sources */,
+				9E219B5317250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

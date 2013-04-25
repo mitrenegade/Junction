@@ -384,6 +384,7 @@
 //    [self.buttonView setHidden:YES];
     [self.buttonLogIn setEnabled:NO];
 }
+
 -(void)requestOriginalLinkedInPhoto {
     // load photo in background
     [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {

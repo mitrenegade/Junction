@@ -20,6 +20,9 @@
 {
     BOOL pageControlBeingUsed;
     int currentPage;
+    
+    UIImageView * chatIcon;
+    UIImageView * connectIcon;
 }
 @property (nonatomic, strong) UIImage * photo;
 @property (nonatomic, strong) NSMutableArray * pages;

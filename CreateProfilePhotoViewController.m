@@ -8,8 +8,6 @@
 
 #import "CreateProfilePhotoViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "UIImage+GaussianBlur.h"
-#import "UIImage+Resize.h"
 #import "AWSHelper.h"
 #import "AppDelegate.h"
 
@@ -18,6 +16,8 @@
 @end
 
 @implementation CreateProfilePhotoViewController
+
+static AppDelegate * appDelegate;
 
 @synthesize photoView, buttonChangePhoto, slider;
 @synthesize userInfo;
@@ -28,6 +28,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+        
         self.navigationItem.title = @"Photo";
         
         UIBarButtonItem * rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(didClickNext:)];
@@ -75,46 +77,11 @@
         return;
     
     UIImage * newImage;
-    
-    switch (newPrivacyLevel) {
-        case 0:
-            // do nothing!
-            newImage = userInfo.photo;
-            break;
-        case 1:
-            // one blur
-            newImage = [userInfo.photo imageWithGaussianBlur];
-            break;
-        case 2:
-            newImage = [[self resizeImage:userInfo.photo byScale:.5] imageWithGaussianBlur];
-            break;
-        case 3:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
-            break;
-        case 4:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.15] imageWithGaussianBlur] imageWithGaussianBlur];
-            break;
-        case 5:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.05] imageWithGaussianBlur] imageWithGaussianBlur];
-            break;
-            
-        default:
-            newImage = userInfo.photo;
-            break;
-    }
+    newImage = [appDelegate blurPhoto:userInfo.photo atPrivacyLevel:newPrivacyLevel];
     NSLog(@"Privacy changed to level %d", newPrivacyLevel);
     userInfo.privacyLevel = newPrivacyLevel;
     
     [photoView setImage:newImage];
-}
-
--(UIImage*)resizeImage:(UIImage*)image byScale:(float)scale {
-    CGSize frame = image.size;
-    CGSize target = frame;
-    target.width *= scale;
-    target.height *= scale;
-    UIImage * newImage = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
-    return newImage;
 }
 
 #pragma mark navigation

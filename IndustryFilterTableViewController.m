@@ -117,7 +117,10 @@ static NSArray * array;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString * industrySelected = [array objectAtIndex:indexPath.row];
-    [delegate didSelectIndustryFilter:industrySelected];
+    NSString * industryLower = [[industrySelected lowercaseString] substringFromIndex:1];
+    NSString * firstLetter = [industrySelected substringToIndex:1];
+    NSString * returnString = [firstLetter stringByAppendingString:industryLower];
+    [delegate didSelectIndustryFilter:returnString];
 }
 
 @end

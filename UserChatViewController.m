@@ -307,11 +307,10 @@ static AppDelegate * appDelegate;
     }
 
     NSUInteger row = [indexPath row]; //[chatData count]-[indexPath row]-1;
-    //PFObject * chatObject = (PFObject*)[chatData objectAtIndex:row];
-    Chat * chat = [chatData objectAtIndex:row];
-    
     if (row < chatData.count){
+        Chat * chat = [chatData objectAtIndex:row];
         NSString *chatText = [chat message];
+        
         cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
         UIFont *font = [UIFont boldSystemFontOfSize:14];
         CGSize size = [chatText sizeWithFont:font constrainedToSize:CGSizeMake(self.tableView.frame.size.width - 120, 1000.0f) lineBreakMode:UILineBreakModeWordWrap];
@@ -352,6 +351,10 @@ static AppDelegate * appDelegate;
         [timeLabel setFont:timeFont];
         timeLabel.text = timeString;
         [timeLabel sizeToFit];
+        
+        // note this chat as having been seen. don't do it if it's from user
+        if ([chat.sender isEqualToString:self.userInfo.pfUserID])
+            [appDelegate didSeeChat:chat fromUserInfo:self.userInfo];
     }
     return cell;
 }

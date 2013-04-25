@@ -16,6 +16,8 @@
 #import "Chat.h"
 #import "MBProgressHUD.h"
 #import "Constants.h"
+#import "UIImage+Resize.h"
+#import "UIImage+GaussianBlur.h"
 
 @implementation AppDelegate
 
@@ -121,6 +123,8 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
+    [self saveCachedRecentChats];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -144,6 +148,8 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    [self saveCachedRecentChats];
 }
 
 #pragma mark parse push notifications
@@ -187,6 +193,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         Chat * chat = [[Chat alloc] init];
         chat.message = message;
         chat.sender = senderID;
+        chat.hasBeenSeen = NO;
         //chat.userInfo = [allJunctionUserInfosDict objectForKey:senderID];
         [allRecentChats setObject:chat forKey:senderID];
         [self saveCachedRecentChats];
@@ -384,6 +391,26 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:jnChatReceived object:self userInfo:nil];
+}
+
+-(BOOL)hasNewChatFromUserInfo:(UserInfo*)userInfo {
+    Chat * chat = [allRecentChats objectForKey:userInfo.pfUserID];
+    if (!chat)
+        return NO;
+    return (chat.hasBeenSeen == NO);
+}
+
+-(void)didSeeChat:(Chat*)seenChat fromUserInfo:(UserInfo*)userInfo {
+    Chat * chat = [allRecentChats objectForKey:userInfo.pfUserID];
+    if ([chat.message isEqualToString:seenChat.message] && chat.hasBeenSeen == NO) {
+        // todo: compare timestamps too
+        chat.hasBeenSeen = YES;
+        [self saveCachedRecentChats];
+        
+        NSString * senderID = chat.sender;
+        NSDictionary * userInfo = [NSDictionary dictionaryWithObject:senderID forKey:@"sender"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:jnChatsSeenUpdated object:self userInfo:userInfo];
+    }
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -951,6 +978,46 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             });
         }
     });
+}
+
+-(UIImage*)blurPhoto:(UIImage*)photo atPrivacyLevel:(int)newPrivacyLevel {
+    UIImage * newImage;
+    switch (newPrivacyLevel) {
+        case 0:
+            // do nothing!
+            newImage = photo;
+            break;
+        case 1:
+            // one blur
+            newImage = [photo imageWithGaussianBlur];
+            break;
+        case 2:
+            newImage = [[self resizeImage:photo byScale:.5] imageWithGaussianBlur];
+            break;
+        case 3:
+            newImage = [[[self resizeImage:photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
+            break;
+        case 4:
+            newImage = [[[self resizeImage:photo byScale:.15] imageWithGaussianBlur] imageWithGaussianBlur];
+            break;
+        case 5:
+            newImage = [[[self resizeImage:photo byScale:.05] imageWithGaussianBlur] imageWithGaussianBlur];
+            break;
+            
+        default:
+            newImage = photo;
+            break;
+    }
+    return newImage;
+}
+
+-(UIImage*)resizeImage:(UIImage*)image byScale:(float)scale {
+    CGSize frame = image.size;
+    CGSize target = frame;
+    target.width *= scale;
+    target.height *= scale;
+    UIImage * newImage = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
+    return newImage;
 }
 
 @end

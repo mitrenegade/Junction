@@ -102,6 +102,8 @@ static AppDelegate * appDelegate;
 #pragma mark - Table view data source
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([notifications count] == 0)
+        return 200;
     return 60;
 }
 
@@ -160,6 +162,12 @@ static AppDelegate * appDelegate;
         [infoLabel setHidden:YES];
         [lastRow setHidden:NO];
         [lastRow setText:@"No more notifications"];
+        
+        if ([notifications count] == 0) {
+            [lastRow setText:@"You don't have any new notifications. Notifications will appear when you receive a connection request, a request you sent has been accepted, or when it's time to follow up with a connection."];
+        }
+        [lastRow setNumberOfLines:0];
+        [lastRow sizeToFit];
     }
     else {
         [photoView setHidden:NO];

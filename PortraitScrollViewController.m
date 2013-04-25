@@ -12,11 +12,9 @@
 #import "AsyncImageView.h"
 #import "OutlineLabel.h"
 
-@interface PortraitScrollViewController ()
-
-@end
-
 @implementation PortraitScrollViewController
+
+static AppDelegate * appDelegate;
 
 @synthesize pages, photo;
 @synthesize scrollView;
@@ -30,6 +28,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -94,7 +93,6 @@
     int height = self.view.frame.size.height;
     
     // background photo
-    AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if ([appDelegate isConnectedWithUser:userInfo]) {
         [self addPhoto:userInfo.photoThumb withURL:userInfo.photoThumbURL];
     }
@@ -257,14 +255,10 @@
     
     [self.view addSubview:pageControl];
 
-    /*
-    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button.titleLabel setText:userInfo.pfUserID];
-    [button.titleLabel setHidden:YES];
-    [button addTarget:self action:@selector(didSelectPortrait:) forControlEvents:UIControlEventTouchUpInside];
-    [button setFrame:portraitframe];
-    [self.view addSubview:button];
-    */
+    // connection request and chat notifications
+    chatIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-new-chat"]];
+    connectIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-connected"]];
+    [self updateIcons];
     
     // add gesture recognizer
     UITapGestureRecognizer * myTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureHandler:)];
@@ -326,5 +320,28 @@
 -(void)reloadWithUserInfo:(UserInfo*)userInfo {
     [photoBG setImageURL:nil];
     [self addUserInfo:userInfo];
+}
+
+-(void)updateIcons {
+    BOOL hasConnectionRequest = [appDelegate isConnectRequestReceivedFromUser:self.userInfo];
+    BOOL hasNewChat = [appDelegate hasNewChatFromUserInfo:self.userInfo];
+    CGRect firstFrame = CGRectMake(self.view.frame.size.width - 60/2, 5, 55/2, 59/2);
+    CGRect secondFrame = CGRectMake(self.view.frame.size.width - 115/2, 5, 55/2, 59/2);
+
+    if (!hasConnectionRequest)
+        [connectIcon removeFromSuperview];
+    if (!hasNewChat)
+        [chatIcon removeFromSuperview];
+    if (hasConnectionRequest) {
+        [connectIcon setFrame:firstFrame];
+        [self.view addSubview:connectIcon];
+    }
+    if (hasNewChat) {
+        [chatIcon setFrame:firstFrame];
+        [self.view addSubview:chatIcon];
+        if (hasConnectionRequest) {
+            [chatIcon setFrame:secondFrame];
+        }
+    }
 }
 @end

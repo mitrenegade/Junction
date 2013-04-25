@@ -176,6 +176,14 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
                                              selector:@selector(updateConnections)
                                                  name:kParseConnectionsReceivedUpdated
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateChatIconForNotification:)
+                                                 name:jnChatReceived
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateChatIconForNotification:)
+                                                 name:jnChatsSeenUpdated
+                                               object:nil];
 }
 
 - (void)viewDidUnload
@@ -205,6 +213,12 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:kParseConnectionsReceivedUpdated
                                                   object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:jnChatReceived
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:jnChatsSeenUpdated
+                                                  object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -227,7 +241,10 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     if (!myUserInfo.userPulse) {
         NSLog(@"No pulse found!");
     }
-    [self reloadUserPortrait:myUserInfo withPulse:myUserInfo.userPulse];
+    if (!showConnectionsOnly)
+        [self removeUser:myUserInfo fromGroup:0];
+    else
+        [self reloadUserPortrait:myUserInfo withPulse:myUserInfo.userPulse];
 }
 
 -(void)updateConnections {
@@ -553,6 +570,8 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     for (UserInfo * friendUserInfo in allUserInfos) {
         [userInfos setObject:friendUserInfo forKey:friendUserInfo.pfUserID];
         UserPulse * pulse = [allPulses objectForKey:friendUserInfo.pfUserID];
+        if (showConnectionsOnly && [friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID])
+            continue;
         [self reloadUserPortrait:friendUserInfo withPulse:pulse];
     }
 }
@@ -760,20 +779,25 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     //    if (scrollView == self.panelScrollView)
     //        return;
     
-    if (scrollView.contentOffset.y <= - 40.0f && !_reloading) {
-        _reloading = YES;
-        [refreshHeaderView setState:EGOOPullRefreshLoading];
-        
-        [UIView animateWithDuration:.5
-                              delay:0
-                            options: UIViewAnimationCurveLinear
-                         animations:^{
-                             [self.tableView setContentInset:UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0)];
-                         }
-                         completion:^(BOOL finished){
-                             [self reloadTableViewDataSource];
-                         }
-         ];
+    if (scrollView.contentOffset.y <= - 40.0f) {
+        if (!_reloading) {
+            _reloading = YES;
+            [refreshHeaderView setState:EGOOPullRefreshLoading];
+            
+            [UIView animateWithDuration:.5
+                                  delay:0
+                                options: UIViewAnimationCurveLinear
+                             animations:^{
+                                 [self.tableView setContentInset:UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0)];
+                             }
+                             completion:^(BOOL finished){
+                                 [self reloadTableViewDataSource];
+                             }
+             ];
+        }
+        else {
+            [self dataSourceDidFailLoadingNewData];
+        }
     }
 }
 
@@ -783,6 +807,19 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 - (void)dataSourceDidFinishLoadingNewData{
     
     [self.tableView reloadData];
+    if (_reloading) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:.3];
+        [self.tableView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+        [UIView commitAnimations];
+        
+        [refreshHeaderView setState:EGOOPullRefreshNormal];
+    }
+    _reloading = NO;
+}
+
+- (void)dataSourceDidFailLoadingNewData{
+    
     if (_reloading) {
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:.3];
@@ -810,5 +847,58 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     else
         [appDelegate sendFeedback:@"Browse view"];
 }
+
+-(void)updateChatIconForNotification:(NSNotification *)notification {
+    NSLog(@"%@", notification);
+    
+    NSDictionary * dict = notification.userInfo;
+    NSString * senderID = [dict objectForKey:@"sender"];
+    
+    NSMutableArray * groups = distanceGroupsOrdered;
+    if (self.filterViewController.industryFilter || self.filterViewController.companyFilter || self.filterViewController.positionFilter || self.filterViewController.friendsFilter) {
+        NSLog(@"Using filtered groups");
+        groups = distanceGroupsOrderedFiltered;
+    }
+    
+    int section = -1;
+    int row = -1;
+    for (int s = 0; s < [tableView numberOfSections]; s++) {
+        NSMutableArray * groupOrdered = [groups objectAtIndex:s];
+        int index = 0;
+        BOOL found = NO;
+        for (OrderedUser * ordered in groupOrdered) {
+            NSString * userID = ordered.userInfo.pfUserID;
+            if ([userID isEqualToString:senderID]) {
+                row = index/2;
+                found = YES;
+                break;
+            }
+            index++;
+        }
+        if (found) {
+            section = s;
+            break;
+        }
+    }
+    
+    [self.portraitLoaded removeObjectForKey:senderID];
+    [self.portraitViews removeObjectForKey:senderID];
+    if (section != -1 && row != -1) {
+        NSLog(@"Found user at section %d row %d", section, row);
+        // this causes some crashes
+        //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:row inSection:section]] withRowAnimation:UITableViewRowAnimationFade];
+        
+        // this might be ok
+        //NSIndexSet * indexSet = [NSIndexSet indexSetWithIndex:section];
+        //[tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+        
+        // this might be too much calculations
+        [tableView reloadData];
+    }
+    else {
+        [tableView reloadData];
+    }
+}
+
 
 @end

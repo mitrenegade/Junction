@@ -12,6 +12,7 @@
 #import "SettingsEditGoalsViewController.h"
 #import "SettingsEditBlurrinessViewController.h"
 #import "SettingsProfessionalInfoViewController.h"
+#import "UIImage+Resize.h"
 
 static AppDelegate * appDelegate;
 
@@ -20,6 +21,9 @@ static AppDelegate * appDelegate;
 @end
 
 @implementation SettingsEditProfileViewController
+
+@synthesize lhHelper;
+@synthesize shellUserInfo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -176,7 +180,19 @@ static AppDelegate * appDelegate;
 
 -(IBAction)didClickPullFromLinkedIn:(id)sender {
     NSLog(@"Pull from linkedIn");
+    
+    if (self.lhHelper == nil) {
+        self.lhHelper = [[LinkedInHelper alloc] init];
+        self.lhHelper.delegate = self;
+        
+        [self.lhHelper loadCachedOAuth];
+    }
+    
+    progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    progress.labelText = @"Pulling from LinkedIn...";
+    [self.lhHelper requestAllProfileInfoForID:appDelegate.myUserInfo.linkedInString];
 }
+
 -(IBAction)didClickButtonEditBlurriness:(id)sender {
     NSLog(@"Edit bluriness");
     SettingsEditBlurrinessViewController * controller = [[SettingsEditBlurrinessViewController alloc] init];
@@ -224,5 +240,136 @@ static AppDelegate * appDelegate;
     
     // force to go into blur
     [self didClickButtonEditBlurriness:nil];
+}
+
+#pragma mark LinkedInHelperDelegate
+-(void)linkedInDidFail:(NSError *)error {
+    NSLog(@"Could not pull from linkedIn! Error: %@", error);
+    progress.labelText = @"Error pulling your info!";
+    progress.mode = MBProgressHUDModeCustomView;
+    UIView *blankView = [[UIView alloc] initWithFrame:CGRectZero];
+    progress.customView = blankView;
+    [progress hide:YES afterDelay:2];
+}
+-(void)linkedInParseProfileInformation:(NSDictionary*)profile {
+    // returns the following information: first-name,last-name,industry,location:(name),specialties,summary,picture-url,email-address,educations,three-current-positions
+    //NSString * userID = [profile objectForKey:@"pfUserID"];
+    NSString * name = [[NSString alloc] initWithFormat:@"%@ %@",
+                       [profile objectForKey:@"firstName"], [profile objectForKey:@"lastName"]];
+    NSString * headline = [profile objectForKey:@"headline"];
+    NSString * industry = [profile objectForKey:@"industry"];
+    NSString * summary = [profile objectForKey:@"summary"];
+    NSString * pictureUrl = [profile objectForKey:@"pictureUrl"];
+    NSString * email = [profile objectForKey:@"emailAddress"];
+    NSString * location = [[profile objectForKey:@"location"] objectForKey:@"name"]; // format: "location": {"name": loc}
+    id _specialties = [profile objectForKey:@"specialties"];
+    id _currentPositions = [profile objectForKey:@"positions"];
+    NSArray * specialties = nil;
+    NSArray * currentPositions = nil;
+    if (_specialties && [_specialties isKindOfClass:[NSDictionary class]])
+        specialties = [_specialties objectForKey:@"values"];
+    if (_currentPositions && [_currentPositions isKindOfClass:[NSDictionary class]])
+        currentPositions = [_currentPositions objectForKey:@"values"];
+    
+    self.shellUserInfo = [[UserInfo alloc] init];
+    if (name)
+        [shellUserInfo setUsername:name];
+    if (headline)
+        [shellUserInfo setHeadline:headline];
+    if (industry)
+        [shellUserInfo setIndustry:industry];
+    if (summary)
+        [shellUserInfo setSummary:summary];
+    if (email)
+        [shellUserInfo setEmail:email];
+    if (location)
+        [shellUserInfo setLocation:location];
+    if (specialties)
+        [shellUserInfo setSpecialties:specialties];
+    if (currentPositions) {
+        [shellUserInfo setCurrentPositions:currentPositions];
+        id mostRecentPosition = [currentPositions objectAtIndex:0];
+        id company = [mostRecentPosition objectForKey:@"company"];
+        if ([company objectForKey:@"name"])
+            [shellUserInfo setCompany:[company objectForKey:@"name"]];
+        if ([company objectForKey:@"industry"]) // select current company's industry over personal industry
+            [shellUserInfo setIndustry:[company objectForKey:@"industry"]];
+        if ([mostRecentPosition objectForKey:@"title"])
+            [shellUserInfo setPosition:[mostRecentPosition objectForKey:@"title"]];
+    }
+    
+    // information not from linkedIn should be added to shellUser for display
+    shellUserInfo.lookingFor = appDelegate.myUserInfo.lookingFor;
+    shellUserInfo.talkAbout = appDelegate.myUserInfo.talkAbout;
+    shellUserInfo.privacyLevel = appDelegate.myUserInfo.privacyLevel;
+    
+    if (pictureUrl) {
+        NSLog(@"PictureURL: %@", pictureUrl);
+        // if creating a new user and will go through profile process, must request photo
+        [self requestOriginalLinkedInPhoto];
+        // if logging in, request this photo but must get AWS photo later
+    }
+}
+
+-(void)requestOriginalLinkedInPhoto {
+    // load photo in background
+    [self.lhHelper requestOriginalPhotoWithBlock:^(NSString * originalURL) {
+        NSLog(@"Picture OriginalURL: %@", originalURL);
+        shellUserInfo.photo = nil;
+        shellUserInfo.photoBlur = nil;
+        
+        // upload unblurred photo to aws
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            UIImage * image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:originalURL]]];
+            // resize
+            CGSize frame = image.size;
+            float scale = 1;
+            if (frame.width < frame.height)
+                scale = PROFILE_WIDTH / frame.width;
+            else
+                scale = PROFILE_HEIGHT / frame.height;
+            CGSize target = frame;
+            target.width *= scale;
+            target.height *= scale;
+            image = [image resizedImage:target interpolationQuality:kCGInterpolationHigh];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [progress hide:YES];
+                
+                // if we are creating a profile, first save this photo as unblurred
+                shellUserInfo.photo = image;
+                shellUserInfo.photoBlur = [appDelegate blurPhoto:image atPrivacyLevel:shellUserInfo.privacyLevel];
+                PullFromLinkedInProfilePreviewController * controller = [[PullFromLinkedInProfilePreviewController alloc] init];
+                [controller setDelegate:self];
+                shellUserInfo.privacyLevel = appDelegate.myUserInfo.privacyLevel;
+                [controller setUserInfo:shellUserInfo];
+
+                [self.navigationController pushViewController:controller animated:YES];
+            });
+        });
+    }];
+}
+
+-(void)didApprovePreview {
+    // save shellUserInfo into myUserInfo
+    progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    progress.mode = MBProgressHUDModeCustomView;
+    UIView *blankView = [[UIView alloc] initWithFrame:CGRectZero];
+    progress.customView = blankView;
+    progress.labelText = @"Info updated from LinkedIn!";
+    [progress hide:YES afterDelay:2];
+    
+    appDelegate.myUserInfo.username = shellUserInfo.username;
+    appDelegate.myUserInfo.headline = shellUserInfo.headline;
+    appDelegate.myUserInfo.industry = shellUserInfo.industry;
+    appDelegate.myUserInfo.summary = shellUserInfo.summary;
+    appDelegate.myUserInfo.email = shellUserInfo.email;
+    appDelegate.myUserInfo.location = shellUserInfo.location;
+    appDelegate.myUserInfo.company = shellUserInfo.company;
+    appDelegate.myUserInfo.industry = shellUserInfo.industry;
+    appDelegate.myUserInfo.position = shellUserInfo.position;
+    
+    [[appDelegate.myUserInfo toPFObject] save];
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 @end

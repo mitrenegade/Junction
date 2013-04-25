@@ -181,16 +181,22 @@ static NSMutableDictionary * allUserPulses;
             NSLog(@"Could not create pfObject!");
             queryCompletedWithResults(nil, nil);
         }
-        [pfObject refreshInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            if (error) {
-                NSLog(@"FindUserPulseForUserInfo: Could not refresh pfObject!");
-                queryCompletedWithResults(nil, error);
-            }
-            else {
-                NSArray * queryArray = [NSArray arrayWithObject:[pulse fromPFObject:object]];
-                queryCompletedWithResults(queryArray, nil);
-            }
-        }];
+        @try {
+            [pfObject refreshInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                if (error) {
+                    NSLog(@"FindUserPulseForUserInfo: Could not refresh pfObject!");
+                    queryCompletedWithResults(nil, error);
+                }
+                else {
+                    NSArray * queryArray = [NSArray arrayWithObject:[pulse fromPFObject:object]];
+                    queryCompletedWithResults(queryArray, nil);
+                }
+            }];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"FindUserPulseForUserInfo - userInfo object still being used. Probably trying to update pulse while loading it.");
+        }
+            
     }
     else {
         // query for the pfObject, and generate a userPulse and save to allUserPulses

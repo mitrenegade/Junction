@@ -17,6 +17,7 @@
 {
     IBOutlet UIButton * buttonFeedback;
 
+    IBOutlet UIButton * buttonClear;
 #if USE_PULL_TO_REFRESH
     EGORefreshTableHeaderView *refreshHeaderView;
     BOOL _reloading;
