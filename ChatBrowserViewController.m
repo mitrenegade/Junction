@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
 #import "Chat.h"
-#import "UIImage+GaussianBlur.h"
 
 @interface ChatBrowserViewController ()
 
@@ -166,11 +165,20 @@ static AppDelegate * appDelegate;
         
         UIButton * photoView = (UIButton*)[cell.contentView viewWithTag:CB_TAG_PHOTO];
         if (chat.sender) {
-            UIImage * image = userInfo.photo;
+            UIImage * image = userInfo.photoThumb;
             if ([appDelegate isConnectedWithUser:userInfo])
-                image = [image imageWithGaussianBlur];
+                image = userInfo.photoBlurThumb;
             [photoView setImage:image forState:UIControlStateNormal];
             [photoView setFrame:CGRectMake(10, 10, 40, 40)];
+            if (!image) {
+                // load image from url
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                    UIImage * loadedImage = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userInfo.photoThumbURL]]];
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [photoView setImage:loadedImage forState:UIControlStateNormal];
+                    });
+                });
+            }
         }
         else {
             NSLog(@"Invalid sender: %@!", [chat sender]);

@@ -9,7 +9,6 @@
 #import "SettingsEditBlurrinessViewController.h"
 #import "AppDelegate.h"
 #import "UserInfo.h"
-#import "UIImage+GaussianBlur.h"
 #import "UIImage+Resize.h"
 
 static AppDelegate * appDelegate;
@@ -86,38 +85,12 @@ static AppDelegate * appDelegate;
 -(IBAction)sliderDidChangeValue:(id)sender {
     UISlider * slider = (UISlider*)sender;
     int newPrivacyLevel = (int) (slider.value);
-    if (newPrivacyLevel == privacyLevel)
-        return;
+    //if (newPrivacyLevel == privacyLevel)
+    //    return;
     
-    UIImage * newImage;
     UserInfo * userInfo = appDelegate.myUserInfo;
+    UIImage * newImage = [appDelegate blurPhoto:userInfo.photo atPrivacyLevel:newPrivacyLevel];
     
-    switch (newPrivacyLevel) {
-        case 0:
-            // do nothing!
-            newImage = userInfo.photo;
-            break;
-        case 1:
-            // one blur
-            newImage = [userInfo.photo imageWithGaussianBlur];
-            break;
-        case 2:
-            newImage = [[self resizeImage:userInfo.photo byScale:.5] imageWithGaussianBlur];
-            break;
-        case 3:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
-            break;
-        case 4:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.15] imageWithGaussianBlur] imageWithGaussianBlur];
-            break;
-        case 5:
-            newImage = [[[self resizeImage:userInfo.photo byScale:.05] imageWithGaussianBlur] imageWithGaussianBlur];
-            break;
-            
-        default:
-            newImage = userInfo.photo;
-            break;
-    }
     NSLog(@"Privacy changed to level %d", newPrivacyLevel);
     userInfo.privacyLevel = newPrivacyLevel;
     

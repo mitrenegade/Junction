@@ -112,11 +112,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "UserProfileViewController.m"
-         timestampString = "387698567.461739"
+         timestampString = "388547160.89836"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "297"
-         endingLineNumber = "297"
+         startingLineNumber = "296"
+         endingLineNumber = "296"
          landmarkName = "-didClickFeedback:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -163,19 +163,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "UserProfileViewController.m"
-         timestampString = "388333860.231051"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "79"
-         endingLineNumber = "79"
-         landmarkName = "-updateUserInfo"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "SettingsProfessionalInfoViewController.m"
          timestampString = "388539256.342026"
          startingColumnNumber = "9223372036854775807"
@@ -201,25 +188,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "UserChatViewController.m"
-         timestampString = "388545872.355971"
+         timestampString = "388547160.89836"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "664"
-         endingLineNumber = "664"
+         startingLineNumber = "663"
+         endingLineNumber = "663"
          landmarkName = "-receivedChat:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Junction/AppDelegate.m"
-         timestampString = "388546548.872017"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "412"
-         endingLineNumber = "412"
-         landmarkName = "-didSeeChat:fromUserInfo:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -8,7 +8,6 @@
 
 #import "PortraitScrollViewController.h"
 #import "AppDelegate.h"
-#import "UIImage+GaussianBlur.h"
 #import "AsyncImageView.h"
 #import "OutlineLabel.h"
 
@@ -100,7 +99,7 @@ static AppDelegate * appDelegate;
         [self addPhoto:userInfo.photoThumb withURL:userInfo.photoThumbURL];
     }
     else {
-        [self addPhoto:userInfo.photoBlurThumb withURL:userInfo.photoBlurThumbURL];//[userInfo.photo imageWithGaussianBlur]];
+        [self addPhoto:userInfo.photoBlurThumb withURL:userInfo.photoBlurThumbURL];
     }
     int fontSize = 12;
     int offset = 6;

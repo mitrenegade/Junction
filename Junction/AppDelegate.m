@@ -18,7 +18,7 @@
 #import "Constants.h"
 #import "UIImage+Resize.h"
 #import "UIImage+GaussianBlur.h"
-
+#import "UIImage+StackBlur.h"
 @implementation AppDelegate
 
 @synthesize window = _window;
@@ -980,6 +980,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     });
 }
 
+-(UIImage*)blur:(UIImage*)photo {
+    //return [photo imageWithGaussianBlur];
+    return [photo stackBlur:5];
+}
+
 -(UIImage*)blurPhoto:(UIImage*)photo atPrivacyLevel:(int)newPrivacyLevel {
     UIImage * newImage;
     switch (newPrivacyLevel) {
@@ -989,20 +994,22 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             break;
         case 1:
             // one blur
-            newImage = [photo imageWithGaussianBlur];
+            newImage = [self blur:photo];
             break;
         case 2:
-            newImage = [[self resizeImage:photo byScale:.5] imageWithGaussianBlur];
+            newImage = [photo stackBlur:10];//[self blur:[self resizeImage:photo byScale:.5]];
             break;
         case 3:
-            newImage = [[[self resizeImage:photo byScale:.25] imageWithGaussianBlur] imageWithGaussianBlur];
+            newImage = [photo stackBlur:20];//[self blur:[self blur:[self resizeImage:photo byScale:.25]]];
             break;
         case 4:
-            newImage = [[[self resizeImage:photo byScale:.15] imageWithGaussianBlur] imageWithGaussianBlur];
+            newImage = [photo stackBlur:50]; //[self blur:[self blur:[self resizeImage:photo byScale:.15]]];
             break;
+            /*
         case 5:
-            newImage = [[[self resizeImage:photo byScale:.05] imageWithGaussianBlur] imageWithGaussianBlur];
+            newImage = [[[self resizeImage:photo byScale:.25] stackBlur:10] stackBlur:20]; //[self blur:[self blur:[self resizeImage:photo byScale:.05]]];
             break;
+             */
             
         default:
             newImage = photo;

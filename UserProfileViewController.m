@@ -8,7 +8,6 @@
 
 #import "UserProfileViewController.h"
 #import "AppDelegate.h" 
-#import "UIImage+GaussianBlur.h"
 
 static AppDelegate * appDelegate;
 

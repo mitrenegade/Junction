@@ -8,7 +8,6 @@
 
 #import "ProfileViewController.h"
 #import "AppDelegate.h" // for notification constants
-#import "UIImage+GaussianBlur.h"
 #import "UIImage+Resize.h"
 #import "Constants.h"
 

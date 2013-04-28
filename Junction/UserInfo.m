@@ -9,7 +9,6 @@
 #import "UserInfo.h"
 #import "AWSHelper.h"
 #import "Constants.h"
-#import "UIImage+GaussianBlur.h"
 
 @implementation UserInfo
 @synthesize username, password, email;

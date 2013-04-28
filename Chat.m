@@ -78,6 +78,7 @@
     [aCoder encodeObject:self.message forKey:@"message"];
     [aCoder encodeObject:self.sender forKey:@"sender"];
     [aCoder encodeObject:self.chatChannel forKey:@"chatChannel"];
+    [aCoder encodeBool:self.hasBeenSeen forKey:@"hasBeenSeen"];
 //    [aCoder encodeObject:self.userInfo forKey:@"userInfo"];
 }
 
@@ -86,6 +87,7 @@
         [self setMessage:[aDecoder decodeObjectForKey:@"message"]];
         [self setSender:[aDecoder decodeObjectForKey:@"sender"]];
         [self setChatChannel:[aDecoder decodeObjectForKey:@"chatChannel"]];
+        [self setHasBeenSeen:[aDecoder decodeBoolForKey:@"hasBeenSeen"]];
 //        [self setUserInfo:[aDecoder decodeObjectForKey:@"userInfo"]];
     }
     return self;

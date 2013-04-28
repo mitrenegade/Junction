@@ -9,7 +9,6 @@
 #import "UserChatViewController.h"
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
-#import "UIImage+GaussianBlur.h"
 #import "Chat.h"
 
 static AppDelegate * appDelegate;

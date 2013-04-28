@@ -126,8 +126,10 @@ static AppDelegate * appDelegate;
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         
-        UIImageView * photoView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
+        AsyncImageView * photoView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
         [photoView setTag:TAG_PHOTO];
+		[photoView.layer setBorderColor: [[UIColor blackColor] CGColor]];
+        [photoView.layer setBorderWidth: 2.0];
         [cell.contentView addSubview:photoView];
         
         UILabel * notificationType = [[UILabel alloc] initWithFrame:CGRectMake(60, 15, self.tableView.frame.size.width-60, 15)];
@@ -151,7 +153,7 @@ static AppDelegate * appDelegate;
 
     // Configure the cell...
     int row = indexPath.row;
-    UIImageView * photoView = (UIImageView*)[cell.contentView viewWithTag:TAG_PHOTO];
+    AsyncImageView * photoView = (AsyncImageView*)[cell.contentView viewWithTag:TAG_PHOTO];
     UILabel * notificationType = (UILabel*)[cell.contentView viewWithTag:TAG_TEXTLABEL];
     UILabel * infoLabel = (UILabel*)[cell.contentView viewWithTag:TAG_INFOLABEL];
     UILabel * lastRow = (UILabel*)[cell.contentView viewWithTag:TAG_LASTROW];
@@ -181,7 +183,18 @@ static AppDelegate * appDelegate;
         NSDate * timestamp = notification.pfObject.createdAt;
         UserInfo * sender = [appDelegate getUserInfoWithID:senderPfUserID];
         
-        [photoView setImage:sender.photo];
+        UIImage * image = sender.photoThumb;
+        if (![appDelegate isConnectedWithUser:sender]) {
+            image = sender.photoBlurThumb;
+        }
+        [photoView setImage:image];
+        
+        if ([appDelegate isConnectedWithUser:sender]) {
+            [photoView setImageURL:[NSURL URLWithString:sender.photoThumbURL]];
+        }
+        else
+            [photoView setImageURL:[NSURL URLWithString:sender.photoBlurThumbURL]];
+        
         if ([type isEqualToString:jnConnectionRequestNotification])
             [notificationType setText:@"CONNECTION REQUEST"];
         

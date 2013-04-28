@@ -143,6 +143,7 @@
 		9E99545A16804E11001E034A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E99545916804E11001E034A /* main.m */; };
 		9E9D1DA71686EC830008E68B /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E9D1DA61686EC830008E68B /* Constants.m */; };
 		9EA2F2AB168A98F200054FB2 /* UIImage+GaussianBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */; };
+		9EA48EC9172CEDEE00776139 /* UIImage+StackBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA48EC8172CEDEE00776139 /* UIImage+StackBlur.m */; };
 		9EA4FBAD16AB306100A447F2 /* LoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBAC16AB306100A447F2 /* LoadingAnimationView.m */; };
 		9EA4FBD616AB315400A447F2 /* AsyncImageUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD016AB315400A447F2 /* AsyncImageUploader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EA4FBD716AB315400A447F2 /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD216AB315400A447F2 /* AsyncImageView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -411,6 +412,8 @@
 		9E9D1DA61686EC830008E68B /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = SOURCE_ROOT; };
 		9EA2F2A8168A987100054FB2 /* UIImage+GaussianBlur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+GaussianBlur.h"; sourceTree = SOURCE_ROOT; };
 		9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+GaussianBlur.m"; sourceTree = SOURCE_ROOT; };
+		9EA48EC7172CEDEE00776139 /* UIImage+StackBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+StackBlur.h"; sourceTree = SOURCE_ROOT; };
+		9EA48EC8172CEDEE00776139 /* UIImage+StackBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+StackBlur.m"; sourceTree = SOURCE_ROOT; };
 		9EA4FBAB16AB306100A447F2 /* LoadingAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingAnimationView.h; sourceTree = SOURCE_ROOT; };
 		9EA4FBAC16AB306100A447F2 /* LoadingAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingAnimationView.m; sourceTree = SOURCE_ROOT; };
 		9EA4FBCF16AB315400A447F2 /* AsyncImageUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncImageUploader.h; sourceTree = "<group>"; };
@@ -1002,6 +1005,8 @@
 				9E65864F16AA239900FFE877 /* MBProgressHUD.m */,
 				9EA2F2A8168A987100054FB2 /* UIImage+GaussianBlur.h */,
 				9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */,
+				9EA48EC7172CEDEE00776139 /* UIImage+StackBlur.h */,
+				9EA48EC8172CEDEE00776139 /* UIImage+StackBlur.m */,
 				9E99543816804DA5001E034A /* UIImage+Alpha.h */,
 				9E99543916804DA5001E034A /* UIImage+Alpha.m */,
 				9E99543A16804DA5001E034A /* UIImage+Resize.h */,
@@ -1276,6 +1281,7 @@
 				9EE538F0171336F9009BEC11 /* SettingsEditRoleViewController.m in Sources */,
 				9E4B6E711713E1B60007AACB /* TutorialViewController.m in Sources */,
 				9E219B5317250B9A00E7DB31 /* PullFromLinkedInProfilePreviewController.m in Sources */,
+				9EA48EC9172CEDEE00776139 /* UIImage+StackBlur.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
