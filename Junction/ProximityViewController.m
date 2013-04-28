@@ -241,8 +241,9 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     if (!myUserInfo.userPulse) {
         NSLog(@"No pulse found!");
     }
-    if (showConnectionsOnly)
+    if (0) { //showConnectionsOnly) {
         [self removeUser:myUserInfo fromGroup:0];
+    }
     else
         [self reloadUserPortrait:myUserInfo withPulse:myUserInfo.userPulse];
 }
@@ -459,6 +460,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
     
     if (showConnectionsOnly) {
         if ([userID isEqualToString:myUserInfo.pfUserID]) {
+            [self removeUser:friendUserInfo fromGroup:0];
             [self dataSourceDidFinishLoadingNewData];
             return;
         }
