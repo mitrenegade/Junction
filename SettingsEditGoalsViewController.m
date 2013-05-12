@@ -85,6 +85,9 @@ static AppDelegate * appDelegate;
     textViewLookingFor.text = myUserInfo.lookingFor;
     textViewTalkAbout.text = myUserInfo.talkAbout;
 
+    // keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -93,10 +96,21 @@ static AppDelegate * appDelegate;
     // Dispose of any resources that can be recreated.
 }
 
+-(void)dealloc {
+    //keyboard notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
 #pragma mark UITextViewDelegate
 -(void)textViewDidEndEditing:(UITextView *)textView {
     [textView resignFirstResponder];
-//x     [self doneEditing:textView];
+    currentTextView = nil;
+}
+
+-(BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    currentTextView = textView;
+    return YES;
 }
 
 -(void)doneEditing:(id)sender {
@@ -121,6 +135,72 @@ static AppDelegate * appDelegate;
     }];
     // dismiss
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark scrollview and keyboard
+- (void)keyboardWillShow:(NSNotification *)n
+{
+    // This is an ivar I'm using to ensure that we do not do the frame size adjustment on the UIScrollView if the keyboard is already shown.  This can happen if the user, after fixing editing a UITextField, scrolls the resized UIScrollView to another UITextField and attempts to edit the next UITextField.  If we were to resize the UIScrollView again, it would be disastrous.  NOTE: The keyboard notification will fire even when the keyboard is already shown.
+    if (keyboardIsShown) {
+        [scrollView setFrame:self.view.frame];
+        //        return;
+    }
+    
+    NSDictionary* userInfo = [n userInfo];
+    
+    // get the sizshouldbegine of the keyboard
+    CGSize keyboardSize = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    // resize the noteView
+    CGRect viewFrame = scrollView.frame;
+    // I'm also subtracting a constant kTabBarHeight because my UIScrollView was offset by the UITabBar so really only the portion of the keyboard that is leftover pass the UITabBar is obscuring my UIScrollView.
+    viewFrame.size.height -= (keyboardSize.height);// - kTabBarHeight);
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    // The kKeyboardAnimationDuration I am using is 0.3
+    [UIView setAnimationDuration:0.3];
+    [scrollView setFrame:viewFrame];
+    CGPoint contentOffset;
+    if (currentTextView == textViewLookingFor)
+        contentOffset = CGPointMake(0, labelLookingFor.frame.origin.y);
+    else if (currentTextView == textViewTalkAbout)
+        contentOffset = CGPointMake(0, labelTalkAbout.frame.origin.y);
+    else
+        contentOffset = scrollView.contentOffset;
+    [scrollView setContentOffset:contentOffset];
+    [UIView commitAnimations];
+    
+    keyboardIsShown = YES;
+}
+
+- (void)keyboardWillHide:(NSNotification *)n
+{
+    NSDictionary* userInfo = [n userInfo];
+    
+    // get the size of the keyboard
+    CGSize keyboardSize = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    
+    // resize the scrollview
+    CGRect viewFrame = scrollView.frame;
+    // I'm also subtracting a constant kTabBarHeight because my UIScrollView was offset by the UITabBar so really only the portion of the keyboard that is leftover pass the UITabBar is obscuring my UIScrollView.
+    viewFrame.size.height += (keyboardSize.height);// - kTabBarHeight);
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    // The kKeyboardAnimationDuration I am using is 0.3
+    [UIView setAnimationDuration:0.3];
+    [scrollView setFrame:viewFrame];
+    [scrollView setContentOffset:CGPointMake(0, 0)];
+    [UIView commitAnimations];
+    
+    keyboardIsShown = NO;
+}
+
+-(void)hideKeyboard {
+    [textViewLookingFor resignFirstResponder];
+    [textViewTalkAbout resignFirstResponder];
 }
 
 @end

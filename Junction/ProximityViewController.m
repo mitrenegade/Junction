@@ -602,6 +602,7 @@ const int DISTANCE_BOUNDARIES[MAX_DISTANCE_GROUPS] = {
 
 -(void)refreshProximity {
     AppDelegate * appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [userInfos removeAllObjects];
     [appDelegate getJunctionUsers];
     [appDelegate forcePulse];
 }

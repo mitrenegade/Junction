@@ -255,8 +255,12 @@ static AppDelegate * appDelegate;
     [self.view addSubview:pageControl];
 
     // connection request and chat notifications
-    chatIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-new-chat"]];
-    connectIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-connected"]];
+    chatIcon = [UIButton buttonWithType:UIButtonTypeCustom];
+    [chatIcon addTarget:self action:@selector(didClickChatNotification:) forControlEvents:UIControlEventTouchUpInside];
+    [chatIcon setImage:[UIImage imageNamed:@"icon-new-chat"] forState:UIControlStateNormal];
+    connectIcon = [UIButton buttonWithType:UIButtonTypeCustom];
+    [connectIcon addTarget:self action:@selector(didClickConnectNotification:) forControlEvents:UIControlEventTouchUpInside];
+    [connectIcon setImage:[UIImage imageNamed:@"icon-connected"] forState:UIControlStateNormal];
     [self updateIcons];
     
     // add gesture recognizer
@@ -322,10 +326,15 @@ static AppDelegate * appDelegate;
 }
 
 -(void)updateIcons {
-    BOOL hasConnectionRequest = [appDelegate isConnectRequestReceivedFromUser:self.userInfo];
+    BOOL hasConnectionRequest = [appDelegate isConnectRequestReceivedFromUser:self.userInfo] && [appDelegate isConnectedWithUser:self.userInfo] == NO;
     BOOL hasNewChat = [appDelegate hasNewChatFromUserInfo:self.userInfo];
     CGRect firstFrame = CGRectMake(self.view.frame.size.width - 60/2, 5, 55/2, 59/2);
     CGRect secondFrame = CGRectMake(self.view.frame.size.width - 115/2, 5, 55/2, 59/2);
+    
+#if TESTING
+    hasNewChat = YES;
+    hasConnectionRequest = YES;
+#endif
 
     if (!hasConnectionRequest)
         [connectIcon removeFromSuperview];
@@ -342,5 +351,15 @@ static AppDelegate * appDelegate;
             [chatIcon setFrame:secondFrame];
         }
     }
+}
+
+-(void)didClickChatNotification:(id)sender {
+    NSLog(@"Go to chat");
+    [appDelegate displayUserWithUserInfo:self.userInfo forChat:YES];
+}
+
+-(void)didClickConnectNotification:(id)sender {
+    NSLog(@"Go to connect");
+    [appDelegate displayUserWithUserInfo:self.userInfo forChat:NO];
 }
 @end

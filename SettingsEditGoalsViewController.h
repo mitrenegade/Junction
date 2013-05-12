@@ -14,5 +14,9 @@
     IBOutlet UITextView * textViewTalkAbout;
     IBOutlet UILabel * labelLookingFor;
     IBOutlet UILabel * labelTalkAbout;
+    IBOutlet UIScrollView * scrollView;
+    
+    BOOL keyboardIsShown;
+    UITextView * currentTextView;
 }
 @end

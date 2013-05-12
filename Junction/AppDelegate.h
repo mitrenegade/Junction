@@ -79,6 +79,12 @@ static NSString * const jpConnectionAccepted = @"jpConnectionAccepted";
 // chats
 @property (nonatomic) NSMutableDictionary * allRecentChats;
 
+// notification settings
+@property (nonatomic) BOOL bShowNotificationConnectionReceived;
+@property (nonatomic) BOOL bShowNotificationConnectionAccepted;
+@property (nonatomic) BOOL bShowNotificationFollowup;
+@property (nonatomic) int followupReminderTimeInWeeks;
+
 -(void)getJunctionUsers;
 -(UserInfo*)getUserInfoWithID:(NSString*)pfUserID;
 -(void)displayUserWithUserInfo:(UserInfo*)friendUserInfo forChat:(BOOL)forChat;
@@ -99,4 +105,9 @@ static NSString * const jpConnectionAccepted = @"jpConnectionAccepted";
 -(UIImage*)blurPhoto:(UIImage*)photo atPrivacyLevel:(int)newPrivacyLevel;
 -(BOOL)hasNewChatFromUserInfo:(UserInfo*)userInfo;
 -(void)didSeeChat:(Chat*)seenChat fromUserInfo:(UserInfo*)userInfo;
+
+// notification settings
+-(void)loadNotificationPreferences;
+-(void)saveNotificationPreferences;
+
 @end

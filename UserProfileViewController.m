@@ -123,6 +123,14 @@ static AppDelegate * appDelegate;
         [nameLabel setText:ANON_NAME];
         [self.buttonConnect setTitle:@"Connect" forState:UIControlStateNormal];
     }
+    
+    // check for race conditions for connection requests
+    // if both people do a connection request, then both people will see "Accept Connection". go ahead and connect them
+    if ([appDelegate isConnectRequestReceivedFromUser:userInfo] && [appDelegate isConnectRequestSentToUser:userInfo]) {
+        NSLog(@"Both users have made connection requests. Should just connect them");
+        [appDelegate acceptConnectionRequestFromUser:userInfo];
+    }
+    
     NSString * jobTitle = [NSString stringWithFormat:@"%@ @ %@", userInfo.position, userInfo.company];
     [self.titleLabel setText:jobTitle];
     NSString * industryTitle = [[NSString stringWithFormat:@"in %@ industry", userInfo.industry] uppercaseString];

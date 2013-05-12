@@ -17,8 +17,6 @@
     IBOutlet UISwitch * toggleNotifyReceive;
     IBOutlet UISwitch * toggleNotifyAccept;
     IBOutlet UISwitch * toggleNotifyFollowup;
-    
-    int weeksForFollowupReminder;
 }
 
 -(IBAction)didToggle:(id)sender;

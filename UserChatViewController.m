@@ -553,6 +553,7 @@ static AppDelegate * appDelegate;
             NSMutableDictionary *data = [NSMutableDictionary dictionary];
             [data setObject:[NSString stringWithFormat:@"%@: %@", appDelegate.myUserInfo.username, message] forKey:@"alert"];
             [data setObject:appDelegate.myUserInfo.pfUserID forKey:@"sender"];
+            [data setObject:appDelegate.myUserInfo.username forKey:@"username"];
             [data setObject:jpChatMessage forKey:@"type"];
             [data setObject:message forKey:@"message"];
             [data setObject:channel forKey:@"channel"];

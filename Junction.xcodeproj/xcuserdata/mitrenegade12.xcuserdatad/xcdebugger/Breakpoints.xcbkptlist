@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/ProximityViewController.m"
-         timestampString = "388822189.499382"
+         timestampString = "388826956.586768"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "672"
-         endingLineNumber = "672"
+         startingLineNumber = "673"
+         endingLineNumber = "673"
          landmarkName = "-doFilter"
          landmarkType = "5">
       </FileBreakpoint>
@@ -73,11 +73,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/ProximityViewController.m"
-         timestampString = "388822189.499382"
+         timestampString = "388826956.586768"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "682"
-         endingLineNumber = "682"
+         startingLineNumber = "683"
+         endingLineNumber = "683"
          landmarkName = "-doFilter"
          landmarkType = "5">
       </FileBreakpoint>
@@ -112,11 +112,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "UserProfileViewController.m"
-         timestampString = "388547160.89836"
+         timestampString = "390031913.676908"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "296"
-         endingLineNumber = "296"
+         startingLineNumber = "304"
+         endingLineNumber = "304"
          landmarkName = "-didClickFeedback:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -125,11 +125,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "388544944.190673"
+         timestampString = "388824875.204723"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "185"
-         endingLineNumber = "185"
+         startingLineNumber = "186"
+         endingLineNumber = "186"
          landmarkName = "-application:didReceiveRemoteNotification:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -151,11 +151,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/AppDelegate.m"
-         timestampString = "388544944.190673"
+         timestampString = "390031913.676908"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "210"
-         endingLineNumber = "210"
+         startingLineNumber = "223"
+         endingLineNumber = "223"
          landmarkName = "-application:didReceiveRemoteNotification:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -175,11 +175,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/ProximityViewController.m"
-         timestampString = "388822189.499382"
+         timestampString = "388826956.586768"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "901"
-         endingLineNumber = "901"
+         startingLineNumber = "902"
+         endingLineNumber = "902"
          landmarkName = "-updateChatIconForNotification:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -188,11 +188,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "UserChatViewController.m"
-         timestampString = "388547160.89836"
+         timestampString = "390031913.676908"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "663"
-         endingLineNumber = "663"
+         startingLineNumber = "664"
+         endingLineNumber = "664"
          landmarkName = "-receivedChat:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -200,13 +200,39 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Junction/ProximityViewController.m"
-         timestampString = "388822189.499382"
+         filePath = "Junction/AppDelegate.m"
+         timestampString = "390031913.676908"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "886"
-         endingLineNumber = "886"
-         landmarkName = "-updateChatIconForNotification:"
+         startingLineNumber = "880"
+         endingLineNumber = "880"
+         landmarkName = "-sendConnectionRequestToUser:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "LinkedInHelperRequest.m"
+         timestampString = "388946240.645453"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "68"
+         endingLineNumber = "68"
+         landmarkName = "-requestTokenTicket:didFail:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/LinkedIn-OAuth/OAuthStarterKit/OAuthLoginView.m"
+         timestampString = "388946337.529623"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "208"
+         endingLineNumber = "208"
+         landmarkName = "-accessTokenResult:didFinish:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -214,12 +240,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Junction/ProximityViewController.m"
-         timestampString = "388822217.941638"
+         timestampString = "388946815.388976"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "463"
-         endingLineNumber = "463"
+         startingLineNumber = "462"
+         endingLineNumber = "462"
          landmarkName = "-reloadUserPortrait:withPulse:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Junction/ProximityViewController.m"
+         timestampString = "388946833.256576"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "604"
+         endingLineNumber = "604"
+         landmarkName = "-refreshProximity"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

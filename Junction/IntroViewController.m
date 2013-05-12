@@ -211,10 +211,13 @@
     }
     [delegate saveUserInfoToDefaults];
 
-    if (doSignup)
+    if (doSignup) {
+        [shellUserInfo setIsVisible:YES]; // visible by default
+        [delegate saveUserInfoToDefaults];
         [self trySignup];
+    }
     else
-        [self tryLogin];
+        [self tryLogin];    
 
     // force profile to update
     [[NSNotificationCenter defaultCenter] postNotificationName:kMyUserInfoDidChangeNotification object:self userInfo:nil];
@@ -300,7 +303,7 @@
         }
         else {
             int errorCode = [[error.userInfo objectForKey:@"code"] intValue];
-            NSLog(@"Error: %@ code %d", error.userInfo, errorCode);
+            NSLog(@"Try login Error: %@ code %d", error.userInfo, errorCode);
             // todo: check whether login failed due to missing user, or wrong user
             if (errorCode == 101) {
                 // invalid credentials
@@ -331,7 +334,7 @@
         }
         else {
             int errorCode = [[error.userInfo objectForKey:@"code"] intValue];
-            NSLog(@"Error: %@ code %d", error.userInfo, errorCode);
+            NSLog(@"Try signup Error: %@ code %d", error.userInfo, errorCode);
             if (errorCode == 125) { // invalid email
                 self.progress.labelText = @"Signup Failed";
                 self.progress.detailsLabelText = @"Please enter a valid email!";

@@ -39,6 +39,7 @@
 @synthesize notificationDeviceToken;
 @synthesize allRecentChats;
 @synthesize settingsController;
+@synthesize bShowNotificationConnectionAccepted, bShowNotificationConnectionReceived, bShowNotificationFollowup, followupReminderTimeInWeeks;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -185,7 +186,19 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSString * type = [userInfo objectForKey:@"type"];
     NSString * message = [userInfo objectForKey:@"message"];
     NSString * senderID = [userInfo objectForKey:@"sender"];
+    NSString * username = [userInfo objectForKey:@"username"];
     UserInfo * senderUserInfo = [allJunctionUserInfosDict objectForKey:senderID];
+    if (!senderUserInfo) {
+        NSLog(@"Could not find userInfo for user with pfUserID %@", senderID);
+        // request junction user, for later
+        senderUserInfo = [[UserInfo alloc] init];
+        senderUserInfo.pfUserID = senderID;
+        senderUserInfo.username = username;
+        [UserInfo FindUserInfoFromParse:senderUserInfo withBlock:^(UserInfo * foundUserInfo, NSError * error) {
+            [allJunctionUserInfos addObject:foundUserInfo];
+            [allJunctionUserInfosDict setObject:foundUserInfo forKey:senderID];
+        }];
+    }
     
     if ([type isEqualToString:jpChatMessage]) {
         NSLog(@"Chat message received: %@ from %@", message, senderUserInfo.username);
@@ -217,6 +230,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)getJunctionUsers {
+    NSLog(@"Get Junction users");
     [ParseHelper queryForAllParseObjectsWithClass:@"UserInfo" withBlock:^(NSArray * results, NSError * error) {
         if (results) {
             NSLog(@"Got %d users on Parse", [results count]);
@@ -228,6 +242,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [allJunctionUserInfos removeAllObjects];
             for (PFObject * user in results) {
                 UserInfo * friendUserInfo = [[UserInfo alloc] initWithPFObject:user];
+                if (!friendUserInfo.isVisible)
+                    continue;
                 NSLog(@"Junction user %@ with id %@", friendUserInfo.username, friendUserInfo.pfUserID);
 #if !TESTING
                 if ([friendUserInfo.pfUserID isEqualToString:myUserInfo.pfUserID]) {
@@ -439,7 +455,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     // we are monitoring significant changes, these have no effect
     [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
     [locationManager setDistanceFilter:kCLDistanceFilterNone];
-    [self performSelector:@selector(locationSetHighAccuracyInBackground) withObject:nil afterDelay:10];
+    [self performSelector:@selector(locationSetHighAccuracyInBackground) withObject:nil afterDelay:30];
 }
 -(void)locationSetHighAccuracyInBackground {
     // we are monitoring significant changes, these have no effect
@@ -514,7 +530,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(void)forcePulse {
-    [self redoPulseForLastLocation:lastLocation];
+    if (lastLocation) {
+        [self redoPulseForLastLocation:lastLocation];
+    }
+    else {
+        [self locationSetHighAccuracy];
+        [self startPulsing];
+    }
 }
 
 #pragma mark ProximityDelegate and ProfileDelegate
@@ -605,6 +627,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 -(void)continueInit {
 //    [UIApplication sharedApplication].statusBarHidden = NO;
     
+    [self loadNotificationPreferences];
     [self loadCachedRecentChats];
     [self getJunctionUsers];
     [self startPulsing];
@@ -681,12 +704,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 -(BOOL)isConnectedWithUser:(UserInfo*)user {
     if ([user.pfUserID isEqualToString:myUserInfo.pfUserID])
         return YES;
-    for (UserInfo * userInfo in connected) {
-        if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
-            NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
+    /*
+    for (NSString * pfUserID in connected) {
+        if ([pfUserID isEqualToString:user.pfUserID]) {
+            NSLog(@"User %@ with pfUserID %@ is connected!", user.username, user.pfUserID);
             return YES;
         }
     }
+     */
+    if ([connected containsObject:user.pfUserID])
+        return YES;
     return NO;
 }
 
@@ -697,9 +724,17 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         [self.window.rootViewController presentModalViewController:controller animated:YES];
     }
     else {
-        UserProfileViewController * controller = [[UserProfileViewController alloc] init];
-        [controller setUserInfo:friendUserInfo];
-        [self.window.rootViewController presentModalViewController:controller animated:YES];
+        if (forChat) {
+            UserChatViewController * chatController = [[UserChatViewController alloc] init];
+            [chatController setUserInfo:friendUserInfo];
+            UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:chatController];
+            [self.window.rootViewController presentModalViewController:nav animated:YES];
+        }
+        else {
+            UserProfileViewController * controller = [[UserProfileViewController alloc] init];
+            [controller setUserInfo:friendUserInfo];
+            [self.window.rootViewController presentModalViewController:controller animated:YES];
+        }
     }
 }
 
@@ -710,15 +745,19 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         if (error) {
             NSLog(@"getMyConnections->findRelation failed with error: %@", error.description);
             if (getMyConnectionsRetry)
-                [self performSelector:@selector(getMyConnectionsReceived) withObject:nil afterDelay:300];
+                [self performSelector:@selector(getMyConnections) withObject:nil afterDelay:300];
             getMyConnectionsRetry = 0;
         }
         else {
             NSLog(@"%d connections found for user %@", [connectedUsers count], myUserInfo.username);
             for (PFObject * user in connectedUsers) {
-                NSLog(@"Connected user: class %@ pfObjectID %@", [user class], ((PFObject*)user).objectId);
                 UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
-                [connected addObject:connectedUserInfo];
+                NSLog(@"Connected user: class %@ pfObjectID %@ pfUserID: %@", [user class], ((PFObject*)user).objectId, connectedUserInfo.pfUserID);
+                [connected addObject:connectedUserInfo.pfUserID];
+                
+                // remove from other lists
+                [connectRequestsReceived removeObject:connectedUserInfo.pfUserID];
+                [connectRequestsSent removeObject:connectedUserInfo.pfUserID];
             }
             NSLog(@"Connected users: %@", connected);
             [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsUpdated object:self userInfo:nil];
@@ -741,7 +780,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             for (PFObject * user in connectedUsers) {
                 NSLog(@"Connect sent for user: pfObjectID %@", ((PFObject*)user).objectId);
                 UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
-                [connectRequestsSent addObject:connectedUserInfo];
+                [connectRequestsSent addObject:connectedUserInfo.pfUserID];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsSentUpdated object:self userInfo:nil];
             }
         }
@@ -764,7 +803,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             for (PFObject * user in connectedUsers) {
                 NSLog(@"Connect sent from user: pfObjectID %@", ((PFObject*)user).objectId);
                 UserInfo * connectedUserInfo = [[UserInfo alloc] initWithPFObject:user];
-                [connectRequestsReceived addObject:connectedUserInfo];
+                [connectRequestsReceived addObject:connectedUserInfo.pfUserID];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kParseConnectionsReceivedUpdated object:self userInfo:nil];
             }
         }
@@ -773,6 +812,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 -(BOOL)isConnectRequestSentToUser:(UserInfo*)user {
+    /*
     for (UserInfo * userInfo in connectRequestsSent) {
         NSLog(@"Userinfo: %@ user: %@", userInfo.pfUserID, user.pfUserID);
         if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
@@ -780,15 +820,22 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             return YES;
         }
     }
+     */
+    if ([connectRequestsSent containsObject:user.pfUserID])
+        return YES;
     return NO;
 }
 -(BOOL)isConnectRequestReceivedFromUser:(UserInfo*)user {
+    /*
     for (UserInfo * userInfo in connectRequestsReceived) {
         if ([userInfo.pfUserID isEqualToString:user.pfUserID]) {
             NSLog(@"User with pfUserID %@ is connected!", user.pfUserID);
             return YES;
         }
     }
+     */
+    if ([connectRequestsReceived containsObject:user.pfUserID])
+        return YES;
     return NO;
 }
 
@@ -816,6 +863,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     [data setObject:[NSString stringWithFormat:@"%@ wants to connect", self.myUserInfo.username] forKey:@"alert"];
     [data setObject:self.myUserInfo.pfUserID forKey:@"sender"];
+    [data setObject:self.myUserInfo.username forKey:@"username"];
     [data setObject:jpConnectionRequest forKey:@"type"];
     [data setObject:channel forKey:@"channel"];
     [PFPush sendPushDataToChannelInBackground:channel withData:data];
@@ -837,12 +885,14 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }];
 }
 
--(void)acceptConnectionRequestFromUser:(UserInfo*)user {
+-(void)acceptConnectionRequestFromUser:(UserInfo*)userInfo {
     MBProgressHUD * progress = [MBProgressHUD showHUDAddedTo:self.window.rootViewController.presentedViewController.view animated:YES]; //self.nav.topViewController.view animated:YES];
 
-    [ParseHelper removeRelation:@"connectionsReceived" betweenUser:myUserInfo andUser:user];
-    [ParseHelper removeRelation:@"connectionsSent" betweenUser:user andUser:myUserInfo];
-    [ParseHelper addRelation:@"connections" betweenUser:myUserInfo andUser:user withBlock:^(BOOL succeeded, NSError * error) {
+    [ParseHelper removeRelation:@"connectionsReceived" betweenUser:myUserInfo andUser:userInfo];
+    [ParseHelper removeRelation:@"connectionsReceived" betweenUser:userInfo andUser:myUserInfo];
+    [ParseHelper removeRelation:@"connectionsSent" betweenUser:userInfo andUser:myUserInfo];
+    [ParseHelper removeRelation:@"connectionsSent" betweenUser:myUserInfo andUser:userInfo];
+    [ParseHelper addRelation:@"connections" betweenUser:myUserInfo andUser:userInfo withBlock:^(BOOL succeeded, NSError * error) {
         if (error) {
             NSLog(@"AcceptConnectionRequest->addRelation had error: %@", error);
         }
@@ -853,7 +903,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         }
         [progress hide:YES];
     }];
-    [ParseHelper addRelation:@"connections" betweenUser:user andUser:myUserInfo withBlock:^(BOOL succeeded, NSError * error) {
+    [ParseHelper addRelation:@"connections" betweenUser:userInfo andUser:myUserInfo withBlock:^(BOOL succeeded, NSError * error) {
         if (error) {
             NSLog(@"AcceptConnectionRequest->addRelation had error: %@", error);
         }
@@ -866,21 +916,23 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }];
     
     // send notification for user to update
-    NSString * channel = [user.pfUserID stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString * channel = [userInfo.pfUserID stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     [data setObject:[NSString stringWithFormat:@"%@ accepted your connection", self.myUserInfo.username] forKey:@"alert"];
     [data setObject:self.myUserInfo.pfUserID forKey:@"sender"];
+    [data setObject:self.myUserInfo.username forKey:@"username"];
     [data setObject:jpConnectionAccepted forKey:@"type"];
     [data setObject:channel forKey:@"channel"];
     [PFPush sendPushDataToChannelInBackground:channel withData:data];
     
-    NSMutableArray * notificationsForDeletion = [self.notificationsController findNotificationsOfType:jnConnectionRequestNotification fromSender:user];
+    NSMutableArray * notificationsForDeletion = [self.notificationsController findNotificationsOfType:jnConnectionRequestNotification fromSender:userInfo];
     
     if ([notificationsForDeletion count] == 0) {
         //[notificationsController refreshNotifications];
         return;
     }
     
+    // todo: check here if notificationsForDeletion works. handle error (no internet)
     for (JunctionNotification * notificationForDeletion in notificationsForDeletion) {
         [notificationForDeletion.pfObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (error) {
@@ -1027,4 +1079,29 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     return newImage;
 }
 
+-(void)loadNotificationPreferences {
+    // set defaults
+    bShowNotificationConnectionAccepted = YES;
+    bShowNotificationConnectionReceived = YES;
+    bShowNotificationFollowup = YES;
+    
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:@"bShowNotificationConnectionReceived"])
+        bShowNotificationConnectionReceived = [defaults boolForKey:@"bShowNotificationConnectionReceived"];
+    if ([defaults objectForKey:@"bShowNotificationConnectionAccepted"])
+        bShowNotificationConnectionAccepted = [defaults boolForKey:@"bShowNotificationConnectionAccepted"];
+    if ([defaults objectForKey:@"bShowNotificationFollowup"])
+        bShowNotificationFollowup = [defaults boolForKey:@"bShowNotificationFollowup"];
+    if ([defaults objectForKey:@"followupReminderTimeInWeeks"])
+        followupReminderTimeInWeeks = [defaults integerForKey:@"followupReminderTimeInWeeks"];
+}
+
+-(void)saveNotificationPreferences {
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:bShowNotificationConnectionReceived forKey:@"bShowNotificationConnectionReceived"];
+    [defaults setBool:bShowNotificationConnectionAccepted forKey:@"bShowNotificationConnectionAccepted"];
+    [defaults setBool:bShowNotificationFollowup forKey:@"bShowNotificationFollowup"];
+    [defaults setInteger:followupReminderTimeInWeeks forKey:@"followupReminderTimeInWeeks"];
+    [defaults synchronize];
+}
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "SettingsNotificationsViewController.h"
+#import "AppDelegate.h"
 
 @interface SettingsNotificationsViewController ()
 
@@ -14,11 +15,14 @@
 
 @implementation SettingsNotificationsViewController
 
+static AppDelegate * appDelegate;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     }
     return self;
 }
@@ -52,6 +56,10 @@
     [self.navigationItem setLeftBarButtonItem:backbutton];
     
     tableView.backgroundColor = COLOR_FAINTBLUE;
+    
+    [toggleNotifyReceive setOn:[appDelegate bShowNotificationConnectionReceived]];
+    [toggleNotifyAccept setOn:[appDelegate bShowNotificationConnectionAccepted]];
+    [toggleNotifyFollowup setOn:[appDelegate bShowNotificationFollowup]];
 }
 
 - (void)didReceiveMemoryWarning
@@ -64,12 +72,18 @@
     UISwitch * toggle = (UISwitch*)sender;
     if (toggle == toggleNotifyAccept) {
         NSLog(@"Change notification for when request is accepted");
+        appDelegate.bShowNotificationConnectionAccepted = toggleNotifyAccept.on;
+        [appDelegate saveNotificationPreferences];
     }
     else if (toggle == toggleNotifyFollowup) {
         NSLog(@"Change notification for follow reminder");
+        appDelegate.bShowNotificationFollowup = toggleNotifyFollowup.on;
+        [appDelegate saveNotificationPreferences];
     }
     else if (toggle == toggleNotifyReceive) {
         NSLog(@"Change notification for when request is received");
+        appDelegate.bShowNotificationConnectionReceived = toggleNotifyReceive.on;
+        [appDelegate saveNotificationPreferences];
     }
 }
 
@@ -96,6 +110,8 @@
         
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        [cell.textLabel setFont:[UIFont systemFontOfSize:12]];
     }
     
     int section = [indexPath section];
@@ -127,19 +143,19 @@
             if (row == 0) {
                 cell.textLabel.text = @"1 week after I connect";
                 cell.accessoryView = nil;
-                if (weeksForFollowupReminder == 1)
+                if (appDelegate.followupReminderTimeInWeeks == 1)
                     cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
             else if (row == 1) {
                 cell.textLabel.text = @"2 weeks after I connect";
                 cell.accessoryView = nil;
-                if (weeksForFollowupReminder == 2)
+                if (appDelegate.followupReminderTimeInWeeks == 2)
                     cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
             else if (row == 2) {
                 cell.textLabel.text = @"3 weeks after I connect";
                 cell.accessoryView = nil;
-                if (weeksForFollowupReminder == 3)
+                if (appDelegate.followupReminderTimeInWeeks == 3)
                     cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
         }
@@ -194,17 +210,20 @@
         {
             if (indexPath.row == 0) {
                 NSLog(@"1 week");
-                weeksForFollowupReminder = 1;
+                appDelegate.followupReminderTimeInWeeks = 1;
+                [appDelegate saveNotificationPreferences];
                 [tableView reloadData];
             }
             else if (indexPath.row == 1) {
                 NSLog(@"2 week");
-                weeksForFollowupReminder = 2;
+                appDelegate.followupReminderTimeInWeeks = 2;
+                [appDelegate saveNotificationPreferences];
                 [tableView reloadData];
             }
             else if (indexPath.row == 2) {
                 NSLog(@"3 week");
-                weeksForFollowupReminder = 3;
+                appDelegate.followupReminderTimeInWeeks = 3;
+                [appDelegate saveNotificationPreferences];
                 [tableView reloadData];
             }
         }
@@ -217,6 +236,7 @@
 
 -(void)goBack:(id)sender {
     // save
+    [appDelegate saveNotificationPreferences];
     
     // dismiss
     [self.navigationController popViewControllerAnimated:YES];
