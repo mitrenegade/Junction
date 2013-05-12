@@ -481,7 +481,7 @@
         else {
             self.progress.labelText = @"Could not save your User info!";
             [self.progress hide:YES afterDelay:2];
-#if TESTING
+#if TESTING && 0
             [[UIAlertView alertViewWithTitle:@"Error:" message:error.description] show];
 #endif
         }

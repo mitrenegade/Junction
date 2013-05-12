@@ -331,7 +331,7 @@ static AppDelegate * appDelegate;
     CGRect firstFrame = CGRectMake(self.view.frame.size.width - 60/2, 5, 55/2, 59/2);
     CGRect secondFrame = CGRectMake(self.view.frame.size.width - 115/2, 5, 55/2, 59/2);
     
-#if TESTING
+#if TESTING && 0
     hasNewChat = YES;
     hasConnectionRequest = YES;
 #endif

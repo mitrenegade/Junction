@@ -257,7 +257,7 @@ static AppDelegate * appDelegate;
 -(IBAction)didClickConnect:(id)sender {
     if (isOwnProfile) {
 #if TESTING
-        // this becomse a delete button
+        // this becomes a delete button
         [UIAlertView alertViewWithTitle:@"Delete user?" message:@"Are you sure you want to delete your self? You will lose all your Junction info!" cancelButtonTitle:@"Cancel" otherButtonTitles:[NSArray arrayWithObjects:@"Log out", @"Delete", nil] onDismiss:^(int buttonIndex) {
             NSLog(@"Clicked button index %d", buttonIndex);
             // delete user
