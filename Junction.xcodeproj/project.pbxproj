@@ -110,6 +110,8 @@
 		9E85A5A316E5E2AE001D7C91 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A5A216E5E2AE001D7C91 /* blueArrow.png */; };
 		9E85A5A716E5E81E001D7C91 /* FilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E85A5A516E5E81B001D7C91 /* FilterViewController.m */; };
 		9E85A5A816E5E81E001D7C91 /* FilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E85A5A616E5E81D001D7C91 /* FilterViewController.xib */; };
+		9E85FBAC185FE6610048B66E /* AsyncImageUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E85FBA9185FE6610048B66E /* AsyncImageUploader.m */; };
+		9E85FBAD185FE6610048B66E /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E85FBAB185FE6610048B66E /* AsyncImageView.m */; };
 		9E8CE29C16F05A460042E57D /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E8CE29916F05A460042E57D /* icon-back@2x.png */; };
 		9E8CE29D16F05A460042E57D /* icon-block@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E8CE29A16F05A460042E57D /* icon-block@2x.png */; };
 		9E8CE29E16F05A460042E57D /* icon-chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E8CE29B16F05A460042E57D /* icon-chat@2x.png */; };
@@ -145,8 +147,6 @@
 		9EA2F2AB168A98F200054FB2 /* UIImage+GaussianBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA2F2AA168A98F200054FB2 /* UIImage+GaussianBlur.m */; };
 		9EA48EC9172CEDEE00776139 /* UIImage+StackBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA48EC8172CEDEE00776139 /* UIImage+StackBlur.m */; };
 		9EA4FBAD16AB306100A447F2 /* LoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBAC16AB306100A447F2 /* LoadingAnimationView.m */; };
-		9EA4FBD616AB315400A447F2 /* AsyncImageUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD016AB315400A447F2 /* AsyncImageUploader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		9EA4FBD716AB315400A447F2 /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD216AB315400A447F2 /* AsyncImageView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA4FBD416AB315400A447F2 /* AWSHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9EAAF82B16DDBAF0007C9126 /* AWSiOSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EAAF82A16DDBAF0007C9126 /* AWSiOSSDK.framework */; };
 		9EAD604C17114A00004DE2BE /* SettingsEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EAD604A17114A00004DE2BE /* SettingsEditProfileViewController.m */; };
@@ -363,6 +363,10 @@
 		9E85A5A416E5E81A001D7C91 /* FilterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterViewController.h; sourceTree = SOURCE_ROOT; };
 		9E85A5A516E5E81B001D7C91 /* FilterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterViewController.m; sourceTree = SOURCE_ROOT; };
 		9E85A5A616E5E81D001D7C91 /* FilterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterViewController.xib; sourceTree = SOURCE_ROOT; };
+		9E85FBA8185FE6610048B66E /* AsyncImageUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncImageUploader.h; path = "../GymPact-App/GymPact/AsyncImageUploader.h"; sourceTree = "<group>"; };
+		9E85FBA9185FE6610048B66E /* AsyncImageUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncImageUploader.m; path = "../GymPact-App/GymPact/AsyncImageUploader.m"; sourceTree = "<group>"; };
+		9E85FBAA185FE6610048B66E /* AsyncImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncImageView.h; path = "../GymPact-App/GymPact/AsyncImageView.h"; sourceTree = "<group>"; };
+		9E85FBAB185FE6610048B66E /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncImageView.m; path = "../GymPact-App/GymPact/AsyncImageView.m"; sourceTree = "<group>"; };
 		9E8CE29916F05A460042E57D /* icon-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back@2x.png"; sourceTree = "<group>"; };
 		9E8CE29A16F05A460042E57D /* icon-block@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-block@2x.png"; sourceTree = "<group>"; };
 		9E8CE29B16F05A460042E57D /* icon-chat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-chat@2x.png"; sourceTree = "<group>"; };
@@ -416,10 +420,6 @@
 		9EA48EC8172CEDEE00776139 /* UIImage+StackBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+StackBlur.m"; sourceTree = SOURCE_ROOT; };
 		9EA4FBAB16AB306100A447F2 /* LoadingAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingAnimationView.h; sourceTree = SOURCE_ROOT; };
 		9EA4FBAC16AB306100A447F2 /* LoadingAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingAnimationView.m; sourceTree = SOURCE_ROOT; };
-		9EA4FBCF16AB315400A447F2 /* AsyncImageUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncImageUploader.h; sourceTree = "<group>"; };
-		9EA4FBD016AB315400A447F2 /* AsyncImageUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageUploader.m; sourceTree = "<group>"; };
-		9EA4FBD116AB315400A447F2 /* AsyncImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncImageView.h; sourceTree = "<group>"; };
-		9EA4FBD216AB315400A447F2 /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageView.m; sourceTree = "<group>"; };
 		9EA4FBD316AB315400A447F2 /* AWSHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSHelper.h; sourceTree = "<group>"; };
 		9EA4FBD416AB315400A447F2 /* AWSHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSHelper.m; sourceTree = "<group>"; };
 		9EAAF82A16DDBAF0007C9126 /* AWSiOSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSiOSSDK.framework; sourceTree = "<group>"; };
@@ -833,10 +833,10 @@
 		9EA4FBCE16AB315400A447F2 /* AWSLibs */ = {
 			isa = PBXGroup;
 			children = (
-				9EA4FBCF16AB315400A447F2 /* AsyncImageUploader.h */,
-				9EA4FBD016AB315400A447F2 /* AsyncImageUploader.m */,
-				9EA4FBD116AB315400A447F2 /* AsyncImageView.h */,
-				9EA4FBD216AB315400A447F2 /* AsyncImageView.m */,
+				9E85FBA8185FE6610048B66E /* AsyncImageUploader.h */,
+				9E85FBA9185FE6610048B66E /* AsyncImageUploader.m */,
+				9E85FBAA185FE6610048B66E /* AsyncImageView.h */,
+				9E85FBAB185FE6610048B66E /* AsyncImageView.m */,
 				9EA4FBD316AB315400A447F2 /* AWSHelper.h */,
 				9EA4FBD416AB315400A447F2 /* AWSHelper.m */,
 			);
@@ -1234,6 +1234,7 @@
 				9E3059BD16805DED00A35ABE /* OAConsumer.m in Sources */,
 				9E3059BE16805DED00A35ABE /* OADataFetcher.m in Sources */,
 				9E3059BF16805DED00A35ABE /* OAHMAC_SHA1SignatureProvider.m in Sources */,
+				9E85FBAD185FE6610048B66E /* AsyncImageView.m in Sources */,
 				9E3059C016805DED00A35ABE /* OAMutableURLRequest.m in Sources */,
 				9E3059C116805DED00A35ABE /* OAPlaintextSignatureProvider.m in Sources */,
 				9E3059C216805DED00A35ABE /* OAProblem.m in Sources */,
@@ -1260,13 +1261,12 @@
 				9EC23C1116A67F3600270AF1 /* LinkedInHelperRequest.m in Sources */,
 				9E65865016AA239900FFE877 /* MBProgressHUD.m in Sources */,
 				9EA4FBAD16AB306100A447F2 /* LoadingAnimationView.m in Sources */,
-				9EA4FBD616AB315400A447F2 /* AsyncImageUploader.m in Sources */,
-				9EA4FBD716AB315400A447F2 /* AsyncImageView.m in Sources */,
 				9EA4FBD816AB315400A447F2 /* AWSHelper.m in Sources */,
 				9E0D28C016B641790036792B /* CreateProfileInfoViewController.m in Sources */,
 				9E0D28C516B641870036792B /* CreateProfilePhotoViewController.m in Sources */,
 				9EE927E416C86CFB005B4CCC /* OutlineLabel.m in Sources */,
 				9E37679D16CAF21D004C680B /* OrderedUser.m in Sources */,
+				9E85FBAC185FE6610048B66E /* AsyncImageUploader.m in Sources */,
 				9E85A47616E1B044001D7C91 /* SettingsViewController.m in Sources */,
 				9E85A58B16E5DB76001D7C91 /* EGORefreshTableHeaderView.m in Sources */,
 				9E85A5A716E5E81E001D7C91 /* FilterViewController.m in Sources */,
